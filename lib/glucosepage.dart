@@ -28,7 +28,7 @@ class _GlucosePageState extends State<GlucosePage> {
           children: [
             const TextField(
               decoration: InputDecoration(
-                labelText: 'Weight',
+                labelText: 'Weight (kg)',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -65,7 +65,7 @@ class _GlucosePageState extends State<GlucosePage> {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Select an Option',
+              'Select a milk',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -85,7 +85,7 @@ class _GlucosePageState extends State<GlucosePage> {
                   _selectedItem = newValue;
                 });
               },
-              hint: Text('Select an option'),
+              hint: const Text('Select a milk'),
             ),
             const SizedBox(height: 20),
             const TextField(
@@ -95,6 +95,24 @@ class _GlucosePageState extends State<GlucosePage> {
               ),
             ),
             const SizedBox(height: 20),
+            const TextField(
+              decoration: InputDecoration(
+                labelText: 'Feed volume (ml/kg/d)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Submit Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Action for button press
+                  print('Selected option: $_selectedItem');
+                },
+                child: const Text('Calculate Glucose Infusion Rate'),
+              ),
+            )
           ]
       ),
     ),

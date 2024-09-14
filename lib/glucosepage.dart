@@ -13,7 +13,7 @@ class _GlucosePageState extends State<GlucosePage> {
   final _formKey = GlobalKey<FormState>();
 
   // State for the selected dropdown item
-  Milk? _selectedItem;
+  Milk? _selectedMilk;
   // List of dropdown items
   final List<Milk> _dropdownItems = sortedMilks(milks);
 
@@ -22,16 +22,24 @@ class _GlucosePageState extends State<GlucosePage> {
   final TextEditingController _glucoseController = TextEditingController();
   final TextEditingController _infusionRateController = TextEditingController();
   final TextEditingController _milkStrengthController = TextEditingController();
-  final TextEditingController _volumeController = TextEditingController();
+  final TextEditingController _milkVolumeController = TextEditingController();
 
   // toggle states
   bool _showParenteralFields = false;
   bool _showEnteralFields = false;
   bool _showCustomMilkCarbsField = false;
-  bool _isMilkDropdownExpanded = false;
+
+  bool validateMilkSelection(Milk? milk) {
+    if (milk == null && !_showCustomMilkCarbsField) {
+      return false; // Or handle null value differently
+    }
+    // Add your specific validation rules here
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
         onTap: () {
       // Close the keyboard if user taps anywhere outside the TextField
@@ -130,23 +138,45 @@ class _GlucosePageState extends State<GlucosePage> {
             // show parenteral fields
             Visibility(
                 visible: _showParenteralFields,
-                child: const Column(
+                child: Column(
                   children: [
-                    SizedBox(height: 20),
-                    Text(
+                    const SizedBox(height: 20),
+                    const Text(
                       'Parenteral',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.left,
                     ),
-                    SizedBox(height: 8),
-                    TextField(
-                      decoration: InputDecoration(
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _milkStrengthController,
+                      keyboardType: TextInputType.number,
+                      validator: (value){
+                        if (value == null || value.isEmpty && _showParenteralFields) {
+                          return "Please enter the dextrose percentage or g/100ml.";
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'Please enter a valid number';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
                         labelText: 'Glucose (g/100ml)',
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    TextField(
-                      decoration: InputDecoration(
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _infusionRateController,
+                      keyboardType: TextInputType.number,
+                      validator: (value){
+                        if (value == null || value.isEmpty && _showParenteralFields) {
+                          return "Please enter the dextrose infusion rate in ml/hr.";
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'Please enter a valid number';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
                         labelText: 'Rate (ml/hr)',
                         border: OutlineInputBorder(),
                       ),
@@ -183,28 +213,36 @@ class _GlucosePageState extends State<GlucosePage> {
                             ),
                             const SizedBox(height: 20),
                             SizedBox(
-
-                              child:DropdownButtonFormField<Milk>(
-                                menuMaxHeight: 200,
-                                decoration: const InputDecoration(border: OutlineInputBorder()),
-                                value: _selectedItem,
-                                items: _dropdownItems.map((Milk item) {
-                                  return DropdownMenuItem<Milk>(
-                                      value: item,
-                                      child: SizedBox(
-                                        width: 300,
-                                        child:Text("${item.name} (${item.carbsPer100ml}g)"),
-                                      )
-                                  );
-                                }).toList(),
-                                onChanged: (Milk? newValue) {
-                                  setState(() {
-                                    _selectedItem = newValue;
-                                  });
-                                },
-                                hint: const Text('Select a milk'),
+                              child: DropdownButtonFormField<Milk>(
+                                  menuMaxHeight: 200,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "Milk",
+                                  ),
+                                  validator: (value){
+                                    if (value == null && !_showCustomMilkCarbsField) {
+                                      return "Please select a milk";
+                                    }
+                                    return null;
+                                  },
+                                  value: _selectedMilk,
+                                  items: _dropdownItems.map((Milk item) {
+                                    return DropdownMenuItem<Milk>(
+                                        value: item,
+                                        child: SizedBox(
+                                          width: 300,
+                                          child:Text("${item.name} (${item.carbsPer100ml}g)"),
+                                        )
+                                    );
+                                  }).toList(),
+                                  onChanged: (Milk? newValue) {
+                                    setState(() {
+                                      _selectedMilk = newValue;
+                                    });
+                                  },
+                                  hint: const Text('Select a milk'),
                               ),
-                            )
+                            ),
                           ],
                       ),),
                       const SizedBox(height: 8),
@@ -212,9 +250,20 @@ class _GlucosePageState extends State<GlucosePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           if (_showCustomMilkCarbsField)
-                          const Expanded(
-                            child: TextField(
-                              decoration: InputDecoration(
+                          Expanded(
+                            child: TextFormField(
+                              controller: _milkStrengthController,
+                              keyboardType: TextInputType.number,
+                              validator: (value){
+                                if (value == null || value.isEmpty && (_showEnteralFields && _showCustomMilkCarbsField)) {
+                                  return "Please enter the milk carbohydrates.";
+                                }
+                                if (double.tryParse(value) == null) {
+                                  return 'Please enter a valid number';
+                                }
+                                return null;
+                              },
+                              decoration: const InputDecoration(
                                 labelText: 'carbohydrate (g/100ml)',
                                 border: OutlineInputBorder(),
                               ),
@@ -248,8 +297,19 @@ class _GlucosePageState extends State<GlucosePage> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      const TextField(
-                        decoration: InputDecoration(
+                      TextFormField(
+                        controller: _milkVolumeController,
+                        keyboardType: TextInputType.number,
+                        validator: (value){
+                          if (value == null || value.isEmpty && _showEnteralFields) {
+                            return "Please enter the total daily volume.";
+                          }
+                          if (double.tryParse(value) == null) {
+                            return 'Please enter a valid number';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
                           labelText: 'Feed volume (ml/kg/d)',
                           border: OutlineInputBorder(),
                         ),

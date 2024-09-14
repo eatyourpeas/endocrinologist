@@ -49,15 +49,17 @@ class EndocrinologyTabBars extends StatelessWidget {
         title: const Text("The Endocrinologist"),
         bottom: const TabBar(
           tabs: [
-            Tab(icon: Icon(Icons.personal_injury_sharp), text: "Glucose"),
-            Tab(icon: Icon(Icons.ac_unit), text: "Steroids"),
+            Tab(icon: Icon(Icons.science), text: "Glucose"),
+            Tab(icon: Icon(Icons.medication), text: "Steroids"),
+            Tab(icon: Icon(Icons.straighten), text: "Auxology"),
           ],
         ),
       ),
       body: const TabBarView(
         children: [
           GlucosePage(),
-          Center(child: Text("Steroids"))
+          Center(child: Text("Steroids")),
+          Center(child: Text("Auxology")),
         ],
       ),
     ),

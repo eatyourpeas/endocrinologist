@@ -45,6 +45,7 @@ class _GlucosePageState extends State<GlucosePage> {
       double? glucoseInfusionRate;
       double? milkDailyRate;
       double? milkCarbohydratePercentage;
+      double milkInfusionRate = 0.0;
 
       double parenteralGIR = 0;
       double enteralGIR = 0;
@@ -65,11 +66,12 @@ class _GlucosePageState extends State<GlucosePage> {
         if (milkDailyRate == null){
           throw Exception("The daily milk volume/kg cannot be null.");
         }
-        double milkInfusionRate = hourlyMilkRateForDailyVolume(milkDailyRate, weight);
+        milkInfusionRate = hourlyMilkRateForDailyVolume(milkDailyRate, weight);
+
         if (_showCustomMilkCarbsField){
           milkCarbohydratePercentage = double.tryParse(_milkStrengthController.text);
-          if (milkCarbohydratePercentage == null || milkDailyRate == null){
-            throw Exception("Neither the carb concentration of the milk nor the milk daily intake can be null.");
+          if (milkCarbohydratePercentage == null){
+            throw Exception("The carb concentration of the milk cannot be null.");
           }
           enteralGIR = calculateGlucoseInfusionRate(milkCarbohydratePercentage, milkInfusionRate, weight);
         } else {
@@ -86,20 +88,72 @@ class _GlucosePageState extends State<GlucosePage> {
           context: context,
           builder: (BuildContext context){
             return AlertDialog(
-              title: Text("Glucose Infusion Rates"),
+              title: const Text("Glucose Infusion Rates"),
               content: Column(
                 children: [
-                  if (enteralGIR > 0)
-                  Text("Enteral GIR: ${enteralGIR.toStringAsFixed(1)} mg/kg/min"),
-                  if (parenteralGIR > 0)
-                  Text("Parenteral GIR: ${parenteralGIR.toStringAsFixed(1)} mg/kg/min"),
-                  Text("Total ${(enteralGIR + parenteralGIR).toStringAsFixed(1)} mg/kg/min")
+                  if (enteralGIR > 0 || parenteralGIR > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0), // Add padding below the grid
+                      child: Column(
+                        children: [
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                "Enteral GIR",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                "Parenteral GIR",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const Divider(color: Colors.black, height: 1), // Thin black line
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              if (enteralGIR > 0)
+                                Text("${enteralGIR.toStringAsFixed(1)} mg/kg/min"),
+                              if (parenteralGIR > 0)
+                                Text("${parenteralGIR.toStringAsFixed(1)} mg/kg/min"),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  Text(
+                    "Total ${(enteralGIR + parenteralGIR).toStringAsFixed(1)} mg/kg/min",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  if (milkInfusionRate > 0) ...[
+                    const Padding(
+                      padding: EdgeInsets.only(top: 16.0), // Adjust padding value as needed
+                      child: Text(
+                        "Volumes for different frequencies",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const Divider(color: Colors.black),
+                    Column(
+                      children: [
+                        for (int i = 1; i <= 4; i++)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("${i}-hourly feeds:"),
+                              Text("${(milkInfusionRate * i).toStringAsFixed(1)} ml/feed"),
+                            ],
+                          ),
+                      ],
+                    )
+                  ],
                 ],
               ),
               actions: [
                 TextButton(
                     onPressed: ()=>Navigator.pop(context),
-                    child: Text("OK"))
+                    child: const Text("OK"))
               ],
             );
           }

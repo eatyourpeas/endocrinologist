@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'referencedata/milks.dart';
+import 'glucosemaths.dart';
 import 'milk.dart';
 
 class GlucosePage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _GlucosePageState extends State<GlucosePage> {
 
   // Controllers for the text fields
   final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _glucoseController = TextEditingController();
+  final TextEditingController _glucosePercentageController = TextEditingController();
   final TextEditingController _infusionRateController = TextEditingController();
   final TextEditingController _milkStrengthController = TextEditingController();
   final TextEditingController _milkVolumeController = TextEditingController();
@@ -35,6 +36,75 @@ class _GlucosePageState extends State<GlucosePage> {
     }
     // Add your specific validation rules here
     return true;
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState?.validate() ?? false) {
+      // submission is valid: run the maths...
+      double? glucosePercentage;
+      double? glucoseInfusionRate;
+      double? milkDailyRate;
+      double? milkCarbohydratePercentage;
+
+      double parenteralGIR = 0;
+      double enteralGIR = 0;
+
+      double? weight  = double.tryParse(_weightController.text);
+      if (weight == null){
+        throw Exception("The weight cannot be null.");
+      }
+      if (_showParenteralFields){
+        glucosePercentage = double.tryParse(_glucosePercentageController.text);
+        glucoseInfusionRate = double.tryParse(_infusionRateController.text);
+        if (glucoseInfusionRate != null && glucosePercentage != null){
+          parenteralGIR = calculateGlucoseInfusionRate(glucosePercentage, glucoseInfusionRate, weight);
+        }
+      }
+      if (_showEnteralFields){
+        milkDailyRate = double.tryParse(_milkVolumeController.text);
+        if (milkDailyRate == null){
+          throw Exception("The daily milk volume/kg cannot be null.");
+        }
+        double milkInfusionRate = hourlyMilkRateForDailyVolume(milkDailyRate, weight);
+        if (_showCustomMilkCarbsField){
+          milkCarbohydratePercentage = double.tryParse(_milkStrengthController.text);
+          if (milkCarbohydratePercentage == null || milkDailyRate == null){
+            throw Exception("Neither the carb concentration of the milk nor the milk daily intake can be null.");
+          }
+          enteralGIR = calculateGlucoseInfusionRate(milkCarbohydratePercentage, milkInfusionRate, weight);
+        } else {
+          milkCarbohydratePercentage = _selectedMilk?.carbsPer100ml;
+          if (milkCarbohydratePercentage == null){
+            throw Exception("The daily milk volume per kg cannot be null.");
+          }
+          enteralGIR = calculateGlucoseInfusionRate(milkCarbohydratePercentage, milkInfusionRate, weight);
+        }
+      }
+
+      // launch dialog for results
+      showDialog(
+          context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: Text("Glucose Infusion Rates"),
+              content: Column(
+                children: [
+                  if (enteralGIR > 0)
+                  Text("Enteral GIR: ${enteralGIR.toStringAsFixed(1)} mg/kg/min"),
+                  if (parenteralGIR > 0)
+                  Text("Parenteral GIR: ${parenteralGIR.toStringAsFixed(1)} mg/kg/min"),
+                  Text("Total ${(enteralGIR + parenteralGIR).toStringAsFixed(1)} mg/kg/min")
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: ()=>Navigator.pop(context),
+                    child: Text("OK"))
+              ],
+            );
+          }
+      );
+    }
   }
 
   @override
@@ -73,7 +143,7 @@ class _GlucosePageState extends State<GlucosePage> {
                 },
               ),
 
-            // Toggle for Parenteral fields
+            // Toggles for Parenteral and Enteral fields
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -147,7 +217,7 @@ class _GlucosePageState extends State<GlucosePage> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller: _milkStrengthController,
+                      controller: _glucosePercentageController,
                       keyboardType: TextInputType.number,
                       validator: (value){
                         if (value == null || value.isEmpty && _showParenteralFields) {
@@ -328,12 +398,7 @@ class _GlucosePageState extends State<GlucosePage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  // Action for button press
-                  if (_formKey.currentState?.validate() ?? false) {
-                    print('Form submitted');
-                  }
-                },
+                onPressed: (!_showEnteralFields && !_showParenteralFields) ? null : _submitForm,
                 child: const Text('Calculate Glucose Infusion Rate'),
               ),
             )

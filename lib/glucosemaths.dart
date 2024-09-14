@@ -1,13 +1,18 @@
 import "package:endocrinologist/milk.dart";
 import "package:endocrinologist/referencedata/milks.dart";
 
-class GlucoseMaths {
+  // These functions do the calculations required to return glucose related results.
 
-  double calculateGlucoseInfusionRate({required glucoseConcentration, required infusionRate, required weight}){
+
+  double calculateGlucoseInfusionRate(double glucoseConcentration, double infusionRate, double weight){
   //   Glucose infusion rate is returned at mg/kg/min
   //   the calculation is: return rate * percentage / weight / 6
   //   the rate must be in ml/hr the weight must be in kg
     return infusionRate * glucoseConcentration / weight / 6;
+  }
+
+  double hourlyMilkRateForDailyVolume(double dailyVolume, double weight){
+    return (dailyVolume * weight) / 24;
   }
 
   double returnGlucoseConcentrationForMilk({required String milk}){
@@ -17,4 +22,3 @@ class GlucoseMaths {
       throw Exception("Milk not found in list: $milk");
     }
   }
-}

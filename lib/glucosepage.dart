@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'referencedata/milks.dart';
+import 'milk.dart';
 
 class GlucosePage extends StatefulWidget {
   const GlucosePage({super.key});
@@ -11,9 +13,9 @@ class _GlucosePageState extends State<GlucosePage> {
   final _formKey = GlobalKey<FormState>();
 
   // State for the selected dropdown item
-  String? _selectedItem;
+  Milk? _selectedItem;
   // List of dropdown items
-  final List<String> _dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
+  final List<Milk> _dropdownItems = milks.toList();
 
   // Controllers for the text fields
   final TextEditingController _weightController = TextEditingController();
@@ -154,65 +156,75 @@ class _GlucosePageState extends State<GlucosePage> {
             // Show Enteral feeds
             Visibility(
                 visible: _showEnteralFields,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Enteral',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.left,
-                    ),
-                    const SizedBox(height: 8),
-                    const TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Milk (g/100ml)',
-                        border: OutlineInputBorder(),
+                child: SizedBox(
+                  height: 500,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Enteral',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.left,
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Select a milk',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      const SizedBox(height: 8),
+                      const TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Milk (g/100ml)',
+                          border: OutlineInputBorder(),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    // Select Box (Dropdown)
-                    DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(border: OutlineInputBorder(),
                       ),
-                      value: _selectedItem,
-                      items: _dropdownItems.map((String item) {
-                        return DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedItem = newValue;
-                        });
-                      },
-                      hint: const Text('Select a milk'),
-                    ),
-                    const SizedBox(height: 20),
-                    const TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Frequency of feeds (hrs)',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 20),
+                      const Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Select a milks.dart',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    const TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Feed volume (ml/kg/d)',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 20),
+                      const TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Frequency of feeds (hrs)',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      const TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Feed volume (ml/kg/d)',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      // Select Box (Dropdown)
+                      SizedBox(
+                        height: 50,
+                        child: DropdownButtonFormField<Milk>(
+                          menuMaxHeight: 200,
+                          decoration: const InputDecoration(border: OutlineInputBorder()),
+                          value: _selectedItem,
+                          items: _dropdownItems.map((Milk item) {
+                            return DropdownMenuItem<Milk>(
+                              value: item,
+                              child: SizedBox(
+                                width: 300,
+                                child:Text(item.name),
+                              )
+                            );
+                          }).toList(),
+                          onChanged: (Milk? newValue) {
+                            setState(() {
+                              _selectedItem = newValue;
+                            });
+                          },
+                          hint: const Text('Select a milk'),
+                        ),
+                      ),
+                    ],
+                  ),
                 )
+
             ),
 
             const SizedBox(height: 20),

@@ -27,6 +27,8 @@ class _GlucosePageState extends State<GlucosePage> {
   // toggle states
   bool _showParenteralFields = false;
   bool _showEnteralFields = false;
+  bool _showCustomMilkCarbsField = false;
+  bool _isMilkDropdownExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -166,28 +168,84 @@ class _GlucosePageState extends State<GlucosePage> {
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.left,
                       ),
                       const SizedBox(height: 8),
-                      const TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Milk (g/100ml)',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Visibility(
+                        visible: !_showCustomMilkCarbsField,
+                        child: Column(
+                          children:[
+                            const Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Select a milk',
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+
+                              child:DropdownButtonFormField<Milk>(
+                                menuMaxHeight: 200,
+                                decoration: const InputDecoration(border: OutlineInputBorder()),
+                                value: _selectedItem,
+                                items: _dropdownItems.map((Milk item) {
+                                  return DropdownMenuItem<Milk>(
+                                      value: item,
+                                      child: SizedBox(
+                                        width: 300,
+                                        child:Text("${item.name} (${item.carbsPer100ml}g)"),
+                                      )
+                                  );
+                                }).toList(),
+                                onChanged: (Milk? newValue) {
+                                  setState(() {
+                                    _selectedItem = newValue;
+                                  });
+                                },
+                                hint: const Text('Select a milk'),
+                              ),
+                            )
+                          ],
+                      ),),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Select a milk',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          if (_showCustomMilkCarbsField)
+                          const Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                labelText: 'carbohydrate (g/100ml)',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),),
+                          Expanded(child:(Row(children: [Checkbox(
+                            value: _showCustomMilkCarbsField,
+                            onChanged: (value) {
+                              setState(() {
+                                _showCustomMilkCarbsField = value ?? false;
+                              });
+                            },
                           ),
+                            const Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Milk not in list",
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Tooltip(
+                                      message: 'If the milk does cannot be found in the list, enter the carb amount per 100ml. It may be labelled as a percentage.',
+                                      margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                      child: Icon(Icons.info_outline, color: Colors.blue),
+                                    ),
+                                  ],
+                                )
+                            ),
+                          ])))
                         ],
-                      ),
-                      const SizedBox(height: 20),
-                      const TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Frequency of feeds (hrs)',
-                          border: OutlineInputBorder(),
-                        ),
                       ),
                       const SizedBox(height: 20),
                       const TextField(
@@ -198,29 +256,7 @@ class _GlucosePageState extends State<GlucosePage> {
                       ),
                       const SizedBox(height: 8),
                       // Select Box (Dropdown)
-                      SizedBox(
-                        height: 50,
-                        child: DropdownButtonFormField<Milk>(
-                          menuMaxHeight: 200,
-                          decoration: const InputDecoration(border: OutlineInputBorder()),
-                          value: _selectedItem,
-                          items: _dropdownItems.map((Milk item) {
-                            return DropdownMenuItem<Milk>(
-                              value: item,
-                              child: SizedBox(
-                                width: 300,
-                                child:Text("${item.name} (${item.carbsPer100ml}g)"),
-                              )
-                            );
-                          }).toList(),
-                          onChanged: (Milk? newValue) {
-                            setState(() {
-                              _selectedItem = newValue;
-                            });
-                          },
-                          hint: const Text('Select a milk'),
-                        ),
-                      ),
+
                     ],
                   ),
                 )

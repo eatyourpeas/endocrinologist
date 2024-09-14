@@ -15,7 +15,7 @@ class _GlucosePageState extends State<GlucosePage> {
   // State for the selected dropdown item
   Milk? _selectedItem;
   // List of dropdown items
-  final List<Milk> _dropdownItems = milks.toList();
+  final List<Milk> _dropdownItems = sortedMilks(milks);
 
   // Controllers for the text fields
   final TextEditingController _weightController = TextEditingController();
@@ -177,7 +177,7 @@ class _GlucosePageState extends State<GlucosePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Select a milks.dart',
+                            'Select a milk',
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -209,7 +209,7 @@ class _GlucosePageState extends State<GlucosePage> {
                               value: item,
                               child: SizedBox(
                                 width: 300,
-                                child:Text(item.name),
+                                child:Text("${item.name} (${item.carbsPer100ml}g)"),
                               )
                             );
                           }).toList(),

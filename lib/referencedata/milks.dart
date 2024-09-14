@@ -20,7 +20,6 @@ final List<Milk> milks = [
   Milk(name: "SMA Staydown", carbsPer100ml: 7.0),
   Milk(name: "SMA Wysoy", carbsPer100ml: 6.9),
   Milk(name: "Aptamil Lactose Free", carbsPer100ml: 7.3),
-  Milk(name: "SMA LF", carbsPer100ml: 7.2),
   Milk(name: "Aptamil Comfort", carbsPer100ml: 7.2),
   Milk(name: "Cow & Gate Comfort", carbsPer100ml: 7.2),
   Milk(name: "SMA Comfort", carbsPer100ml: 7.1),
@@ -91,3 +90,9 @@ final List<Milk> milks = [
   Milk(name: "SHS Nutricia Kindergen", carbsPer100ml: 11.8),
   Milk(name: "Vitaflo Renastart", carbsPer100ml: 12.5),
 ];
+
+List<Milk> sortedMilks(List<Milk> milks) {
+  List<Milk> sorted =  List.from(milks);
+  sorted.sort((a, b) => a.name.compareTo(b.name));
+  return sorted;
+}

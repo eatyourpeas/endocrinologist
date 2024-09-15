@@ -34,7 +34,6 @@ class GlucosePage extends StatefulWidget {
       if (milk == null && !_showCustomMilkCarbsField) {
         return false; // Or handle null value differently
       }
-      // Add your specific validation rules here
       return true;
     }
 

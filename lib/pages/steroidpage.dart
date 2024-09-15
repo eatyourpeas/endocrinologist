@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:endocrinologist/classes/glucocorticoid.dart';
 import 'package:endocrinologist/referencedata/glucocorticoids.dart';
-import 'package:flutter/material.dart';
+import 'package:endocrinologist/calculations/glucocorticoidmaths.dart';
+import 'package:endocrinologist/calculations/bodysurfacearea.dart';
 
 class SteroidPage extends StatefulWidget {
   const SteroidPage({super.key});
@@ -13,7 +15,7 @@ class _SteroidPageState extends State<SteroidPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _showBodySurfaceArea = false;
-  // int? _selectedBSA = 1;
+  int? _selectedBSA = 1;
   final List<bool> _isSelected = [true, false, false, false];
   bool _existingSteroids = false;
   Glucocorticoid? _selectedGlucocorticoid;
@@ -24,12 +26,102 @@ class _SteroidPageState extends State<SteroidPage> {
   final TextEditingController _bsaController = TextEditingController();
   final TextEditingController _steroidDoseController = TextEditingController();
 
-  void _submitForm(){
+  void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
-    //   submission is complete and fields are valid - run the maths
+      double? height = double.tryParse(_heightController.text);
+      double? weight = double.tryParse(_weightController.text);
+      double? customBSA = double.tryParse(_bsaController.text);
+      double bsa = 0.0;
+
+      if (_showBodySurfaceArea) {
+        if (customBSA == null ){
+          throw Exception("the BSA cannot be null.");
+        }
+        bsa = customBSA;
+        // If showing BSA, ensure we proceed with calculations even if height and weight are null
+        // Here you might want to handle the case where BSA is being shown without input values
+      } else {
+        // If not showing BSA, ensure height and weight are valid
+        if (height == null || weight == null) {
+          // Handle the case where height or weight is invalid
+          throw Exception('Invalid height or weight input');
+        }
+
+        switch (_selectedBSA) {
+          case 1:
+            bsa = calculateBSA(height, weight, BsaCalculationMethod.boyd);
+            break;
+          case 2:
+            bsa = calculateBSA(height, weight, BsaCalculationMethod.mostellar);
+            break;
+          case 3:
+            bsa = calculateBSA(height, weight, BsaCalculationMethod.dubois);
+            break;
+          case 4:
+            bsa = calculateBSA(height, weight, BsaCalculationMethod.gehangeorge);
+            break;
+          default:
+          // Handle unexpected BSA method selections
+            print('Invalid BSA calculation method selected');
+            bsa = 0.0;
+            return;
+        }
+
+        // Continue with the rest of your form submission logic
+      }
+
+      double maintenanceDoseMin = maintenanceHydrocortisoneDoseMin(bsa);
+      double maintenanceDoseMax = maintenanceHydrocortisoneDoseMax(bsa);
+      double stressDose = oralStressHydrocortisoneDoseMax(bsa);
+      showDialog(
+        context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: const Text("Hydrocortisone Doses"),
+              content: Column(
+                children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0), // Add padding below the grid
+                      child: Column(
+                        children: [
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                                Text(
+                                  "Maintenance",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "Emergency",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                            ],
+                          ),
+                          const Divider(color: Colors.black, height: 1), // Thin black line
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text("${maintenanceDoseMin.toStringAsFixed(0)}-${maintenanceDoseMax.toStringAsFixed(0)} mg/day"),
+                              Text("${stressDose.toStringAsFixed(0)} mg/day"),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: ()=>Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+            );
+          }
+      );
 
     }
   }
+
 
   bool _formComplete(){
     bool steroidsValid = (_existingSteroids && _selectedGlucocorticoid != null && _steroidDoseController.text.isNotEmpty );
@@ -96,7 +188,7 @@ class _SteroidPageState extends State<SteroidPage> {
                                       return null;
                                     },
                                   ),
-                                  SizedBox(height: 8,),
+                                  const SizedBox(height: 8,),
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
@@ -135,7 +227,7 @@ class _SteroidPageState extends State<SteroidPage> {
                                     keyboardType: TextInputType.number,
                                     validator: (value){
                                       if (value == null || value.isEmpty && (_showBodySurfaceArea)) {
-                                        return "Please enter the body surface area.";
+                                        return "Please enter the body surface area in m².";
                                       }
                                       if (double.tryParse(value) == null) {
                                         return 'Please enter a valid number';
@@ -143,7 +235,7 @@ class _SteroidPageState extends State<SteroidPage> {
                                       return null;
                                     },
                                     decoration: const InputDecoration(
-                                      labelText: 'body surface area (m2)',
+                                      labelText: 'body surface area (m²)',
                                       border: OutlineInputBorder(),
                                     ),
                                   ),

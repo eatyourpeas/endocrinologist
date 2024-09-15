@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'referencedata/milks.dart';
-import 'glucosemaths.dart';
-import 'milk.dart';
+import '../referencedata/milks.dart';
+import '../calculations/glucosemaths.dart';
+import '../classes/milk.dart';
 
 class GlucosePage extends StatefulWidget {
     const GlucosePage({super.key});
@@ -101,12 +101,12 @@ class GlucosePage extends StatefulWidget {
                               children: [
                                 if (enteralGIR > 0)
                                   const Text(
-                                    "Enteral GIR",
+                                    "Enteral",
                                     style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 if (parenteralGIR > 0)
                                   const Text(
-                                    "Parenteral GIR",
+                                    "Parenteral",
                                     style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
                               ],
@@ -129,11 +129,11 @@ class GlucosePage extends StatefulWidget {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     if (milkInfusionRate > 0) ...[
-                      const Padding(
-                        padding: EdgeInsets.only(top: 16.0), // Adjust padding value as needed
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0), // Adjust padding value as needed
                         child: Text(
-                          "Volumes for different frequencies",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          "Volumes for ${milkDailyRate?.toStringAsFixed(0)} ml/kg/d",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                       const Divider(color: Colors.black),
@@ -144,7 +144,7 @@ class GlucosePage extends StatefulWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("$i-hourly feeds:"),
-                                Text("${(milkInfusionRate * i).toStringAsFixed(1)} ml/feed"),
+                                Text("${(milkInfusionRate * i).toStringAsFixed(0)} ml/feed"),
                               ],
                             ),
                         ],

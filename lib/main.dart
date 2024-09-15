@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'glucosepage.dart';
+import 'pages/glucosepage.dart';
 
 void main() {
   runApp(const Endocrinologist());

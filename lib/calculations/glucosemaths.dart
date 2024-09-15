@@ -1,4 +1,4 @@
-import "package:endocrinologist/milk.dart";
+import "package:endocrinologist/classes/milk.dart";
 import "package:endocrinologist/referencedata/milks.dart";
 
   // These functions do the calculations required to return glucose related results.

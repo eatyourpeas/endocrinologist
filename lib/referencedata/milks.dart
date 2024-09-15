@@ -1,4 +1,4 @@
-import "../milk.dart";
+import "../classes/milk.dart";
 
 final List<Milk> milks = [
   Milk(name: "Aptamil 1 First Milk", carbsPer100ml: 7.0),

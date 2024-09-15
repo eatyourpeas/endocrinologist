@@ -1,3 +1,5 @@
+import 'package:endocrinologist/classes/glucocorticoid.dart';
+import 'package:endocrinologist/referencedata/glucocorticoids.dart';
 import 'package:flutter/material.dart';
 
 class SteroidPage extends StatefulWidget {
@@ -13,13 +15,26 @@ class _SteroidPageState extends State<SteroidPage> {
   bool _showBodySurfaceArea = false;
   // int? _selectedBSA = 1;
   final List<bool> _isSelected = [true, false, false, false];
+  bool _existingSteroids = false;
+  Glucocorticoid? _selectedGlucocorticoid;
+  final List<Glucocorticoid> _dropdownItems = sortedGlucocorticoids(glucocorticoids);
 
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _bsaController = TextEditingController();
+  final TextEditingController _steroidDoseController = TextEditingController();
 
   void _submitForm(){
+    if (_formKey.currentState?.validate() ?? false) {
+    //   submission is complete and fields are valid - run the maths
 
+    }
+  }
+
+  bool _formComplete(){
+    bool steroidsValid = (_existingSteroids && _selectedGlucocorticoid != null && _steroidDoseController.text.isNotEmpty );
+    bool bsaValid = ((_showBodySurfaceArea && _bsaController.text.isNotEmpty) || (!_showBodySurfaceArea && _weightController.text.isNotEmpty && _heightController.text.isNotEmpty));
+    return steroidsValid == bsaValid;
   }
 
   @override
@@ -160,12 +175,99 @@ class _SteroidPageState extends State<SteroidPage> {
                               },
                             ),
                           ]),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Existing steroids?',
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Tooltip(
+                                      message: 'If the child or young person is on steroids already, include these here. The relative potencies are listed',
+                                      margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                      child: Icon(Icons.info_outline, color: Colors.blue),
+                                    ),
+                                  ],
+                                )
+                            ),
+                            Switch(
+                              value: _existingSteroids,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  _existingSteroids = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
                         const SizedBox(height: 20),
+                        Visibility(
+                          visible: _existingSteroids,
+                          child: Column(
+                              children: [
+                                SizedBox(
+                                  child: DropdownButtonFormField<Glucocorticoid>(
+                                    menuMaxHeight: 200,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: "Steroids",
+                                    ),
+                                    validator: (value){
+                                      if (value == null && !_existingSteroids) {
+                                        return "Please select a steroid";
+                                      }
+                                      return null;
+                                    },
+                                    value: _selectedGlucocorticoid,
+                                    items: _dropdownItems.map((Glucocorticoid item) {
+                                      return DropdownMenuItem<Glucocorticoid>(
+                                          value: item,
+                                          child: SizedBox(
+                                            width: 300,
+                                            child:Text("${item.name} (${item.potency})"),
+                                          )
+                                      );
+                                    }).toList(),
+                                    onChanged: (Glucocorticoid? newValue) {
+                                      setState(() {
+                                        _selectedGlucocorticoid = newValue;
+                                      });
+                                    },
+                                    hint: const Text('Select a steroid'),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  controller: _steroidDoseController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'dosage (mg)',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Please enter glucocorticoid dose in mg.";
+                                    }
+                                    if (double.tryParse(value) == null) {
+                                      return 'Please enter a valid number';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ]
+                          )
+                        ),
                         // Submit Button
+                        const SizedBox(height: 20),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: ()=> _submitForm,
+                            onPressed: _formComplete() ? null : _submitForm,
                             child: const Text('Calculate Steroid Doses'),
                           ),
                         )

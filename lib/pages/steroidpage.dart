@@ -11,6 +11,8 @@ class _SteroidPageState extends State<SteroidPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _showBodySurfaceArea = false;
+  // int? _selectedBSA = 1;
+  final List<bool> _isSelected = [true, false, false, false];
 
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
@@ -39,6 +41,7 @@ class _SteroidPageState extends State<SteroidPage> {
                         Visibility(
                             visible: !_showBodySurfaceArea,
                               child: Column(
+                                mainAxisSize: MainAxisSize.max,
                                 children:[
                                   TextFormField(
                                     controller: _weightController,
@@ -77,7 +80,36 @@ class _SteroidPageState extends State<SteroidPage> {
                                       }
                                       return null;
                                     },
-                                  )
+                                  ),
+                                  SizedBox(height: 8,),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      ToggleButtons(
+                                        isSelected: _isSelected,
+                                        onPressed: (int index) {
+                                          setState(() {
+                                            for (int buttonIndex = 0; buttonIndex < _isSelected.length; buttonIndex++) {
+                                              if (buttonIndex == index) {
+                                                _isSelected[buttonIndex] = !_isSelected[buttonIndex];
+                                              } else {
+                                                _isSelected[buttonIndex] = false;
+                                              }
+                                            }
+                                            // _selectedBSA = index + 1; // Update selected option
+                                          });
+                                        },
+                                        selectedBorderColor: Colors.blue,
+                                        selectedColor: Colors.blue,
+                                        children: [
+                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Boyd", style: TextStyle(fontSize: 10),)],)),
+                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Mosteller",style: TextStyle(fontSize: 10),)],)),
+                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Du Bois",style: TextStyle(fontSize: 10),)],)),
+                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Gehan & George",style: TextStyle(fontSize: 10),)],)),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ],)
                           ),
                         // Body surface area TextFormField
@@ -134,7 +166,7 @@ class _SteroidPageState extends State<SteroidPage> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: ()=> _submitForm,
-                            child: const Text('Calculate Glucose Infusion Rate'),
+                            child: const Text('Calculate Steroid Doses'),
                           ),
                         )
                       ],

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'pages/glucosepage.dart';
+import 'pages/steroidpage.dart';
 
 void main() {
   runApp(const Endocrinologist());
@@ -46,7 +47,7 @@ class EndocrinologyTabBars extends StatelessWidget {
   Widget build(BuildContext context){
     return DefaultTabController(length: 3, child: Scaffold(
       appBar: AppBar(
-        title: const Text("The Endocrinologist"),
+        title: const Text("The Paediatric Endocrinologist"),
         bottom: const TabBar(
           tabs: [
             Tab(icon: Icon(Icons.science), text: "Glucose"),
@@ -58,7 +59,7 @@ class EndocrinologyTabBars extends StatelessWidget {
       body: const TabBarView(
         children: [
           GlucosePage(),
-          Center(child: Text("Steroids")),
+          SteroidPage(),
           Center(child: Text("Auxology")),
         ],
       ),

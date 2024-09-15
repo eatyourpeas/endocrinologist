@@ -15,7 +15,7 @@ class _SteroidPageState extends State<SteroidPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _showBodySurfaceArea = false;
-  int? _selectedBSA = 1;
+  final int _selectedBSA = 1;
   final List<bool> _isSelected = [true, false, false, false];
   bool _existingSteroids = false;
   Glucocorticoid? _selectedGlucocorticoid;
@@ -31,6 +31,7 @@ class _SteroidPageState extends State<SteroidPage> {
       double? height = double.tryParse(_heightController.text);
       double? weight = double.tryParse(_weightController.text);
       double? customBSA = double.tryParse(_bsaController.text);
+      double? steroidDose = double.tryParse(_steroidDoseController.text);
       double bsa = 0.0;
 
       if (_showBodySurfaceArea) {
@@ -70,9 +71,29 @@ class _SteroidPageState extends State<SteroidPage> {
         // Continue with the rest of your form submission logic
       }
 
+      double? existingSteroidEquivalent;
+      if (steroidDose == null || _selectedGlucocorticoid == null){
+        existingSteroidEquivalent = 0.0;
+      } else {
+        existingSteroidEquivalent = hydrocortisoneEquivalentDose(steroidDose, _selectedGlucocorticoid!);
+      }
       double maintenanceDoseMin = maintenanceHydrocortisoneDoseMin(bsa);
       double maintenanceDoseMax = maintenanceHydrocortisoneDoseMax(bsa);
       double stressDose = oralStressHydrocortisoneDoseMax(bsa);
+      String steroidText;
+
+      if (_existingSteroids){
+        if (existingSteroidEquivalent > maintenanceDoseMin){
+          steroidText = "$steroidDose mg of ${_selectedGlucocorticoid?.name} has a hydrocortisone equivalent of $existingSteroidEquivalent mg. This is more than this patient's hydrocortisone maintenance dose of ${maintenanceDoseMin.toStringAsFixed(0)} mg";
+        } else {
+          maintenanceDoseMin = maintenanceDoseMin - existingSteroidEquivalent;
+          maintenanceDoseMax = maintenanceDoseMax - existingSteroidEquivalent;
+          stressDose = stressDose - existingSteroidEquivalent;
+          steroidText = "An adjustment to maintenance has been made to account for existing steroid doses ($steroidDose mg of ${_selectedGlucocorticoid?.name} - $existingSteroidEquivalent mg hydrocortisone equivalent)";
+        }
+      } else {
+        steroidText = "This assumes no other steroids are prescribed.";
+      }
       showDialog(
         context: context,
           builder: (BuildContext context){
@@ -105,6 +126,8 @@ class _SteroidPageState extends State<SteroidPage> {
                               Text("${stressDose.toStringAsFixed(0)} mg/day"),
                             ],
                           ),
+                          const SizedBox(height: 8,),
+                          Text(steroidText, style: const TextStyle(fontWeight: FontWeight.w300),),
                         ],
                       ),
                     ),
@@ -123,10 +146,27 @@ class _SteroidPageState extends State<SteroidPage> {
   }
 
 
+  bool areSteroidsValid() {
+    if (_existingSteroids){
+      if (_selectedGlucocorticoid == null) return false;
+      if (_steroidDoseController.text.isEmpty) return false;
+      return true;
+    }
+    return true;
+  }
+
+  bool isBsaValid() {
+    if (_showBodySurfaceArea) {
+      return _bsaController.text.isNotEmpty;
+    } else {
+      return _weightController.text.isNotEmpty &&
+          _heightController.text.isNotEmpty;
+    }
+  }
+
   bool _formComplete(){
-    bool steroidsValid = (_existingSteroids && _selectedGlucocorticoid != null && _steroidDoseController.text.isNotEmpty );
-    bool bsaValid = ((_showBodySurfaceArea && _bsaController.text.isNotEmpty) || (!_showBodySurfaceArea && _weightController.text.isNotEmpty && _heightController.text.isNotEmpty));
-    return steroidsValid == bsaValid;
+    print('form is complete: ${areSteroidsValid()==isBsaValid()}');
+    return areSteroidsValid()==isBsaValid();
   }
 
   @override
@@ -359,7 +399,7 @@ class _SteroidPageState extends State<SteroidPage> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: _formComplete() ? null : _submitForm,
+                            onPressed: _formComplete() ? _submitForm : null,
                             child: const Text('Calculate Steroid Doses'),
                           ),
                         )

@@ -94,6 +94,9 @@ class _SteroidPageState extends State<SteroidPage> {
       } else {
         steroidText = "This assumes no other steroids are prescribed.";
       }
+      List<double> suggestedTDSMin = dividedDoses(maintenanceDoseMin, 3);
+      List<double> suggestedTDSMax = dividedDoses(maintenanceDoseMin, 3);
+      List<double> suggestedQDS = dividedDoses(stressDose, 4);
       showDialog(
         context: context,
           builder: (BuildContext context){
@@ -126,7 +129,69 @@ class _SteroidPageState extends State<SteroidPage> {
                               Text("${stressDose.toStringAsFixed(0)} mg/day"),
                             ],
                           ),
-                          const SizedBox(height: 8,),
+                          const SizedBox(height: 20,),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text("8mg/m²/d ", style: TextStyle(fontWeight: FontWeight.bold),),
+                              Tooltip(
+                                message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Wrap(
+                                alignment: WrapAlignment.start,
+                                children: [
+                                  Text("${suggestedTDSMin.join('mg, ')}mg"),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text("10mg/m²/d ", style: TextStyle(fontWeight: FontWeight.bold),),
+                              Tooltip(
+                                message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Wrap(
+                                alignment: WrapAlignment.start,
+                                children: [
+                                  Text("${suggestedTDSMax.join('mg, ')} mg"),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text("Stress ", style: TextStyle(fontWeight: FontWeight.bold),),
+                              Tooltip(
+                                message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text("${suggestedQDS.join('mg , ')}mg"),
+                            ],
+                          ),
+                          const SizedBox(height: 20,),
+                          const Divider(color: Colors.grey, height: 1), // Thin black line
                           Text(steroidText, style: const TextStyle(fontWeight: FontWeight.w300),),
                         ],
                       ),

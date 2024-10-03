@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:endocrinologist/classes/glucocorticoid.dart';
 import 'package:endocrinologist/referencedata/glucocorticoids.dart';
@@ -102,101 +103,285 @@ class _SteroidPageState extends State<SteroidPage> {
           builder: (BuildContext context){
             return AlertDialog(
               title: const Text("Hydrocortisone Doses"),
-              content: Column(
-                children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0), // Add padding below the grid
-                      child: Column(
-                        children: [
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                                Text(
-                                  "Maintenance",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+              content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0), // Add padding below the grid
+                        child: Column(
+                          children: [
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                  Text(
+                                    "Maintenance",
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                              ],
+                            ),
+                            const Divider(color: Colors.black, height: 1), // Thin black line
+                            const SizedBox(height: 8,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("8mg/m²/d (${maintenanceDoseMin.toStringAsFixed(0)} mg/day)", style: const TextStyle(fontWeight: FontWeight.bold),),
+                                const Tooltip(
+                                  message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                  margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                  child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
                                 ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Wrap(
+                                  alignment: WrapAlignment.start,
+                                  children: [
+                                    Text("${suggestedTDSMin.join('mg, ')}mg"),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("10mg/m²/d (${maintenanceDoseMax.toStringAsFixed(0)} mg/day)", style: const TextStyle(fontWeight: FontWeight.bold),),
+                                const Tooltip(
+                                  message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                  margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                  child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Wrap(
+                                  alignment: WrapAlignment.start,
+                                  children: [
+                                    Text("${suggestedTDSMax.join('mg, ')} mg"),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20,),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
                                 Text(
                                   "Emergency",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                            ],
-                          ),
-                          const Divider(color: Colors.black, height: 1), // Thin black line
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text("${maintenanceDoseMin.toStringAsFixed(0)}-${maintenanceDoseMax.toStringAsFixed(0)} mg/day"),
-                              Text("${stressDose.toStringAsFixed(0)} mg/day"),
-                            ],
-                          ),
-                          const SizedBox(height: 20,),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text("8mg/m²/d ", style: TextStyle(fontWeight: FontWeight.bold),),
-                              Tooltip(
-                                message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
-                                margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
-                                child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Wrap(
-                                alignment: WrapAlignment.start,
+                              ],
+                            ),
+                            const Divider(color: Colors.black, height: 1), // Thin black line
+                            const SizedBox(height: 8,),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "Hospital",
+                                    style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold)
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8,),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("Severe illness", style: TextStyle(fontStyle: FontStyle.italic),),
+                              ],
+                            ),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("EITHER")
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("2 mg/kg (${weight != null ? (weight * 2).toStringAsFixed(0) : 'no weight supplied' } mg) 6 hourly or", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                const Tooltip(
+                                  message: 'Note max dose 100mg. Consider using neonatal doses if small or failing to thrive',
+                                  margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                  child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("4 mg/kg (${weight != null ? (weight * 4).toStringAsFixed(0) : 'no weight supplied' } mg) 6 hourly in neonates", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                const Tooltip(
+                                  message: 'Neonates defined as < 28 days.',
+                                  margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                  child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                                ),
+                              ],
+                            ),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("OR")
+                              ],
+                            ),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("Use age-based doses given IM or IV:"),
+                              ],
+                            ),
+                            const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("${suggestedTDSMin.join('mg, ')}mg"),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text("10mg/m²/d ", style: TextStyle(fontWeight: FontWeight.bold),),
-                              Tooltip(
-                                message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
-                                margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
-                                child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Wrap(
-                                alignment: WrapAlignment.start,
+                                  Text("<1 y: 25 mg", maxLines: 1, textAlign: TextAlign.left,),
+                                  Text("1-5 y: 50 mg", maxLines: 1, textAlign: TextAlign.left,),
+                                  Text("6y and over: 100mg", maxLines: 1, textAlign: TextAlign.left,)
+                                ]
+                            ),
+                            const SizedBox(height: 8,),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("Stable and improving", style: TextStyle(fontStyle: FontStyle.italic)),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("1mg/kg (${weight != null ? weight : 'no weight supplied'} mg) IV 6 hourly or", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                const Tooltip(
+                                  message: 'Note max dose 50mg. Can consider giving 4 hourly or as an infusion (see “Major surgery)',
+                                  margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                  child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("2mg/kg (${weight != null ? weight * 2 : 'no weight supplied'} mg) IV 6 hourly in neonates", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                const Tooltip(
+                                  message: 'Can consider giving 4 hourly or as an infusion ',
+                                  margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                  child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                                ),
+                              ],
+
+                            ),
+                            const SizedBox(height: 8,),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("Stable and tolerating drinks / diet", style: TextStyle(fontStyle: FontStyle.italic)),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("Stress (30mg/m²/d (${stressDose.toStringAsFixed(0)} mg/day)", style: const TextStyle(fontWeight: FontWeight.bold),),
+                                const Tooltip(
+                                  message: 'Note sick day dosing is in four equally divided doses. These suggested doses have been rounded to the nearest 2.5mg.',
+                                  margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
+                                  child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("${suggestedQDS.join('mg , ')}mg"),
+                              ],
+                            ),
+                            const SizedBox(height: 8,),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "Community",
+                                    style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold)
+                                ),
+                              ],
+                            ),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "intramuscular or initial iv dose:",
+                                    style: TextStyle(fontStyle: FontStyle.normal, fontWeight: FontWeight.normal)
+                                ),
+                              ],
+                            ),
+                            const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("${suggestedTDSMax.join('mg, ')} mg"),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text("Stress ", style: TextStyle(fontWeight: FontWeight.bold),),
-                              Tooltip(
-                                message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
-                                margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
-                                child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text("${suggestedQDS.join('mg , ')}mg"),
-                            ],
-                          ),
-                          const SizedBox(height: 20,),
-                          const Divider(color: Colors.grey, height: 1), // Thin black line
-                          Text(steroidText, style: const TextStyle(fontWeight: FontWeight.w300),),
-                        ],
+                                  Text("<1 y: 25 mg", maxLines: 1, textAlign: TextAlign.left,),
+                                  Text("1-5 y: 50 mg", maxLines: 1, textAlign: TextAlign.left,),
+                                  Text("6y and over: 100mg", maxLines: 1, textAlign: TextAlign.left,)
+                                ]
+                            ),
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("■ "),
+                                    Text("Acutely unwell and unable to get IV access", textAlign: TextAlign.left),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("■ "),
+                                    Flexible(
+                                        child: Text("Acutely unwell with diarrhoea and vomiting and unable to tolerate oral treatment", textAlign: TextAlign.left),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("■ "),
+                                    Flexible(
+                                        child: Text("Reduced responsiveness or loss of consciousness.", textAlign: TextAlign.left),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("■ "),
+                                    Flexible(
+                                        child: Text("Hypoglycaemic or new onset seizure in known or suspected adrenal insufficiency.", textAlign: TextAlign.left),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("■ "),
+                                    Text("Fracture / significant burn", textAlign: TextAlign.left),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20,),
+                            const Divider(color: Colors.grey, height: 1), // Thin black line
+                            Text(steroidText, style: const TextStyle(fontWeight: FontWeight.w300),),
+                            const SizedBox(height: 20,),
+                            const Wrap(
+                              children: [
+                                Text("For more detailed guidance, view the British Society of Paediatric Endocrinology and Diabetes website (https://www.bsped.org.uk/adrenal-insufficiency)", style: TextStyle(fontSize: 10, color: Colors.grey),)
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
               actions: [
                 TextButton(

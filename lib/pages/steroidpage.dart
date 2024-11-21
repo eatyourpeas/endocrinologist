@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:endocrinologist/classes/glucocorticoid.dart';
 import 'package:endocrinologist/referencedata/glucocorticoids.dart';
@@ -251,7 +250,7 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("1mg/kg (${weight != null ? weight : 'no weight supplied'} mg) IV 6 hourly or", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                Text("1mg/kg (${weight ?? 'no weight supplied'} mg) IV 6 hourly or", style: const TextStyle(fontWeight: FontWeight.bold)),
                                 const Tooltip(
                                   message: 'Note max dose 50mg. Can consider giving 4 hourly or as an infusion (see “Major surgery)',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides

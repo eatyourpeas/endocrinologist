@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/calculations/bodysurfacearea.dart';
+import 'package:endocrinologist/calculations/bodysurfacearea.dart';
 
 void main() {
   group('BSA Calculation Tests', () {

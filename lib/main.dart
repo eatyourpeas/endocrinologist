@@ -1,4 +1,5 @@
 
+import 'package:endocrinologist/pages/auxology.dart';
 import 'package:flutter/material.dart';
 import 'pages/glucosepage.dart';
 import 'pages/steroidpage.dart';
@@ -59,7 +60,7 @@ class EndocrinologyTabBars extends StatelessWidget {
         children: [
           GlucosePage(),
           SteroidPage(),
-          Center(child: Text("Auxology")),
+          AuxologyPage(),
         ],
       ),
     ),

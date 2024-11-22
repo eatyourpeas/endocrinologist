@@ -3,12 +3,6 @@ import '../referencedata/milks.dart';
 import '../calculations/glucosemaths.dart';
 import '../classes/milk.dart';
 
-class GlucosePage extends StatefulWidget {
-    const GlucosePage({super.key});
-    @override
-    _GlucosePageState createState() => _GlucosePageState();
-  }
-
   class _GlucosePageState extends State<GlucosePage> {
     // Global key for form state
     final _formKey = GlobalKey<FormState>();
@@ -463,3 +457,9 @@ class GlucosePage extends StatefulWidget {
       )
       );
     }}
+
+class GlucosePage extends StatefulWidget {
+    const GlucosePage({super.key});
+    @override
+    _GlucosePageState createState() => _GlucosePageState();
+  }

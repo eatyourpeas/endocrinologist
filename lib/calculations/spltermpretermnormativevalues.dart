@@ -32,7 +32,7 @@ class FetalSPLData {
   ];
 
   // Static list to store the data
-  static List<FetalSPLData> dataList = [];
+  static List<FetalSPLData> dataList = _createFetalSPLDataList(_rawData);
 
   // class members and definition
   final int gestationalWeeks;
@@ -42,9 +42,12 @@ class FetalSPLData {
   final double sds;
   final double minimumSize;
   final double maximumSize;
+  static String reference = "Establishment of normative data for stretched penile length in Turkish preterm and term newborns. Halil H, Oğuz ŞS. Turk J Pediatr. 2017;59(3):269-273.";
 
 
-  FetalSPLData({
+
+  // Private constructor to prevent direct instantiation
+  FetalSPLData._({
     required this.gestationalWeeks,
     required this.numberOfCases,
     required this.medianSize,
@@ -57,7 +60,7 @@ class FetalSPLData {
   static List<FetalSPLData> _createFetalSPLDataList(List<List<dynamic>> rawData) {
     List<FetalSPLData> dataList = [];
     for (var row in _rawData) {
-      dataList.add(FetalSPLData(
+      dataList.add(FetalSPLData._(
         gestationalWeeks: row[0] as int,
         numberOfCases: row[1] as int,
         medianSize: row[2] as double,
@@ -84,7 +87,6 @@ class FetalSPLData {
     // Find the nearest gestation
     FetalSPLData? nearestData;
     int minDifference = double.maxFinite.toInt(); // Initialize with a large value
-
     for (var data in dataList) {
       int difference = (data.gestationalWeeks - gestation).abs();
       if (difference < minDifference) {
@@ -97,11 +99,10 @@ class FetalSPLData {
 
   static (double, double) calculateSDSAndCentile(int gestation, double spl){
     final nearestGestationData = findNearestGestationSPLSizesForGestation(gestation);
-
     if (nearestGestationData != null){
       final sds = (spl - nearestGestationData.meanSize)/nearestGestationData.sds;
       final normal = Normal();
-      final centile = normal.cdf(sds);
+      final centile = normal.cdf(sds) + nearestGestationData.meanSize;
       return (sds, centile.toDouble());
     } else {
       return (double.nan, double.nan);

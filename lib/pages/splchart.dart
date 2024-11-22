@@ -28,23 +28,30 @@ class _FetalSPLChartState extends State<FetalSPLChart>{
       children: [SfCartesianChart(
         primaryXAxis: NumericAxis(title: AxisTitle(text: 'Gestational Weeks')),
         primaryYAxis: NumericAxis(title: AxisTitle(text: 'Size (cm)')),
+        legend: Legend(
+            isVisible: true,
+            isResponsive: true
+        ),
         series: <ChartSeries>[
           LineSeries<FetalSPLData, int>(
             dataSource: FetalSPLData.dataList,
             xValueMapper: (FetalSPLData data, _) => data.gestationalWeeks,
             yValueMapper: (FetalSPLData data, _) => data.medianSize,
+            color: Colors.blue,
             name: 'Median Size',
           ),
           LineSeries<FetalSPLData, int>(
             dataSource: FetalSPLData.dataList,
             xValueMapper: (FetalSPLData data, _) => data.gestationalWeeks,
             yValueMapper: (FetalSPLData data, _) => data.minimumSize,
+            color: Colors.blue,
             name: 'Minimum Size',
           ),
           LineSeries<FetalSPLData, int>(
             dataSource: FetalSPLData.dataList,
             xValueMapper: (FetalSPLData data, _) => data.gestationalWeeks,
             yValueMapper: (FetalSPLData data, _) => data.maximumSize,
+            color: Colors.blue,
             name: 'Maximum Size',
           ),
           if (widget.showScatterPoint)
@@ -58,7 +65,7 @@ class _FetalSPLChartState extends State<FetalSPLChart>{
                 width: 10,
                 shape: DataMarkerType.circle,
                 borderWidth: 2,
-                borderColor: Colors.red, // Customize color as needed
+                borderColor: Colors.orange, // Customize color as needed
               ),
             ),
         ],

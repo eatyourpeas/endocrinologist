@@ -20,7 +20,7 @@ class FetalCLLData {
 
 
 // Static list to store the data
-static List<FetalCLLData> dataList = _createFetalCLLDataList(_rawData);
+  static List<FetalCLLData> dataList = _createFetalCLLDataList(_rawData);
 
 // class members and definition
   final int gestationalWeeks;
@@ -71,8 +71,7 @@ static List<FetalCLLData> dataList = _createFetalCLLDataList(_rawData);
   factory FetalCLLData.fromRawData(List<List<dynamic>> rawData) {
     _rawData = rawData; // Assign rawData to the private member
     dataList = _createFetalCLLDataList(rawData);
-    // You might want to return a specific instance or throw an exception here
-    // depending on your use case. For now, returning the first element:
+    // returning the first element:
     return dataList.isNotEmpty ? dataList[0] : throw Exception('Empty data');
   }
 

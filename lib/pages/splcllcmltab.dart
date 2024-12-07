@@ -5,6 +5,8 @@ import '../calculations/spltermpretermnormativevalues.dart';
 import 'cllchart.dart';
 
 class FetalSPLTab extends StatefulWidget{
+  const FetalSPLTab({super.key});
+
   @override
   State <FetalSPLTab> createState() => _FetalSPLTabState();
 }

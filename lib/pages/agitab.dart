@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TermAGITab extends StatefulWidget{
+  const TermAGITab({super.key});
+
   @override
   State <TermAGITab> createState() => _TermAGITabState();
 }

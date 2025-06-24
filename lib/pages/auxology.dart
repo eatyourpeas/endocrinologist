@@ -1,5 +1,6 @@
-import 'package:endocrinologist/pages/splcllcmltab.dart';
+import 'package:endocrinologist/pages/genitaltab.dart';
 import 'package:flutter/material.dart';
+import '../enums/enums.dart';
 
 
 class AuxologyPage extends StatefulWidget {
@@ -14,16 +15,21 @@ class _AuxologyPageState extends State<AuxologyPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 1,
+        length: 2,
         child: Scaffold(
           body: Column(
             children:[
               TabBar(
                 tabs: [
-                  Tab(text: "Penile/Clitoral Length",),
+                  Tab(text: "Penile Length",),
+                  Tab(text: "Clitoral Length",),
                 ]
               ),
-              Expanded(child: TabBarView(children: [FetalSPLTab()]))
+              Expanded(child: TabBarView(children: [
+                GenitalTab(initialSex: Sex.male),
+                GenitalTab(initialSex: Sex.female),
+              ]
+              )),
             ]
         ))
     );

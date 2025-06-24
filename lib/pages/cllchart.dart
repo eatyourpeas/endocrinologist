@@ -33,7 +33,7 @@ class _FetalCLLChartState extends State<FetalCLLChart>{
           ),
           primaryXAxis: NumericAxis(title: AxisTitle(text: 'Gestational Weeks')),
           primaryYAxis: NumericAxis(title: AxisTitle(text: 'Size (cm)'), minimum: 2.0),
-          series: <ChartSeries>[
+          series: <CartesianSeries>[
             LineSeries<FetalCLLData, int>(
               dataSource: FetalCLLData.dataList,
               xValueMapper: (FetalCLLData data, _) => data.gestationalWeeks,

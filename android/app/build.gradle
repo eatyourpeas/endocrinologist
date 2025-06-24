@@ -33,6 +33,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8' // Set Kotlin's JVM target to 1.8
+    }
+
     defaultConfig {
         applicationId = "uk.co.eatyourpeas.endocrinologist"
         // You can update the following values to match your application needs.

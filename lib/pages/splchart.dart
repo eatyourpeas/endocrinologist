@@ -31,7 +31,7 @@ class _FetalSPLChartState extends State<FetalSPLChart>{
             isVisible: true,
             isResponsive: true
         ),
-        series: <ChartSeries>[
+        series: <CartesianSeries>[
           LineSeries<FetalSPLData, int>(
             dataSource: FetalSPLData.dataList,
             xValueMapper: (FetalSPLData data, _) => data.gestationalWeeks,

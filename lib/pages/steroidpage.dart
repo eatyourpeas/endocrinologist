@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:endocrinologist/classes/glucocorticoid.dart';
+import 'package:endocrinologist/enums/enums.dart';
 import 'package:endocrinologist/referencedata/glucocorticoids.dart';
 import 'package:endocrinologist/calculations/glucocorticoidmaths.dart';
 import 'package:endocrinologist/calculations/bodysurfacearea.dart';
@@ -53,7 +54,7 @@ class _SteroidPageState extends State<SteroidPage> {
             bsa = calculateBSA(height, weight, BsaCalculationMethod.boyd);
             break;
           case 2:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.mostellar);
+            bsa = calculateBSA(height, weight, BsaCalculationMethod.mosteller);
             break;
           case 3:
             bsa = calculateBSA(height, weight, BsaCalculationMethod.dubois);

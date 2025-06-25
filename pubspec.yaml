@@ -33,6 +33,7 @@ dependencies:
   normal: ^0.7.0
   syncfusion_flutter_charts: ^29.2.11
   stats: 3.0.0
+  google_fonts: ^6.2.1
 
 
   # The following adds the Cupertino Icons font to your application.

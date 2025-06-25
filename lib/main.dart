@@ -1,4 +1,5 @@
 
+import 'package:google_fonts/google_fonts.dart';
 import 'package:endocrinologist/pages/auxology.dart';
 import 'package:flutter/material.dart';
 import 'pages/glucosepage.dart';
@@ -32,7 +33,7 @@ class EndocrinologyTabBars extends StatelessWidget {
   Widget build(BuildContext context){
     return DefaultTabController(length: 3, child: Scaffold(
       appBar: AppBar(
-        title: const Text("The Paediatric Endocrinologist"),
+        title: Text("The Paediatric Endocrinologist", style: GoogleFonts.ibmPlexSans(),),
         bottom: const TabBar(
           tabs: [
             Tab(icon: Icon(Icons.science), text: "Glucose"),

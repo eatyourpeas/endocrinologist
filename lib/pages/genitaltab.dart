@@ -27,7 +27,7 @@ class _GenitalTabState extends State<GenitalTab>{
   double cwl = 0; // Clitoral Width
   bool showScatterPoint=false;
   bool showCLL = false;
-  bool showNeonate = true;
+  final List<bool> _neonateSelected = [true, false];
   double decimalAge = 0.0;
   final List<bool> _ethnicityIsSelected = [true, false];
 
@@ -62,7 +62,7 @@ class _GenitalTabState extends State<GenitalTab>{
     }
     decimalAge = double.tryParse(_decimalAgeController.text) ?? 0;
 
-    if (showNeonate){
+    if (_neonateSelected[0]){
       (sds, centile) = FetalSPLData.calculateSDSAndCentile(selectedGestationWeek, spl);
     } else {
       if (_ethnicityIsSelected[0])
@@ -93,10 +93,10 @@ class _GenitalTabState extends State<GenitalTab>{
         controller: _splController,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: showNeonate ? 'SPL Neonate (cm)' : 'SPL Child (cm)',
+          labelText: _neonateSelected[0] ? 'SPL Neonate (cm)' : 'SPL Child (cm)',
         ),
       );
-      if (showNeonate)
+      if (_neonateSelected[0])
         chartSpecificWidget = FetalSPLChart(
           selectedGestationWeek: selectedGestationWeek,
           spl: spl,
@@ -123,7 +123,7 @@ class _GenitalTabState extends State<GenitalTab>{
               controller: _cllController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: showNeonate
+                labelText: _neonateSelected[0]
                     ? 'Clitoral Length Neonate (cm)'
                     : 'Clitoral Length Child (cm)',
               ))
@@ -132,7 +132,7 @@ class _GenitalTabState extends State<GenitalTab>{
               controller: _cwlController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: showNeonate
+                labelText: _neonateSelected[0]
                     ? 'Clitoral Width Neonate (cm)'
                     : 'Clitoral Width Child (cm)',
               )),
@@ -175,7 +175,6 @@ class _GenitalTabState extends State<GenitalTab>{
         cll: showCLL ? cll : cwl, // Pass correct value
         showScatterPoint: showScatterPoint,
         isWidth: !showCLL, // Pass if it's width or length
-        // You might need to pass 'showNeonate' to the chart
       );
     }
 
@@ -186,34 +185,36 @@ class _GenitalTabState extends State<GenitalTab>{
         child: Column(
           children: [
             // Your new toggle for Neonate vs Child
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(showNeonate ? 'Neonate' : 'Child'),
-                Switch(
-                  value: showNeonate,
-                  onChanged: (value) {
-                    setState(() {
-                      showNeonate = value;
-                      _sdsString = ''; // Clear results
-                      _centileString = '';
-                      showScatterPoint = false;
-                      if (!showNeonate) {
-                        // Example: Reset or change available weeks/age input
-                        // selectedGestationWeek = defaultChildAge; // Or similar
-                      } else {
-                        // selectedGestationWeek = 40; // Reset to default neonate GA
-                      }
-                    });
-                  },
-                ),
-              ],
-            ),
+            if (isMale)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ToggleButtons(
+                      isSelected: _neonateSelected,
+                      onPressed: (int index) {
+                        setState(() {
+                          for (int buttonIndex = 0; buttonIndex < _neonateSelected.length; buttonIndex++) {
+                            if (buttonIndex == index) {
+                              _neonateSelected[buttonIndex] = !_neonateSelected[buttonIndex];
+                            } else {
+                              _neonateSelected[buttonIndex] = false;
+                            }
+                          }
+                        });
+                      },
+                      selectedBorderColor: Colors.blue,
+                      selectedColor: Colors.blue,
+                      children: [
+                        SizedBox(width: (MediaQuery.of(context).size.width - 37)/2, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Neonate", style: TextStyle(fontSize: 10),)],)),
+                        SizedBox(width: (MediaQuery.of(context).size.width - 37)/2, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Child",style: TextStyle(fontSize: 10),)],)),
+                      ]
+                  )
+                ]),
             const SizedBox(height: 6),
 
             // Gestational Age Dropdown (Consider if this is always needed,
             // or if 'Child' mode uses a different input like age in months/years)
-            if (showNeonate) // Only show GA for neonates, or adapt for child
+            if (_neonateSelected[0]) // Only show GA for neonates, or adapt for child
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(labelText: "Gestational Age (weeks)"),
                 items: gestationWeeks.map((week) {
@@ -253,8 +254,8 @@ class _GenitalTabState extends State<GenitalTab>{
                     selectedBorderColor: Colors.blue,
                     selectedColor: Colors.blue,
                     children: [
-                      SizedBox(width: (MediaQuery.of(context).size.width - 37)/2, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Bulgarian", style: TextStyle(fontSize: 10),)],)),
-                      SizedBox(width: (MediaQuery.of(context).size.width - 37)/2, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Indian",style: TextStyle(fontSize: 10),)],)),
+                      SizedBox(width: (MediaQuery.of(context).size.width - 37)/2, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Bulgarian", style: TextStyle(fontSize: 14),)],)),
+                      SizedBox(width: (MediaQuery.of(context).size.width - 37)/2, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Indian",style: TextStyle(fontSize: 14),)],)),
                     ],
                   )
                 ],

@@ -47,6 +47,7 @@ class _FetalCLLChartState extends State<FetalCLLChart>{
               yValueMapper: (FetalCLLData data, _) => widget.isWidth ? data.meanWidthOneSDS : data.meanLengthOneSDS,
               color: Colors.blue,
               name: '+1 SDS',
+              dashArray: [5,5],
             ),
             LineSeries<FetalCLLData, int>(
               dataSource: FetalCLLData.dataList,
@@ -54,6 +55,7 @@ class _FetalCLLChartState extends State<FetalCLLChart>{
               yValueMapper: (FetalCLLData data, _) => widget.isWidth ? data.meanWidthTwoSDS : data.meanLengthTwoSDS,
               color: Colors.blue,
               name: '+2 SDS',
+              dashArray: [5,5],
             ),
             LineSeries<FetalCLLData, int>(
               dataSource: FetalCLLData.dataList,
@@ -61,6 +63,7 @@ class _FetalCLLChartState extends State<FetalCLLChart>{
               yValueMapper: (FetalCLLData data, _) => widget.isWidth ? data.meanWidthThreeSDS : data.meanLengthThreeSDS,
               color: Colors.blue,
               name: '+3 SDS',
+              dashArray: [5,5],
             ),
             if (widget.showScatterPoint)
               ScatterSeries<ScatterData, int>(

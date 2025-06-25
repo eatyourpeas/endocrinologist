@@ -1,8 +1,8 @@
 import '../classes/bulgarianspl.dart';
 import '../enums/enums.dart';
 
-final List<ChildSPLDataPoint> childSPLData = [
-  ChildSPLDataPoint(
+final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
+  ChildBulgarianSPLDataPoint(
     age: 0,
     centile: Centile.P50,
     heightCm: 67.0,
@@ -12,7 +12,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 0,
     centile: Centile.P5,
     heightCm: 53.0,
@@ -22,7 +22,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 0,
     centile: Centile.P95,
     heightCm: 77.0,
@@ -32,7 +32,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 1,
     centile: Centile.P50,
     heightCm: 80.6,
@@ -42,7 +42,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 1,
     centile: Centile.P5,
     heightCm: 73.0,
@@ -52,7 +52,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 1,
     centile: Centile.P95,
     heightCm: 89.73,
@@ -62,7 +62,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 2,
     centile: Centile.P50,
     heightCm: 91.5,
@@ -72,7 +72,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 2,
     centile: Centile.P5,
     heightCm: 83.0,
@@ -82,7 +82,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 2,
     centile: Centile.P95,
     heightCm: 99.73,
@@ -92,7 +92,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 3,
     centile: Centile.P50,
     heightCm: 99.0,
@@ -102,7 +102,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 3,
     centile: Centile.P5,
     heightCm: 91.67,
@@ -112,7 +112,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 3,
     centile: Centile.P95,
     heightCm: 106.05,
@@ -122,7 +122,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 4,
     centile: Centile.P50,
     heightCm: 105.95,
@@ -132,7 +132,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 4,
     centile: Centile.P5,
     heightCm: 97.11,
@@ -142,7 +142,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 4,
     centile: Centile.P95,
     heightCm: 114.45,
@@ -152,7 +152,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 5,
     centile: Centile.P50,
     heightCm: 112.5,
@@ -162,7 +162,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 5,
     centile: Centile.P5,
     heightCm: 104.28,
@@ -172,7 +172,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 5,
     centile: Centile.P95,
     heightCm: 120.89,
@@ -182,7 +182,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 6,
     centile: Centile.P50,
     heightCm: 119.0,
@@ -192,7 +192,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 6,
     centile: Centile.P5,
     heightCm: 110.0,
@@ -202,7 +202,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 6,
     centile: Centile.P95,
     heightCm: 127.09,
@@ -212,7 +212,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 7,
     centile: Centile.P50,
     heightCm: 125.1,
@@ -222,7 +222,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 7,
     centile: Centile.P5,
     heightCm: 115.0,
@@ -232,7 +232,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 7,
     centile: Centile.P95,
     heightCm: 135.28,
@@ -242,7 +242,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 8,
     centile: Centile.P50,
     heightCm: 130.4,
@@ -252,7 +252,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 8,
     centile: Centile.P5,
     heightCm: 120.26,
@@ -262,7 +262,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 8,
     centile: Centile.P95,
     heightCm: 140.45,
@@ -272,7 +272,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 9,
     centile: Centile.P50,
     heightCm: 136.05,
@@ -282,7 +282,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 9,
     centile: Centile.P5,
     heightCm: 125.0,
@@ -292,7 +292,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 9,
     centile: Centile.P95,
     heightCm: 146.5,
@@ -302,7 +302,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 10,
     centile: Centile.P50,
     heightCm: 141.55,
@@ -312,7 +312,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 10,
     centile: Centile.P5,
     heightCm: 129.82,
@@ -322,7 +322,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 10,
     centile: Centile.P95,
     heightCm: 152.63,
@@ -332,7 +332,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 4.0,
     leftTestisVolumeMl: 4.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 11,
     centile: Centile.P50,
     heightCm: 146.55,
@@ -342,7 +342,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 3.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 11,
     centile: Centile.P5,
     heightCm: 135.46,
@@ -352,7 +352,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 11,
     centile: Centile.P95,
     heightCm: 158.89,
@@ -362,7 +362,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 6.9,
     leftTestisVolumeMl: 6.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 12,
     centile: Centile.P50,
     heightCm: 150.6,
@@ -372,7 +372,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 4.0,
     leftTestisVolumeMl: 4.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 12,
     centile: Centile.P5,
     heightCm: 139.56,
@@ -382,7 +382,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 1.0,
     leftTestisVolumeMl: 1.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 12,
     centile: Centile.P95,
     heightCm: 165.09,
@@ -392,7 +392,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 12.0,
     leftTestisVolumeMl: 12.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 13,
     centile: Centile.P50,
     heightCm: 159.1,
@@ -402,7 +402,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 8.0,
     leftTestisVolumeMl: 8.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 13,
     centile: Centile.P5,
     heightCm: 145.37,
@@ -412,7 +412,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 2.0,
     leftTestisVolumeMl: 2.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 13,
     centile: Centile.P95,
     heightCm: 173.4,
@@ -422,7 +422,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 15.0,
     leftTestisVolumeMl: 15.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 14,
     centile: Centile.P50,
     heightCm: 166.0,
@@ -432,7 +432,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 10.0,
     leftTestisVolumeMl: 10.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 14,
     centile: Centile.P5,
     heightCm: 150.76,
@@ -442,7 +442,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 5.0,
     leftTestisVolumeMl: 4.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 14,
     centile: Centile.P95,
     heightCm: 177.5,
@@ -452,7 +452,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 20.0,
     leftTestisVolumeMl: 15.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 15,
     centile: Centile.P50,
     heightCm: 170.35,
@@ -462,7 +462,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 12.0,
     leftTestisVolumeMl: 12.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 15,
     centile: Centile.P5,
     heightCm: 156.67,
@@ -472,7 +472,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 8.0,
     leftTestisVolumeMl: 6.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 15,
     centile: Centile.P95,
     heightCm: 182.83,
@@ -482,7 +482,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 20.0,
     leftTestisVolumeMl: 20.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 16,
     centile: Centile.P50,
     heightCm: 171.85,
@@ -492,7 +492,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 15.0,
     leftTestisVolumeMl: 12.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 16,
     centile: Centile.P5,
     heightCm: 162.0,
@@ -502,7 +502,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 8.0,
     leftTestisVolumeMl: 8.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 16,
     centile: Centile.P95,
     heightCm: 182.94,
@@ -512,7 +512,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 20.0,
     leftTestisVolumeMl: 20.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 17,
     centile: Centile.P50,
     heightCm: 173.7,
@@ -522,7 +522,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 15.0,
     leftTestisVolumeMl: 13.5,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 17,
     centile: Centile.P5,
     heightCm: 164.27,
@@ -532,7 +532,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 10.0,
     leftTestisVolumeMl: 10.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 17,
     centile: Centile.P95,
     heightCm: 185.29,
@@ -542,7 +542,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 25.0,
     leftTestisVolumeMl: 20.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 18,
     centile: Centile.P50,
     heightCm: 174.35,
@@ -552,7 +552,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 15.0,
     leftTestisVolumeMl: 15.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 18,
     centile: Centile.P5,
     heightCm: 164.46,
@@ -562,7 +562,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 10.0,
     leftTestisVolumeMl: 10.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 18,
     centile: Centile.P95,
     heightCm: 184.51,
@@ -572,7 +572,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 25.0,
     leftTestisVolumeMl: 20.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 19,
     centile: Centile.P50,
     heightCm: 173.5,
@@ -582,7 +582,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 15.0,
     leftTestisVolumeMl: 15.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 19,
     centile: Centile.P5,
     heightCm: 163.17,
@@ -592,7 +592,7 @@ final List<ChildSPLDataPoint> childSPLData = [
     rightTestisVolumeMl: 10.0,
     leftTestisVolumeMl: 10.0,
   ),
-  ChildSPLDataPoint(
+  ChildBulgarianSPLDataPoint(
     age: 19,
     centile: Centile.P95,
     heightCm: 184.0,

@@ -1,5 +1,6 @@
 
-import 'package:endocrinologist/pages/childsplchart.dart';
+import 'package:endocrinologist/pages/childbulgariansplchart.dart';
+import 'package:endocrinologist/pages/childindiansplchart.dart';
 import 'package:endocrinologist/pages/fetalsplchart.dart';
 import 'package:flutter/material.dart';
 import '../calculations/spltermpretermnormativevalues.dart';
@@ -28,6 +29,7 @@ class _GenitalTabState extends State<GenitalTab>{
   bool showCLL = false;
   bool showNeonate = true;
   double decimalAge = 0.0;
+  final List<bool> _ethnicityIsSelected = [true, false];
 
   final _cllController = TextEditingController();
   final _cwlController = TextEditingController();
@@ -63,7 +65,10 @@ class _GenitalTabState extends State<GenitalTab>{
     if (showNeonate){
       (sds, centile) = FetalSPLData.calculateSDSAndCentile(selectedGestationWeek, spl);
     } else {
-      sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(measuredStretchedPenileLength: spl, decimalAgeYears: decimalAge);
+      if (_ethnicityIsSelected[0])
+        sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(measuredStretchedPenileLength: spl, decimalAgeYears: decimalAge, ethnicity: Ethnicity.Bulgarian);
+      else
+        sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(measuredStretchedPenileLength: spl, decimalAgeYears: decimalAge, ethnicity: Ethnicity.Indian);
       centile = sdsToCentile(sds);
     }
 
@@ -98,11 +103,18 @@ class _GenitalTabState extends State<GenitalTab>{
           showScatterPoint: showScatterPoint,
         );
       else
-        chartSpecificWidget = ChildSPLChart(
-          decimal_age: decimalAge,
-          spl: spl,
-          showScatterPoint: showScatterPoint,
-        );
+        if (_ethnicityIsSelected[0])
+          chartSpecificWidget = ChildBulgarianSPLChart(
+            decimal_age: decimalAge,
+            spl: spl,
+            showScatterPoint: showScatterPoint,
+          );
+        else
+          chartSpecificWidget = ChildIndianSPLChart(
+            decimal_age: decimalAge,
+            spl: spl,
+            showScatterPoint: showScatterPoint
+          );
 
     } else { // Female
       inputSpecificFields = Column(children: [
@@ -221,6 +233,33 @@ class _GenitalTabState extends State<GenitalTab>{
                 value: selectedGestationWeek,
               )
             else
+              if (_currentSex == Sex.male)
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    ToggleButtons(
+                      isSelected: _ethnicityIsSelected,
+                      onPressed: (int index) {
+                      setState(() {
+                        for (int buttonIndex = 0; buttonIndex < _ethnicityIsSelected.length; buttonIndex++) {
+                          if (buttonIndex == index) {
+                            _ethnicityIsSelected[buttonIndex] = !_ethnicityIsSelected[buttonIndex];
+                          } else {
+                            _ethnicityIsSelected[buttonIndex] = false;
+                          }
+                        }
+                      });
+                    },
+                    selectedBorderColor: Colors.blue,
+                    selectedColor: Colors.blue,
+                    children: [
+                      SizedBox(width: (MediaQuery.of(context).size.width - 37)/2, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Bulgarian", style: TextStyle(fontSize: 10),)],)),
+                      SizedBox(width: (MediaQuery.of(context).size.width - 37)/2, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Indian",style: TextStyle(fontSize: 10),)],)),
+                    ],
+                  )
+                ],
+              ),
+
               TextField(
                   controller: _decimalAgeController,
                   keyboardType: TextInputType.number,
@@ -236,6 +275,7 @@ class _GenitalTabState extends State<GenitalTab>{
             ),
             Column(
               children: [
+                const SizedBox(height: 10),
                 Text(_sdsString,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,

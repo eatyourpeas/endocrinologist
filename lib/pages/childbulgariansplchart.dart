@@ -14,21 +14,14 @@ https://www.jpurol.com/article/S1477-5131(24)00621-1/abstract
 Pediatric penile anthropometry nomogram: Establishing standardized reference values
 Goel, Prabudh et al.
 Journal of Pediatric Urology, Volume 21, Issue 2, 454 - 459
-
-A large Bulgarian reference
-Tomova A, Deepinder F, Robeva R, Lalabonova H, Kumanov P, Agarwal A.
-Growth and Development of Male External Genitalia: A Cross-sectional Study of 6200 Males Aged 0 to 19 Years.
-Arch Pediatr Adolesc Med. 2010;164(12):1152–1157.
-doi:10.1001/archpediatrics.2010.223
-https://jamanetwork.com/journals/jamapediatrics/fullarticle/384064
 */
 
-class ChildSPLChart extends StatefulWidget {
+class ChildBulgarianSPLChart extends StatefulWidget {
   final double decimal_age;
   final double spl;
   final bool showScatterPoint;
 
-  const ChildSPLChart({
+  const ChildBulgarianSPLChart({
     super.key,
     required this.decimal_age,
     required this.spl,
@@ -36,17 +29,17 @@ class ChildSPLChart extends StatefulWidget {
   });
 
   @override
-  State <ChildSPLChart> createState() => _ChildSPLChartState();
+  State <ChildBulgarianSPLChart> createState() => _ChildBulgarianSPLChartState();
 }
 
-class _ChildSPLChartState extends State<ChildSPLChart>{
+class _ChildBulgarianSPLChartState extends State<ChildBulgarianSPLChart>{
   @override
   Widget build(BuildContext context) {
 
     // filter the reference data into centile lines
-    final p5Data = childSPLData.where((data) => data.centile == Centile.P5).toList();
-    final p50Data = childSPLData.where((data) => data.centile == Centile.P50).toList();
-    final p95Data = childSPLData.where((data) => data.centile == Centile.P95).toList();
+    final p5Data = childBulgarianSPLData.where((data) => data.centile == Centile.P5).toList();
+    final p50Data = childBulgarianSPLData.where((data) => data.centile == Centile.P50).toList();
+    final p95Data = childBulgarianSPLData.where((data) => data.centile == Centile.P95).toList();
 
     return Column(
         children: [SfCartesianChart(
@@ -57,26 +50,28 @@ class _ChildSPLChartState extends State<ChildSPLChart>{
               isResponsive: true
           ),
           series: <CartesianSeries>[
-            LineSeries<ChildSPLDataPoint, int>(
+            LineSeries<ChildBulgarianSPLDataPoint, int>(
               dataSource: p5Data,
-              xValueMapper: (ChildSPLDataPoint data, _) => data.age,
-              yValueMapper: (ChildSPLDataPoint data, _) => data.penileLengthCm,
+              xValueMapper: (ChildBulgarianSPLDataPoint data, _) => data.age,
+              yValueMapper: (ChildBulgarianSPLDataPoint data, _) => data.penileLengthCm,
               color: Colors.blue,
               name: '5th Percentile',
+              dashArray: [5,5],
             ),
-            LineSeries<ChildSPLDataPoint, int>(
+            LineSeries<ChildBulgarianSPLDataPoint, int>(
               dataSource: p50Data,
-              xValueMapper: (ChildSPLDataPoint data, _) => data.age,
-              yValueMapper: (ChildSPLDataPoint data, _) => data.penileLengthCm,
+              xValueMapper: (ChildBulgarianSPLDataPoint data, _) => data.age,
+              yValueMapper: (ChildBulgarianSPLDataPoint data, _) => data.penileLengthCm,
               color: Colors.blue,
               name: '50th percentile',
             ),
-            LineSeries<ChildSPLDataPoint, int>(
+            LineSeries<ChildBulgarianSPLDataPoint, int>(
               dataSource: p95Data,
-              xValueMapper: (ChildSPLDataPoint data, _) => data.age,
-              yValueMapper: (ChildSPLDataPoint data, _) => data.penileLengthCm,
+              xValueMapper: (ChildBulgarianSPLDataPoint data, _) => data.age,
+              yValueMapper: (ChildBulgarianSPLDataPoint data, _) => data.penileLengthCm,
               color: Colors.blue,
               name: '95th percentile',
+              dashArray: [5,5],
             ),
             if (widget.showScatterPoint)
               ScatterSeries<DecimalAgeScatterData, double>(
@@ -98,7 +93,7 @@ class _ChildSPLChartState extends State<ChildSPLChart>{
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
-              'Reference: Tomova A, Deepinder F, Robeva R, Lalabonova H, Kumanov P, Agarwal A.Growth and Development of Male External Genitalia: A Cross-sectional Study of 6200 Males Aged 0 to 19 Years., Arch Pediatr Adolesc Med. 210;164(12):1152–1157.',
+              'Pediatric penile anthropometry nomogram: Establishing standardized reference values, Goel, Prabudh et al. Journal of Pediatric Urology, Volume 21, Issue 2, 454 - 459, April 2025',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12),
             ),

@@ -1,6 +1,6 @@
 import '../enums/enums.dart';
 
-class ChildSPLDataPoint {
+class ChildBulgarianSPLDataPoint {
   final int age;
   final Centile centile;
   final double heightCm;
@@ -10,7 +10,7 @@ class ChildSPLDataPoint {
   final double rightTestisVolumeMl;
   final double leftTestisVolumeMl;
 
-  ChildSPLDataPoint({
+  ChildBulgarianSPLDataPoint({
     required this.age,
     required this.centile,
     required this.heightCm,

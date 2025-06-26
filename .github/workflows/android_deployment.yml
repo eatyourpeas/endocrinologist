@@ -1,0 +1,102 @@
+name: Android Release Deployment
+
+# This workflow will run when a new GitHub Release is published.
+# The `types: [published]` ensures it only runs after the release is fully created.
+on:
+  release:
+    types: [published]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest # Use a fresh Ubuntu runner for each build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Action to checkout your repository code
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.4'
+          channel: 'stable'
+
+      - name: Get Flutter dependencies
+        run: flutter pub get # Install all project dependencies
+
+      # Step to extract the version name and set the build number dynamically.
+      # The version name (e.g., 1.0.0) comes from pubspec.yaml.
+      # The build number (e.g., +1, +2) will be the GitHub Actions run number,
+      # ensuring a unique incrementing code for each deployment.
+      - name: Extract version from pubspec.yaml and set build number
+        id: get_version # Assigns an ID to this step to reference its outputs later (though we use GITHUB_ENV here)
+        run: |
+          # Extract the version string (e.g., "1.0.0") before the "+"
+          VERSION_NAME=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+          # Use the GitHub Actions run number as the build code
+          BUILD_NUMBER=$GITHUB_RUN_NUMBER
+          
+          echo "Detected Version Name: $VERSION_NAME"
+          echo "Generated Build Number: $BUILD_NUMBER"
+
+          # Set these as environment variables for subsequent steps in this job
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+
+      - name: Decode Keystore and Create key.properties
+        run: |
+          # Create the dedicated keystore directory within the android folder if it doesn't exist on the runner
+          mkdir -p android/keystore
+
+          # Decode the Base64-encoded keystore from secrets and place it in the secure location
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/keystore/eatyourpeas.jks
+
+          # Create the key.properties file in the android/ directory
+          # This file will be read by Gradle to sign the app
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          # Provide the absolute path to the decoded keystore file
+          echo "storeFile=$(pwd)/android/keystore/eatyourpeas.jks" >> android/key.properties
+        env:
+          # Explicitly list secrets used in this step to ensure they are masked in logs
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+
+      - name: Build Android App Bundle (AAB)
+        run: |
+          # Build the release AAB.
+          # The --build-name sets the versionName (e.g., 1.0.0)
+          # The --build-number sets the versionCode (e.g., 1, 2, 3...)
+          # Gradle will use the signing config defined in android/app/build.gradle
+          flutter build appbundle --release \
+            --build-name=${{ env.VERSION_NAME }} \
+            --build-number=${{ env.BUILD_NUMBER }}
+
+      - name: Decode Google Play Service Account JSON
+        run: |
+          # Decode the Base64-encoded service account JSON and save it as a file
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" | base64 --decode > google_play_api_key.json
+        env:
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+
+      - name: Upload to Google Play Store (Internal Test Track)
+        uses: r0adkll/upload-google-play@v1.2.0 # Use a specific version for stability
+        with:
+          # Path to the service account JSON file we just decoded
+          serviceAccountJsonPlainText: google_play_api_key.json
+          packageName: ${{ secrets.ANDROID_PACKAGE_NAME }}
+          # Path to the generated App Bundle
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          # Target track: 'internal', 'alpha', 'beta', or 'production'
+          track: internal
+          releaseNotes: |
+             - New features for version ${{ env.VERSION_NAME }}+${{ env.BUILD_NUMBER }}
+          #   - Bug fixes and performance improvements.

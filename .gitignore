@@ -44,3 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/key.properties
+/android/**/*.jks      # Exclude all .jks files anywhere in android/
+/android/**/*.keystore # Exclude all .keystore files anywhere in android/
+/android/**/debug.keystore # Especially the default debug key

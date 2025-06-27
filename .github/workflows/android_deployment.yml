@@ -90,15 +90,42 @@ jobs:
         env:
           GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
 
+      # New step to create the release notes directory and file
+      - name: Create Google Play Release Notes
+        run: |
+          # Define the directory for release notes (e.g., for en-US locale)
+          RELEASE_NOTES_DIR="release-notes/en-US"
+          mkdir -p $RELEASE_NOTES_DIR # Create the directory and any necessary parent directories
+
+          # Get the release body from the GitHub release event.
+          # If the release body is empty, use a default message.
+          # The | operator in YAML allows for multi-line strings, preserving newlines.
+          # Escape single quotes within the string if necessary, but typically GitHub release bodies are plain text.
+          RELEASE_BODY="${{ github.event.release.body }}"
+          
+          # If RELEASE_BODY is empty, use a formatted default message
+          if [ -z "$RELEASE_BODY" ]; then
+            RELEASE_NOTES_CONTENT="- New features for version ${{ env.VERSION_NAME }}+${{ env.BUILD_NUMBER }}\n- Bug fixes and performance improvements."
+          else
+            RELEASE_NOTES_CONTENT="$RELEASE_BODY"
+          fi
+
+          echo -e "$RELEASE_NOTES_CONTENT" > "$RELEASE_NOTES_DIR/whatsnew.txt"
+          
+          echo "Release notes created at $RELEASE_NOTES_DIR/whatsnew.txt"
+          cat "$RELEASE_NOTES_DIR/whatsnew.txt" # Print content for verification
+
       - name: Upload to Google Play Store (Internal Test Track)
         uses: r0adkll/upload-google-play@v1.1.3 # Feb 9 2024
         with:
-          # Path to the service account JSON file we just decoded
-          serviceAccountJsonPlainText: google_play_api_key.json
+          # Use 'serviceAccountJson' (path) as the JSON file was decoded to `google_play_api_key.json`
+          serviceAccountJson: google_play_api_key.json
           packageName: ${{ secrets.ANDROID_PACKAGE_NAME }}
           # Path to the generated App Bundle
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           # Target track: 'internal', 'alpha', 'beta', or 'production'
           track: internal
-          releaseNotes: |
-            ${{ github.event.release.body || format('- New features for version {0}+{1}\n- Bug fixes and performance improvements.', env.VERSION_NAME, env.BUILD_NUMBER) }}
+          # IMPORTANT: Use 'whatsNewDirectory' to specify the path to your release notes directory.
+          # The action will look for files like 'en-US/whatsnew.txt' within this directory.
+          whatsNewDirectory: release-notes
+          # The 'releaseNotes' input is not supported and has been removed.

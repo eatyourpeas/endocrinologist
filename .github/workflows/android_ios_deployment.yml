@@ -155,10 +155,9 @@ jobs:
         with:
           api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           issuer-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
-          profile-type: 'IOS_APP_STORE'
+          profile-type: IOS_APP_STORE
           api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
           bundle-id: ${{ secrets.IOS_BUNDLE_ID }}
-          profile-base64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
 
       - name: Build iOS App Bundle (IPA)
         run: |

@@ -181,11 +181,9 @@ jobs:
           echo "$RELEASE_NOTES_CONTENT"
 
       - name: Upload to TestFlight
-        uses: apple-actions/upload-testflight@v1
+        uses: apple-actions/upload-testflight-build@v3
         with:
-          ipa-path: build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app
-          bundle-id: ${{ secrets.IOS_BUNDLE_ID }}
-          api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          api-key-issuer-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
-          api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
-          build-notes: ${{ env.RELEASE_NOTES_CONTENT }}
+            app-path: build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app
+            issuer-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+            api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+            api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}

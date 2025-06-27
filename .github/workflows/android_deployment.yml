@@ -129,3 +129,5 @@ jobs:
           # The action will look for files like 'en-US/whatsnew.txt' within this directory.
           whatsNewDirectory: release-notes
           # The 'releaseNotes' input is not supported and has been removed.
+          status: draft
+          # change this to 'completed' or remove once published

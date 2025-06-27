@@ -159,6 +159,31 @@ jobs:
           api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
           bundle-id: ${{ secrets.IOS_BUNDLE_ID }}
 
+        # TEMPORARY STEP: Find the UUID of the downloaded Provisioning Profile
+      - name: Get Provisioning Profile UUID
+        run: |
+         # The download action prints the path to the downloaded profile.
+         # We can use that path to extract the UUID.
+         # The file name is usually the UUID, but it's safer to parse the file content.
+         PROVISIONING_PROFILE_PATH=$(find "/Users/runner/Library/MobileDevice/Provisioning Profiles/" -name "*.mobileprovision" -print -quit)
+         
+         if [ -z "$PROVISIONING_PROFILE_PATH" ]; then
+           echo "Error: Provisioning profile not found after download. Check previous step logs."
+           exit 1
+         fi
+         
+         # Use security cms to decode the binary profile into XML (plist) and then grep for UUID
+         PROFILE_UUID=$(security cms -D -i "$PROVISIONING_PROFILE_PATH" | grep -A1 UUID | grep -o "[-A-Z0-9]\\{36\\}")
+         
+         if [ -z "$PROFILE_UUID" ]; then
+           echo "Error: Could not extract UUID from provisioning profile."
+           exit 1
+         fi
+         
+         echo "::notice file=extract_uuid.sh::FOUND PROVISIONING PROFILE UUID: $PROFILE_UUID"
+         echo "::set-output name=profile_uuid::$PROFILE_UUID"
+        id: get_profile_uuid_step # Give this step an ID to reference its output
+
       - name: Build iOS App Bundle (IPA)
         run: |
           flutter build ipa --release \

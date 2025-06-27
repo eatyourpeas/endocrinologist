@@ -29,6 +29,9 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get # Install all project dependencies
 
+      - name: Run Flutter tests
+        run: flutter test
+
       # Step to extract the version name and set the build number dynamically.
       # The version name (e.g., 1.0.0) comes from pubspec.yaml.
       # The build number (e.g., +1, +2) will be the GitHub Actions run number,
@@ -98,5 +101,4 @@ jobs:
           # Target track: 'internal', 'alpha', 'beta', or 'production'
           track: internal
           releaseNotes: |
-             - New features for version ${{ env.VERSION_NAME }}+${{ env.BUILD_NUMBER }}
-          #   - Bug fixes and performance improvements.
+            ${{ github.event.release.body || format('- New features for version {0}+{1}\n- Bug fixes and performance improvements.', env.VERSION_NAME, env.BUILD_NUMBER) }}

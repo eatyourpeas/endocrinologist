@@ -19,5 +19,8 @@
         <key>uk.co.eatyourpeas.endocrinologist</key>
         <string>endocrinologist</string>
     </dict>
+    <!-- Set to <true/> only if uses proprietary or highly specialized encryption algorithms. -->
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 </dict>
 </plist>

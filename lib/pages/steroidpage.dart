@@ -202,7 +202,8 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("2 mg/kg (${weight != null ? (weight * 2).toStringAsFixed(0) : 'no weight supplied' } mg) 6 hourly or", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                Flexible(child: Text("2 mg/kg (${weight != null ? (weight * 2).toStringAsFixed(0) : 'no weight supplied' } mg) 6 hourly or", style: const TextStyle(fontWeight: FontWeight.bold))),
+                                const SizedBox(width: 4),
                                 const Tooltip(
                                   message: 'Note max dose 100mg. Consider using neonatal doses if small or failing to thrive',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
@@ -213,7 +214,8 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("4 mg/kg (${weight != null ? (weight * 4).toStringAsFixed(0) : 'no weight supplied' } mg) 6 hourly in neonates", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                Flexible(child: Text("4 mg/kg (${weight != null ? (weight * 4).toStringAsFixed(0) : 'no weight supplied' } mg) 6 hourly in neonates", style: const TextStyle(fontWeight: FontWeight.bold))),
+                                const SizedBox(width: 4),
                                 const Tooltip(
                                   message: 'Neonates defined as < 28 days.',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
@@ -230,7 +232,7 @@ class _SteroidPageState extends State<SteroidPage> {
                             const Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("Use age-based doses given IM or IV:"),
+                                Flexible(child: Text("Use age-based doses given IM or IV:")),
                               ],
                             ),
                             const Column(
@@ -251,7 +253,8 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("1mg/kg (${weight ?? 'no weight supplied'} mg) IV 6 hourly or", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                Flexible(child: Text("1mg/kg (${weight ?? 'no weight supplied'} mg) IV 6 hourly or", style: const TextStyle(fontWeight: FontWeight.bold))),
+                                const SizedBox(width: 4),
                                 const Tooltip(
                                   message: 'Note max dose 50mg. Can consider giving 4 hourly or as an infusion (see “Major surgery)',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
@@ -262,7 +265,8 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("2mg/kg (${weight != null ? weight * 2 : 'no weight supplied'} mg) IV 6 hourly in neonates", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                Flexible(child: Text("2mg/kg (${weight != null ? weight * 2 : 'no weight supplied'} mg) IV 6 hourly in neonates", style: const TextStyle(fontWeight: FontWeight.bold))),
+                                const SizedBox(width: 4),
                                 const Tooltip(
                                   message: 'Can consider giving 4 hourly or as an infusion ',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
@@ -328,14 +332,14 @@ class _SteroidPageState extends State<SteroidPage> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("■ "),
-                                    Text("Acutely unwell and unable to get IV access", textAlign: TextAlign.left),
+                                    Flexible(child: Text("■ ")),
+                                    Flexible(child: Text("Acutely unwell and unable to get IV access", textAlign: TextAlign.left)),
                                   ],
                                 ),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("■ "),
+                                    Flexible(child: Text("■ ")),
                                     Flexible(
                                         child: Text("Acutely unwell with diarrhoea and vomiting and unable to tolerate oral treatment", textAlign: TextAlign.left),
                                     )
@@ -344,7 +348,7 @@ class _SteroidPageState extends State<SteroidPage> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("■ "),
+                                    Flexible(child: Text("■ ")),
                                     Flexible(
                                         child: Text("Reduced responsiveness or loss of consciousness.", textAlign: TextAlign.left),
                                     )
@@ -353,7 +357,7 @@ class _SteroidPageState extends State<SteroidPage> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("■ "),
+                                    Flexible(child: Text("■ ")),
                                     Flexible(
                                         child: Text("Hypoglycaemic or new onset seizure in known or suspected adrenal insufficiency.", textAlign: TextAlign.left),
                                     )
@@ -415,7 +419,6 @@ class _SteroidPageState extends State<SteroidPage> {
   }
 
   bool _formComplete(){
-    print('form is complete: ${areSteroidsValid()==isBsaValid()}');
     return areSteroidsValid()==isBsaValid();
   }
 
@@ -531,14 +534,19 @@ class _SteroidPageState extends State<SteroidPage> {
                                   ),
                           ),
                         // body surface area checkbox and label
+                        const SizedBox(height: 8,),
+                        // body surface area checkbox and label
                         Row(
-                          children: [
-                            const Row(
+                            children: [
+                              Expanded( // Wrap the Row containing the Text and Tooltip with Expanded
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Body surface area is already known",
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    Flexible( // Allow the Text to wrap if needed
+                                      child: Text(
+                                        "Body surface area is already known",
+                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
                                     ),
                                     SizedBox(width: 8),
                                     Tooltip(
@@ -547,16 +555,17 @@ class _SteroidPageState extends State<SteroidPage> {
                                       child: Icon(Icons.info_outline, color: Colors.blue),
                                     ),
                                   ],
-                            ),
-                            Checkbox(
-                              value: _showBodySurfaceArea,
-                              onChanged: (value) {
-                                setState(() {
-                                  _showBodySurfaceArea = value ?? false;
-                                });
-                              },
-                            ),
-                          ]),
+                                ),
+                              ),
+                              Checkbox(
+                                value: _showBodySurfaceArea,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _showBodySurfaceArea = value ?? false;
+                                  });
+                                },
+                              ),
+                            ]),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -597,7 +606,7 @@ class _SteroidPageState extends State<SteroidPage> {
                                     menuMaxHeight: 200,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: "Steroids",
+                                      labelText: "Steroids (Potency)",
                                     ),
                                     validator: (value){
                                       if (value == null && !_existingSteroids) {
@@ -627,7 +636,7 @@ class _SteroidPageState extends State<SteroidPage> {
                                 TextFormField(
                                   controller: _steroidDoseController,
                                   decoration: const InputDecoration(
-                                    labelText: 'dosage (mg)',
+                                    labelText: 'Total Daily Dose (mg)',
                                     border: OutlineInputBorder(),
                                   ),
                                   keyboardType: TextInputType.number,

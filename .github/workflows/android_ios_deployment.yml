@@ -172,6 +172,7 @@ jobs:
 
       # Step 2: Export the IPA from the archive with explicit signing
       - name: Export IPA from Archive
+        id: export_ipa_step # Added ID to set output
         run: |
           # Find the generated .xcarchive file
           ARCHIVE_PATH=$(find build/ios/archive -name "*.xcarchive" -print -quit)
@@ -190,6 +191,16 @@ jobs:
             -archivePath "$ARCHIVE_PATH" \
             -exportOptionsPlist ./ios/ExportOptions.plist \
             -exportPath build/ios/ipa/
+
+          # Find the actual .ipa file created in the build/ios/ipa/ directory
+          IPA_FILE_PATH=$(find build/ios/ipa -name "*.ipa" -print -quit)
+
+          if [ -z "$IPA_FILE_PATH" ]; then
+            echo "Error: .ipa file not found after export. Check xcodebuild output."
+            exit 1
+          fi
+
+          echo "::set-output name=ipa_path::$IPA_FILE_PATH" # Set output with the full IPA path
 
       - name: Create TestFlight Release Notes
         id: create_release_notes
@@ -211,7 +222,8 @@ jobs:
       - name: Upload to TestFlight
         uses: apple-actions/upload-testflight-build@v3
         with:
-          app-path: build/ios/ipa/*.ipa
+          # Use the exact IPA path from the previous step's output
+          app-path: ${{ steps.export_ipa_step.outputs.ipa_path }}
           issuer-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
           api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}

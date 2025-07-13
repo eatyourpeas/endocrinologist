@@ -1,18 +1,3 @@
-import java.util.Properties
-import java.io.FileInputStream
-
-val keystorePropertiesFile = rootProject.file("key.properties")
-val keystoreProperties = Properties()
-if (keystorePropertiesFile.exists()) {
-    try {
-        FileInputStream(keystorePropertiesFile).use { fis -> // Using .use for proper resource handling
-            keystoreProperties.load(fis)
-        }
-    } catch (e: Exception) {
-        println("Warning: Could not load key.properties file: ${e.message}")
-    }
-}
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -24,7 +9,6 @@ android {
     namespace = "uk.co.eatyourpeas.endocrinologist"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
-    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -36,53 +20,20 @@ android {
     }
 
     defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "uk.co.eatyourpeas.endocrinologist"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    signingConfigs {
-        getByName("debug") {
-            // Default debug signing configuration
-        }
-        create("release") {
-            // Check if all properties exist using getProperty and checking for null,
-            // as Properties.containsKey only checks if the key is present, not if it has a value.
-            val storeFileProp = keystoreProperties.getProperty("storeFile")
-            val storePasswordProp = keystoreProperties.getProperty("storePassword")
-            val keyAliasProp = keystoreProperties.getProperty("keyAlias")
-            val keyPasswordProp = keystoreProperties.getProperty("keyPassword")
-
-            if (storeFileProp != null && storePasswordProp != null && keyAliasProp != null && keyPasswordProp != null) {
-                storeFile = file(storeFileProp)
-                storePassword = storePasswordProp
-                keyAlias = keyAliasProp
-                keyPassword = keyPasswordProp
-            } else {
-                println("Warning: Release signing configuration not found or incomplete in key.properties.")
-                // ... (rest of your warning and throw GradleException)
-                throw GradleException("Release signing config not found in key.properties. Cannot build release.")
-            }
-        }
-    }
-
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("release")
-        }
-        // It seems you had a nested getByName("debug") inside release, which is incorrect.
-        // It should be a separate configuration at the same level as release.
-        // If your original intention was to ensure debug signing for debug type,
-        // it's often handled by default or can be explicitly set like this:
-        getByName("debug") {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }

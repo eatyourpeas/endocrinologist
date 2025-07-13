@@ -4,6 +4,7 @@ import 'package:endocrinologist/pages/auxology.dart';
 import 'package:flutter/material.dart';
 import 'pages/glucosepage.dart';
 import 'pages/steroidpage.dart';
+import 'pages/sodium.dart';
 
 void main() {
   runApp(const Endocrinologist());
@@ -31,7 +32,7 @@ class EndocrinologyTabBars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
-    return DefaultTabController(length: 3, child: Scaffold(
+    return DefaultTabController(length: 4, child: Scaffold(
       appBar: AppBar(
         title: Text("The Paediatric Endocrinologist", style: GoogleFonts.ibmPlexSans(),),
         bottom: const TabBar(
@@ -39,6 +40,7 @@ class EndocrinologyTabBars extends StatelessWidget {
             Tab(icon: Icon(Icons.science), text: "Glucose"),
             Tab(icon: Icon(Icons.medication), text: "Steroids"),
             Tab(icon: Icon(Icons.straighten), text: "Auxology"),
+            Tab(icon: Icon(Icons.grain), text: "Sodium"),
           ],
         ),
       ),
@@ -47,6 +49,7 @@ class EndocrinologyTabBars extends StatelessWidget {
           GlucosePage(),
           SteroidPage(),
           AuxologyPage(),
+          SodiumPage(),
         ],
       ),
     ),

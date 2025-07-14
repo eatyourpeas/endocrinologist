@@ -1,6 +1,7 @@
 import 'package:endocrinologist/referencedata/saline_strengths.dart';
 import 'package:flutter/material.dart';
 import 'package:endocrinologist/classes/saline.dart';
+import 'package:endocrinologist/calculations/salinecalculations.dart';
 
 class _SodiumPageState extends State<SodiumPage>{
   // Global key for form state
@@ -8,6 +9,64 @@ class _SodiumPageState extends State<SodiumPage>{
 
   Saline? _selectedSaline;
   final List<Saline> _salines = sortedSalineStrengths(saline_strengths);
+
+  final _plasmaSodiumController = TextEditingController();
+  final _totalBodyWaterController = TextEditingController();
+
+  void _submitForm() {
+    if (_formKey.currentState?.validate() ?? false) {
+      // submission is valid: run the maths...
+      double infusateSodiumConcentration;
+      double plasmaSodium;
+      double totalBodyWater;
+
+      double deltaSodium = 0;
+
+      final selectedSaline = _selectedSaline?.mmolperlitre;
+      if (selectedSaline == null) {
+        throw Exception("The selected saline cannot be null.");
+      }
+      infusateSodiumConcentration = selectedSaline.toDouble();
+
+      final _plasmaSodium = _plasmaSodiumController.text;
+      final parsedPlasmaSodium = double.tryParse(_plasmaSodium);
+
+      if (parsedPlasmaSodium == null) {
+        throw Exception("The plasma sodium value cannot be null.");
+      }
+      plasmaSodium = parsedPlasmaSodium;
+
+      final _totalBodyWater = _totalBodyWaterController.text;
+      final parsedTotalBodyWater = double.tryParse(_totalBodyWater);
+      if (parsedTotalBodyWater == null) {
+        throw Exception("The total body water value cannot be null.");
+      }
+      totalBodyWater = parsedTotalBodyWater;
+
+      deltaSodium = calculateDeltaSodium(
+          infusateSodiumConcentration: infusateSodiumConcentration,
+          plasmaSodium: plasmaSodium,
+          totalBodyWater: totalBodyWater);
+
+
+      // launch dialog for results
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Estimated Change in Sodium (mmol/L)"),
+              content: Text("One litre of infusate should increase the plasma sodium by ${deltaSodium
+                  .toStringAsFixed(2)} mmol/L"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK"),
+                )
+              ],
+            );
+          });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +93,12 @@ class _SodiumPageState extends State<SodiumPage>{
                 menuMaxHeight: 200,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: "Fluid",
+                  labelText: "fluid",
                 ),
                 validator: (value){
-                  // if (value == null && !_showCustomMilkCarbsField) {
-                  //   return "Please select a milk";
-                  // }
+                  if (value == null) {
+                    return "Please select a fluid type";
+                  }
                   return null;
                 },
                 value: _selectedSaline,
@@ -60,6 +119,77 @@ class _SodiumPageState extends State<SodiumPage>{
                 hint: const Text('Select a saline strength'),
               ),
             ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _plasmaSodiumController,
+              keyboardType: TextInputType.number,
+              validator: (value){
+                if (value == null || value.isEmpty) {
+                  return "Please enter the plasma sodium value.";
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                labelText: 'plasma sodium (mmol/L)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _totalBodyWaterController,
+              keyboardType: TextInputType.number,
+              validator: (value){
+                if (value == null || value.isEmpty) {
+                  return "Please enter the total body water (litres).";
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                labelText: 'total body water (litres)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _submitForm,
+              child: const Text('Calculate'),
+            ),
+          Padding( // You can keep the outer padding for spacing from other elements
+            padding: const EdgeInsets.symmetric(vertical: 8.0), // Adjust vertical padding as needed
+            child: Container(
+              padding: const EdgeInsets.all(12.0), // Padding inside the colored box
+              decoration: BoxDecoration(
+                  color: Colors.amber[100], // A light amber/yellow for warning
+                  borderRadius: BorderRadius.circular(8.0), // Optional: rounded corners
+                  border: Border.all( // Optional: a thin border
+                    color: Colors.amber[400]!,
+                    width: 1,
+                  )
+              ),
+              child: const Text(
+                'Plasma sodium should rise by no more than 0.5 to 1.0 mmol/L per hour and by less than 10 to 12 mmol/L over the first 24 hours',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black87, // Ensure text is readable on the background
+                ),
+              ),
+            ),
+          ),
+            const SizedBox(height: 16),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'Reference: Baran D, Hutchinson TA. The outcome of hyponatremia in a general hospital population. Clin Nephrol. 1984;22:72–76.',
+                textAlign: TextAlign.left,
+                style: TextStyle(fontSize: 12),
+              )),
           ]
         )
     )

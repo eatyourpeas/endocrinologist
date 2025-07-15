@@ -482,6 +482,25 @@ class _SteroidPageState extends State<SteroidPage> {
                         ),
                         const SizedBox(height: 8),
                         // Weight TextFormField
+                        TextFormField(
+                          controller: _bsaController,
+                          keyboardType: TextInputType.number,
+                          validator: (value){
+                            if (value == null || value.isEmpty) {
+                              return "Please enter the body surface area in m².";
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'Please enter a valid number';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'body surface area (m²)',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        // body surface area checkbox and label
+                        const SizedBox(height: 8,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

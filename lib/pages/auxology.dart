@@ -1,4 +1,5 @@
 import 'package:endocrinologist/pages/genitaltab.dart';
+import 'package:endocrinologist/pages/bodysurfaceareatab.dart';
 import 'package:flutter/material.dart';
 import '../enums/enums.dart';
 
@@ -21,11 +22,13 @@ class _AuxologyPageState extends State<AuxologyPage> {
             children:[
               TabBar(
                 tabs: [
+                  Tab(text: "Body Surface Area",),
                   Tab(text: "Penile Length",),
                   Tab(text: "Clitoral Length",),
                 ]
               ),
               Expanded(child: TabBarView(children: [
+                BodySurfaceAreaTab(),
                 GenitalTab(initialSex: Sex.male),
                 GenitalTab(initialSex: Sex.female),
               ]

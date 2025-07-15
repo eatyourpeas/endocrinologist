@@ -15,63 +15,29 @@ class _SteroidPageState extends State<SteroidPage> {
   // Global key for form state
   final _formKey = GlobalKey<FormState>();
   bool _showInfoBox = true;
-
-  bool _showBodySurfaceArea = false;
-  final int _selectedBSA = 1;
-  final List<bool> _isSelected = [true, false, false, false];
   bool _existingSteroids = false;
   Glucocorticoid? _selectedGlucocorticoid;
   final List<Glucocorticoid> _dropdownItems = sortedGlucocorticoids(glucocorticoids);
-
   final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
   final TextEditingController _bsaController = TextEditingController();
   final TextEditingController _steroidDoseController = TextEditingController();
 
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
-      double? height = double.tryParse(_heightController.text);
       double? weight = double.tryParse(_weightController.text);
       double? customBSA = double.tryParse(_bsaController.text);
       double? steroidDose = double.tryParse(_steroidDoseController.text);
       double bsa = 0.0;
 
-      if (_showBodySurfaceArea) {
-        if (customBSA == null ){
-          throw Exception("the BSA cannot be null.");
-        }
-        bsa = customBSA;
-        // If showing BSA, ensure we proceed with calculations even if height and weight are null
-        // Here you might want to handle the case where BSA is being shown without input values
-      } else {
-        // If not showing BSA, ensure height and weight are valid
-        if (height == null || weight == null) {
-          // Handle the case where height or weight is invalid
-          throw Exception('Invalid height or weight input');
-        }
-
-        switch (_selectedBSA) {
-          case 1:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.boyd);
-            break;
-          case 2:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.mosteller);
-            break;
-          case 3:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.dubois);
-            break;
-          case 4:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.gehangeorge);
-            break;
-          default:
-          // Handle unexpected BSA method selections
-            print('Invalid BSA calculation method selected');
-            bsa = 0.0;
-            return;
-        }
-
-        // Continue with the rest of your form submission logic
+      if (weight == null) {
+        // Handle the case where weight is invalid
+        throw Exception('Invalid weight input');
       }
+
+      if (customBSA == null ){
+        throw Exception("the BSA cannot be null.");
+      }
+      bsa = customBSA;
 
       double? existingSteroidEquivalent;
       if (steroidDose == null || _selectedGlucocorticoid == null){
@@ -400,6 +366,15 @@ class _SteroidPageState extends State<SteroidPage> {
     }
   }
 
+  bool isBsaValid(){
+    if (_bsaController.text.isEmpty) return false;
+    return true;
+  }
+
+  bool isWeightValid(){
+    if (_weightController.text.isEmpty) return false;
+    return true;
+  }
 
   bool areSteroidsValid() {
     if (_existingSteroids){
@@ -410,17 +385,8 @@ class _SteroidPageState extends State<SteroidPage> {
     return true;
   }
 
-  bool isBsaValid() {
-    if (_showBodySurfaceArea) {
-      return _bsaController.text.isNotEmpty;
-    } else {
-      return _weightController.text.isNotEmpty &&
-          _heightController.text.isNotEmpty;
-    }
-  }
-
   bool _formComplete(){
-    return areSteroidsValid()==isBsaValid();
+    return areSteroidsValid()==(isBsaValid()==isWeightValid());
   }
 
   @override
@@ -497,135 +463,25 @@ class _SteroidPageState extends State<SteroidPage> {
                             ),
                           ),
                         ),
-                        // Weight and Height TextFormField
-                        Visibility(
-                            visible: !_showBodySurfaceArea,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children:[
-                                  TextFormField(
-                                    controller: _weightController,
-                                    decoration: const InputDecoration(
-                                    labelText: 'Weight (kg)',
-                                    border: OutlineInputBorder(),),
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty && !_showBodySurfaceArea) {
-                                        return "Please enter infant/child/young person's weight";
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'Please enter a valid number';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 8),
-                                  // Weight TextFormField
-                                  TextFormField(
-                                    controller: _heightController,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Height (cm)',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "Please enter infant/child/young person's height/length";
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'Please enter a valid number';
-                                      }
-                                      if (double.tryParse(value)! < 45 || double.tryParse(value)! > 205){
-                                        return 'Please enter a valid height';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 8,),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      ToggleButtons(
-                                        isSelected: _isSelected,
-                                        onPressed: (int index) {
-                                          setState(() {
-                                            for (int buttonIndex = 0; buttonIndex < _isSelected.length; buttonIndex++) {
-                                              if (buttonIndex == index) {
-                                                _isSelected[buttonIndex] = !_isSelected[buttonIndex];
-                                              } else {
-                                                _isSelected[buttonIndex] = false;
-                                              }
-                                            }
-                                            // _selectedBSA = index + 1; // Update selected option
-                                          });
-                                        },
-                                        selectedBorderColor: Colors.blue,
-                                        selectedColor: Colors.blue,
-                                        children: [
-                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Boyd", style: TextStyle(fontSize: 10),)],)),
-                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Mosteller",style: TextStyle(fontSize: 10),)],)),
-                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Du Bois",style: TextStyle(fontSize: 10),)],)),
-                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Gehan & George",style: TextStyle(fontSize: 10),)],)),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ],)
-                          ),
-                        // Body surface area TextFormField
-                        Visibility(
-                          visible: _showBodySurfaceArea,
-                          child: TextFormField(
-                                    controller: _bsaController,
-                                    keyboardType: TextInputType.number,
-                                    validator: (value){
-                                      if (value == null || value.isEmpty && (_showBodySurfaceArea)) {
-                                        return "Please enter the body surface area in m².";
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'Please enter a valid number';
-                                      }
-                                      return null;
-                                    },
-                                    decoration: const InputDecoration(
-                                      labelText: 'body surface area (m²)',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  ),
-                          ),
-                        // body surface area checkbox and label
-                        const SizedBox(height: 8,),
-                        // body surface area checkbox and label
-                        Row(
-                            children: [
-                              Expanded( // Wrap the Row containing the Text and Tooltip with Expanded
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Flexible( // Allow the Text to wrap if needed
-                                      child: Text(
-                                        "Body surface area is already known",
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Tooltip(
-                                      message: 'If the body surface area is already known, enter it here',
-                                      margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
-                                      child: Icon(Icons.info_outline, color: Colors.blue),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Checkbox(
-                                value: _showBodySurfaceArea,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _showBodySurfaceArea = value ?? false;
-                                  });
-                                },
-                              ),
-                            ]),
+                        // Weight TextFormField
+                        TextFormField(
+                          controller: _weightController,
+                          decoration: const InputDecoration(
+                            labelText: 'Weight (kg)',
+                            border: OutlineInputBorder(),),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter infant/child/young person's weight";
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'Please enter a valid number';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        // Weight TextFormField
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

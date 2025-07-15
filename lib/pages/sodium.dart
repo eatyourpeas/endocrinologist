@@ -6,6 +6,7 @@ import 'package:endocrinologist/calculations/salinecalculations.dart';
 class _SodiumPageState extends State<SodiumPage>{
   // Global key for form state
   final _formKey = GlobalKey<FormState>();
+  bool _showInfoBox = true;
 
   Saline? _selectedSaline;
   final List<Saline> _salines = sortedSalineStrengths(saline_strengths);
@@ -83,9 +84,64 @@ class _SodiumPageState extends State<SodiumPage>{
         key: _formKey,
         child: Column(
           children: [
-            const Text(
-              'Sodium Page',
-              style: TextStyle(fontSize: 24),
+            Visibility(
+              visible: _showInfoBox,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0), // Adjust padding
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlueAccent[100],
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(
+                      color: Colors.lightBlueAccent,
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start, // Align items to the top
+                    children: <Widget>[
+                      // Info Icon (at the beginning)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0, top: 2.0), // Adjust padding for alignment
+                        child: Icon(
+                          Icons.info_outline,
+                          color: Colors.blue[700], // Choose a suitable color for the icon
+                          size: 20,
+                        ),
+                      ),
+                      // Your Text (takes up available space)
+                      const Expanded(
+                        child: Text(
+                          'Calculate the expected rise in plasma sodium from a single litre of infusate.',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                      // Close Icon (at the end)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0), // Add some space before the close icon
+                        child: InkWell( // Makes the icon clickable
+                          onTap: () {
+                            setState(() {
+                              _showInfoBox = false; // Update state to hide the box
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(12), // Optional: for ripple effect shape
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.grey[700], // Choose a suitable color
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             SizedBox(

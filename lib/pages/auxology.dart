@@ -16,7 +16,7 @@ class _AuxologyPageState extends State<AuxologyPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           body: Column(
             children:[

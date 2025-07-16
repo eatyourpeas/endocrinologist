@@ -63,8 +63,10 @@ class _SteroidPageState extends State<SteroidPage> {
         steroidText = "This assumes no other steroids are prescribed.";
       }
       List<double> suggestedTDSMin = dividedDoses(maintenanceDoseMin, 3);
-      List<double> suggestedTDSMax = dividedDoses(maintenanceDoseMin, 3);
-      List<double> suggestedQDS = dividedDoses(stressDose, 4);
+      List<double> suggestedTDSMax = dividedDoses(maintenanceDoseMax, 3);
+      List<double> suggestedQDSMin = dividedDoses(maintenanceDoseMin, 4);
+      List<double> suggestedQDSMax = dividedDoses(maintenanceDoseMax, 4);
+      List<double> suggestedQDSStress = dividedDoses(stressDose, 4);
       showDialog(
         context: context,
           builder: (BuildContext context){
@@ -94,7 +96,7 @@ class _SteroidPageState extends State<SteroidPage> {
                               children: [
                                 Text("8mg/m²/d (${maintenanceDoseMin.toStringAsFixed(0)} mg/day)", style: const TextStyle(fontWeight: FontWeight.bold),),
                                 const Tooltip(
-                                  message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                  message: 'The doses have been rounded to the nearest 1.25mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
                                   child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
                                 ),
@@ -102,12 +104,20 @@ class _SteroidPageState extends State<SteroidPage> {
                             ),
                             Row(
                               children: [
-                                Wrap(
-                                  alignment: WrapAlignment.start,
-                                  children: [
-                                    Text("${suggestedTDSMin.join('mg, ')}mg"),
-                                  ],
-                                ),
+                                Expanded(
+                                    child: Wrap(
+                                      alignment: WrapAlignment.start,
+                                      children: [
+                                        Text("3 doses: ${suggestedTDSMin.join('mg, ')}mg (${suggestedTDSMin.reduce((value, element) => value + element).toStringAsFixed(0)}mg)",
+                                          style: const TextStyle(fontStyle: FontStyle.italic),
+                                        ),
+                                        Text("4 doses: ${suggestedQDSMin.join('mg, ')}mg (${suggestedQDSMin.reduce((value, element) => value + element).toStringAsFixed(0)}mg)",
+                                          style: const TextStyle(fontStyle: FontStyle.italic),
+                                        )
+
+                                      ],
+                                    ),
+                                )
                               ],
                             ),
                             Row(
@@ -115,7 +125,7 @@ class _SteroidPageState extends State<SteroidPage> {
                               children: [
                                 Text("10mg/m²/d (${maintenanceDoseMax.toStringAsFixed(0)} mg/day)", style: const TextStyle(fontWeight: FontWeight.bold),),
                                 const Tooltip(
-                                  message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                  message: 'The doses have been rounded to the nearest 1.25mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
                                   child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
                                 ),
@@ -124,13 +134,20 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Wrap(
-                                  alignment: WrapAlignment.start,
-                                  children: [
-                                    Text("${suggestedTDSMax.join('mg, ')} mg"),
-                                  ],
-                                ),
-                              ],
+                                Expanded(
+                                    child: Wrap(
+                                      alignment: WrapAlignment.start,
+                                      children: [
+                                        Text("3 doses: ${suggestedTDSMax.join('mg, ')}mg (${suggestedTDSMax.reduce((value, element) => value + element).toStringAsFixed(0)}mg)",
+                                          style: const TextStyle(fontStyle: FontStyle.italic),
+                                        ),
+                                        Text("4 doses: ${suggestedQDSMax.join('mg, ')}mg (${suggestedQDSMax.reduce((value, element) => value + element).toStringAsFixed(0)}mg)",
+                                          style: const TextStyle(fontStyle: FontStyle.italic),
+                                        )
+                                      ],
+                                    ),
+                                )
+                              ]
                             ),
                             const SizedBox(height: 20,),
                             const Row(
@@ -263,7 +280,7 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("${suggestedQDS.join('mg , ')}mg"),
+                                Text("${suggestedQDSStress.join('mg , ')}mg"),
                               ],
                             ),
                             const SizedBox(height: 8,),

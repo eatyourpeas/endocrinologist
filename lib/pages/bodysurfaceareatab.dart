@@ -105,10 +105,6 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
                       style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      "Body Surface Area (BSA):",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
                     Text(
                       "${bsa.toStringAsFixed(3)} m²", // Display calculated BSA
                       style: const TextStyle(
@@ -285,23 +281,29 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
                 onPressed: (int index) {
                   setState(() {
                     for (int buttonIndex = 0; buttonIndex < _isSelected.length; buttonIndex++) {
-                      if (buttonIndex == index) {
-                        _isSelected[buttonIndex] = !_isSelected[buttonIndex];
-                      } else {
-                        _isSelected[buttonIndex] = false;
-                      }
+                      _isSelected[buttonIndex] = buttonIndex == index;
                     }
-                    // _selectedBSA = index + 1; // Update selected option
+                    _selectedMethod = bsaMethods[index];
                   });
                 },
                 selectedBorderColor: Colors.blue,
                 selectedColor: Colors.blue,
-                children: [
-                  SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Boyd", style: TextStyle(fontSize: 10),)],)),
-                  SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Mosteller",style: TextStyle(fontSize: 10),)],)),
-                  SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Du Bois",style: TextStyle(fontSize: 10),)],)),
-                  SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Gehan & George",style: TextStyle(fontSize: 10),)],)),
-                ],
+                constraints: BoxConstraints(
+                  minHeight: 40.0,
+                  minWidth: (MediaQuery.of(context).size.width - 64) / bsaMethods.length,
+                ),
+                children: bsaMethods.map((method) {
+                  return Expanded(
+                      child:Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      _getBsaMethodName(method),
+                      style: const TextStyle(fontSize: 11),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ));
+                }).toList()
               )
             ],
           ),

@@ -19,32 +19,47 @@ double hydrocortisoneEquivalentDose(double dose, Glucocorticoid steroid){
   return dose * steroid.potency;
 }
 
-List<double> dividedDoses(double dose, int numberOfDoses) {
-  // Rounds dose to be divisible by 2.5mg then returns 3 divided doses (not necessarily equal)
+List<double> dividedDoses(double originalDose, int numberOfDoses) {
+  if (numberOfDoses <= 0) {
+    throw ArgumentError("Number of doses must be positive.");
+  }
+  if (originalDose < 0) {
+    throw ArgumentError("Original dose cannot be negative.");
+  }
 
-  // Round the dose to the nearest value divisible by 2.5
-  double roundedDose = (dose / 2.5).round() * 2.5;
+  if (originalDose == 0) { // Handle zero dose explicitly for clarity
+    return List.filled(numberOfDoses, 0.0);
+  }
 
-  // Initialize an empty list to store each dose
+  // Calculate the target total dose.
+  double targetTotalDose = (originalDose / 1.25).ceil() * 1.25;
+
   List<double> doses = [];
+  double remainingOverallDoseToDistribute = targetTotalDose;
+  double doseIncrement = 1.25;
 
-  // Total dose should be divided into 'numberOfDoses' parts
-  double totalDose = roundedDose;
+  double baseIndividualDoseNotRounded = targetTotalDose / numberOfDoses;
 
-  // Calculate the base dose that is divisible by 2.5
-  double baseDose = (totalDose / numberOfDoses / 2.5).floor() * 2.5;
-
-  // Calculate how much remains after evenly distributing the base doses
-  double remainingDose = totalDose - (baseDose * numberOfDoses);
-
-  // Distribute doses such that each is divisible by 2.5
   for (int i = 0; i < numberOfDoses; i++) {
-    if (remainingDose >= 2.5) {
-      doses.add(baseDose + 2.5); // Add extra 2.5 where possible
-      remainingDose -= 2.5;
-    } else {
-      doses.add(baseDose);
-    }
+    // For the current dose, round it UP to the nearest multiple of doseIncrement
+    double currentPortion = (baseIndividualDoseNotRounded / doseIncrement).ceil() * doseIncrement;
+    doses.add(currentPortion); // Initialize
+  }
+
+  double baseDosePerPortion = ( (targetTotalDose / numberOfDoses) / doseIncrement ).floor() * doseIncrement;
+  for(int i=0; i < numberOfDoses; i++){
+    doses[i] = baseDosePerPortion;
+  }
+
+  double sumOfBaseDoses = baseDosePerPortion * numberOfDoses;
+  double remainingToDistributeInIncrements = targetTotalDose - sumOfBaseDoses;
+
+  const double tolerance = 0.00001; // For double comparisons
+  int k = 0;
+  while(remainingToDistributeInIncrements >= (doseIncrement - tolerance)){
+    doses[k % numberOfDoses] += doseIncrement;
+    remainingToDistributeInIncrements -= doseIncrement;
+    k++;
   }
 
   return doses;

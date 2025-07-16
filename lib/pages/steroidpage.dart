@@ -14,63 +14,30 @@ class SteroidPage extends StatefulWidget {
 class _SteroidPageState extends State<SteroidPage> {
   // Global key for form state
   final _formKey = GlobalKey<FormState>();
-
-  bool _showBodySurfaceArea = false;
-  final int _selectedBSA = 1;
-  final List<bool> _isSelected = [true, false, false, false];
+  bool _showInfoBox = true;
   bool _existingSteroids = false;
   Glucocorticoid? _selectedGlucocorticoid;
   final List<Glucocorticoid> _dropdownItems = sortedGlucocorticoids(glucocorticoids);
-
   final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
   final TextEditingController _bsaController = TextEditingController();
   final TextEditingController _steroidDoseController = TextEditingController();
 
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
-      double? height = double.tryParse(_heightController.text);
       double? weight = double.tryParse(_weightController.text);
       double? customBSA = double.tryParse(_bsaController.text);
       double? steroidDose = double.tryParse(_steroidDoseController.text);
       double bsa = 0.0;
 
-      if (_showBodySurfaceArea) {
-        if (customBSA == null ){
-          throw Exception("the BSA cannot be null.");
-        }
-        bsa = customBSA;
-        // If showing BSA, ensure we proceed with calculations even if height and weight are null
-        // Here you might want to handle the case where BSA is being shown without input values
-      } else {
-        // If not showing BSA, ensure height and weight are valid
-        if (height == null || weight == null) {
-          // Handle the case where height or weight is invalid
-          throw Exception('Invalid height or weight input');
-        }
-
-        switch (_selectedBSA) {
-          case 1:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.boyd);
-            break;
-          case 2:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.mosteller);
-            break;
-          case 3:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.dubois);
-            break;
-          case 4:
-            bsa = calculateBSA(height, weight, BsaCalculationMethod.gehangeorge);
-            break;
-          default:
-          // Handle unexpected BSA method selections
-            print('Invalid BSA calculation method selected');
-            bsa = 0.0;
-            return;
-        }
-
-        // Continue with the rest of your form submission logic
+      if (weight == null) {
+        // Handle the case where weight is invalid
+        throw Exception('Invalid weight input');
       }
+
+      if (customBSA == null ){
+        throw Exception("the BSA cannot be null.");
+      }
+      bsa = customBSA;
 
       double? existingSteroidEquivalent;
       if (steroidDose == null || _selectedGlucocorticoid == null){
@@ -96,8 +63,10 @@ class _SteroidPageState extends State<SteroidPage> {
         steroidText = "This assumes no other steroids are prescribed.";
       }
       List<double> suggestedTDSMin = dividedDoses(maintenanceDoseMin, 3);
-      List<double> suggestedTDSMax = dividedDoses(maintenanceDoseMin, 3);
-      List<double> suggestedQDS = dividedDoses(stressDose, 4);
+      List<double> suggestedTDSMax = dividedDoses(maintenanceDoseMax, 3);
+      List<double> suggestedQDSMin = dividedDoses(maintenanceDoseMin, 4);
+      List<double> suggestedQDSMax = dividedDoses(maintenanceDoseMax, 4);
+      List<double> suggestedQDSStress = dividedDoses(stressDose, 4);
       showDialog(
         context: context,
           builder: (BuildContext context){
@@ -106,7 +75,7 @@ class _SteroidPageState extends State<SteroidPage> {
               content: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                    children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0), // Add padding below the grid
                         child: Column(
@@ -127,7 +96,7 @@ class _SteroidPageState extends State<SteroidPage> {
                               children: [
                                 Text("8mg/m²/d (${maintenanceDoseMin.toStringAsFixed(0)} mg/day)", style: const TextStyle(fontWeight: FontWeight.bold),),
                                 const Tooltip(
-                                  message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                  message: 'The doses have been rounded to the nearest 1.25mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
                                   child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
                                 ),
@@ -135,12 +104,20 @@ class _SteroidPageState extends State<SteroidPage> {
                             ),
                             Row(
                               children: [
-                                Wrap(
-                                  alignment: WrapAlignment.start,
-                                  children: [
-                                    Text("${suggestedTDSMin.join('mg, ')}mg"),
-                                  ],
-                                ),
+                                Expanded(
+                                    child: Wrap(
+                                      alignment: WrapAlignment.start,
+                                      children: [
+                                        Text("3 doses: ${suggestedTDSMin.join('mg, ')}mg (${suggestedTDSMin.reduce((value, element) => value + element).toStringAsFixed(0)}mg)",
+                                          style: const TextStyle(fontStyle: FontStyle.italic),
+                                        ),
+                                        Text("4 doses: ${suggestedQDSMin.join('mg, ')}mg (${suggestedQDSMin.reduce((value, element) => value + element).toStringAsFixed(0)}mg)",
+                                          style: const TextStyle(fontStyle: FontStyle.italic),
+                                        )
+
+                                      ],
+                                    ),
+                                )
                               ],
                             ),
                             Row(
@@ -148,7 +125,7 @@ class _SteroidPageState extends State<SteroidPage> {
                               children: [
                                 Text("10mg/m²/d (${maintenanceDoseMax.toStringAsFixed(0)} mg/day)", style: const TextStyle(fontWeight: FontWeight.bold),),
                                 const Tooltip(
-                                  message: 'The doses have been rounded to the nearest 2.5mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
+                                  message: 'The doses have been rounded to the nearest 1.25mg. It is possible the maximum and minimum maintenance doses will therefore be the same.',
                                   margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
                                   child: Icon(Icons.info_outline, color: Colors.blue, size: 18,),
                                 ),
@@ -157,13 +134,20 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Wrap(
-                                  alignment: WrapAlignment.start,
-                                  children: [
-                                    Text("${suggestedTDSMax.join('mg, ')} mg"),
-                                  ],
-                                ),
-                              ],
+                                Expanded(
+                                    child: Wrap(
+                                      alignment: WrapAlignment.start,
+                                      children: [
+                                        Text("3 doses: ${suggestedTDSMax.join('mg, ')}mg (${suggestedTDSMax.reduce((value, element) => value + element).toStringAsFixed(0)}mg)",
+                                          style: const TextStyle(fontStyle: FontStyle.italic),
+                                        ),
+                                        Text("4 doses: ${suggestedQDSMax.join('mg, ')}mg (${suggestedQDSMax.reduce((value, element) => value + element).toStringAsFixed(0)}mg)",
+                                          style: const TextStyle(fontStyle: FontStyle.italic),
+                                        )
+                                      ],
+                                    ),
+                                )
+                              ]
                             ),
                             const SizedBox(height: 20,),
                             const Row(
@@ -296,7 +280,7 @@ class _SteroidPageState extends State<SteroidPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("${suggestedQDS.join('mg , ')}mg"),
+                                Text("${suggestedQDSStress.join('mg , ')}mg"),
                               ],
                             ),
                             const SizedBox(height: 8,),
@@ -399,6 +383,15 @@ class _SteroidPageState extends State<SteroidPage> {
     }
   }
 
+  bool isBsaValid(){
+    if (_bsaController.text.isEmpty) return false;
+    return true;
+  }
+
+  bool isWeightValid(){
+    if (_weightController.text.isEmpty) return false;
+    return true;
+  }
 
   bool areSteroidsValid() {
     if (_existingSteroids){
@@ -409,17 +402,8 @@ class _SteroidPageState extends State<SteroidPage> {
     return true;
   }
 
-  bool isBsaValid() {
-    if (_showBodySurfaceArea) {
-      return _bsaController.text.isNotEmpty;
-    } else {
-      return _weightController.text.isNotEmpty &&
-          _heightController.text.isNotEmpty;
-    }
-  }
-
   bool _formComplete(){
-    return areSteroidsValid()==isBsaValid();
+    return areSteroidsValid()==(isBsaValid()==isWeightValid());
   }
 
   @override
@@ -437,135 +421,103 @@ class _SteroidPageState extends State<SteroidPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Weight and Height TextFormField
                         Visibility(
-                            visible: !_showBodySurfaceArea,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children:[
-                                  TextFormField(
-                                    controller: _weightController,
-                                    decoration: const InputDecoration(
-                                    labelText: 'Weight (kg)',
-                                    border: OutlineInputBorder(),),
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty && !_showBodySurfaceArea) {
-                                        return "Please enter infant/child/young person's weight";
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'Please enter a valid number';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 8),
-                                  // Weight TextFormField
-                                  TextFormField(
-                                    controller: _heightController,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Height (cm)',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "Please enter infant/child/young person's height/length";
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'Please enter a valid number';
-                                      }
-                                      if (double.tryParse(value)! < 45 || double.tryParse(value)! > 205){
-                                        return 'Please enter a valid height';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 8,),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      ToggleButtons(
-                                        isSelected: _isSelected,
-                                        onPressed: (int index) {
-                                          setState(() {
-                                            for (int buttonIndex = 0; buttonIndex < _isSelected.length; buttonIndex++) {
-                                              if (buttonIndex == index) {
-                                                _isSelected[buttonIndex] = !_isSelected[buttonIndex];
-                                              } else {
-                                                _isSelected[buttonIndex] = false;
-                                              }
-                                            }
-                                            // _selectedBSA = index + 1; // Update selected option
-                                          });
-                                        },
-                                        selectedBorderColor: Colors.blue,
-                                        selectedColor: Colors.blue,
-                                        children: [
-                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Boyd", style: TextStyle(fontSize: 10),)],)),
-                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Mosteller",style: TextStyle(fontSize: 10),)],)),
-                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Du Bois",style: TextStyle(fontSize: 10),)],)),
-                                          SizedBox(width: (MediaQuery.of(context).size.width - 37)/4, child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[ SizedBox(width: 4.0), Text("Gehan & George",style: TextStyle(fontSize: 10),)],)),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ],)
-                          ),
-                        // Body surface area TextFormField
-                        Visibility(
-                          visible: _showBodySurfaceArea,
-                          child: TextFormField(
-                                    controller: _bsaController,
-                                    keyboardType: TextInputType.number,
-                                    validator: (value){
-                                      if (value == null || value.isEmpty && (_showBodySurfaceArea)) {
-                                        return "Please enter the body surface area in m².";
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'Please enter a valid number';
-                                      }
-                                      return null;
-                                    },
-                                    decoration: const InputDecoration(
-                                      labelText: 'body surface area (m²)',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  ),
-                          ),
-                        // body surface area checkbox and label
-                        const SizedBox(height: 8,),
-                        // body surface area checkbox and label
-                        Row(
-                            children: [
-                              Expanded( // Wrap the Row containing the Text and Tooltip with Expanded
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Flexible( // Allow the Text to wrap if needed
-                                      child: Text(
-                                        "Body surface area is already known",
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Tooltip(
-                                      message: 'If the body surface area is already known, enter it here',
-                                      margin: EdgeInsets.symmetric(horizontal: 20.0), // Add margin to both sides
-                                      child: Icon(Icons.info_outline, color: Colors.blue),
-                                    ),
-                                  ],
+                          visible: _showInfoBox,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0), // Adjust padding
+                              decoration: BoxDecoration(
+                                color: Colors.lightBlueAccent[100],
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(
+                                  color: Colors.lightBlueAccent,
+                                  width: 1,
                                 ),
                               ),
-                              Checkbox(
-                                value: _showBodySurfaceArea,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _showBodySurfaceArea = value ?? false;
-                                  });
-                                },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start, // Align items to the top
+                                children: <Widget>[
+                                  // Info Icon (at the beginning)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0, top: 2.0), // Adjust padding for alignment
+                                    child: Icon(
+                                      Icons.info_outline,
+                                      color: Colors.blue[700], // Choose a suitable color for the icon
+                                      size: 20,
+                                    ),
+                                  ),
+                                  // Your Text (takes up available space)
+                                  const Expanded(
+                                    child: Text(
+                                      'Calculate hydrocortisone maintenance and emergency doses from body surface area.',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                  // Close Icon (at the end)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0), // Add some space before the close icon
+                                    child: InkWell( // Makes the icon clickable
+                                      onTap: () {
+                                        setState(() {
+                                          _showInfoBox = false; // Update state to hide the box
+                                        });
+                                      },
+                                      borderRadius: BorderRadius.circular(12), // Optional: for ripple effect shape
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.grey[700], // Choose a suitable color
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ]),
+                            ),
+                          ),
+                        ),
+                        // Weight TextFormField
+                        TextFormField(
+                          controller: _weightController,
+                          decoration: const InputDecoration(
+                            labelText: 'Weight (kg)',
+                            border: OutlineInputBorder(),),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter infant/child/young person's weight";
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'Please enter a valid number';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        // Weight TextFormField
+                        TextFormField(
+                          controller: _bsaController,
+                          keyboardType: TextInputType.number,
+                          validator: (value){
+                            if (value == null || value.isEmpty) {
+                              return "Please enter the body surface area in m².";
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'Please enter a valid number';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'body surface area (m²)',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        // body surface area checkbox and label
+                        const SizedBox(height: 8,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

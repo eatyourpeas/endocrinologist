@@ -23,6 +23,7 @@ import '../classes/milk.dart';
     bool _showParenteralFields = false;
     bool _showEnteralFields = false;
     bool _showCustomMilkCarbsField = false;
+    bool _showInfoBox = true;
 
     bool validateMilkSelection(Milk? milk) {
       if (milk == null && !_showCustomMilkCarbsField) {
@@ -173,6 +174,66 @@ import '../classes/milk.dart';
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Visibility(
+                  visible: _showInfoBox,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0), // Adjust padding
+                      decoration: BoxDecoration(
+                        color: Colors.lightBlueAccent[100],
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(
+                          color: Colors.lightBlueAccent,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start, // Align items to the top
+                        children: <Widget>[
+                          // Info Icon (at the beginning)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0, top: 2.0), // Adjust padding for alignment
+                            child: Icon(
+                              Icons.info_outline,
+                              color: Colors.blue[700], // Choose a suitable color for the icon
+                              size: 20,
+                            ),
+                          ),
+                          // Your Text (takes up available space)
+                          const Expanded(
+                            child: Text(
+                              'Calculate Glucose Infusion Rate from parenteral dextrose and enteral feeds.',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          // Close Icon (at the end)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0), // Add some space before the close icon
+                            child: InkWell( // Makes the icon clickable
+                              onTap: () {
+                                setState(() {
+                                  _showInfoBox = false; // Update state to hide the box
+                                });
+                              },
+                              borderRadius: BorderRadius.circular(12), // Optional: for ripple effect shape
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.grey[700], // Choose a suitable color
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
                 // Weight TextFormField
                 TextFormField(
                   controller: _weightController,

@@ -6,7 +6,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The number following the + is the version number that matters on the store. This
 # must be incremented whenever making a new release
-version: 1.0.0+2
+version: 1.0.0+16
 
 environment:
   sdk: '>=3.4.1 <4.0.0'

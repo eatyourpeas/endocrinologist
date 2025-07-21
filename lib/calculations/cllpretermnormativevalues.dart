@@ -1,4 +1,7 @@
 // Import for statistical calculations
+import 'dart:math';
+import 'package:endocrinologist/calculations/centile.dart';
+import 'package:endocrinologist/enums/enums.dart';
 
 class FetalCLLData {
 
@@ -89,6 +92,103 @@ class FetalCLLData {
       }
     }
     return nearestData;
+  }
+
+  // Calculates SDS and Centile using interpolation from normative data points.
+  static (double sds, double centile) calculateSDSAndCentile({
+    required int gestation,
+    required double inputValue,
+    required CLLMeasurementType measurementType,
+  }) {
+    FetalCLLData? nearestData = findNearestGestationCLLSizesForGestation(gestation);
+
+    if (nearestData == null) {
+      return (double.nan, double.nan);
+    }
+
+    double mean, val1SD, val2SD, val3SD;
+
+    switch (measurementType) {
+      case CLLMeasurementType.length:
+        mean = nearestData.meanLength;
+        val1SD = nearestData.meanLengthOneSDS;
+        val2SD = nearestData.meanLengthTwoSDS;
+        val3SD = nearestData.meanLengthThreeSDS;
+        break;
+      case CLLMeasurementType.width:
+        mean = nearestData.meanWidth;
+        val1SD = nearestData.meanWidthOneSDS;
+        val2SD = nearestData.meanWidthTwoSDS;
+        val3SD = nearestData.meanWidthThreeSDS;
+        break;
+    }
+
+    // Define the points on the measurement vs. SDS scale
+    // Each point is a record: (measurement_value, sds_score)
+    // Access them later as point.$1 for value, point.$2 for sds
+
+    // Symmetrical negative points are inferred based on the positive SD values.
+    final List<(double, double)> sortedPoints = [
+      (mean - (val3SD - mean), -3.0), // -3SD_value, -3.0 SDS
+      (mean - (val2SD - mean), -2.0), // -2SD_value, -2.0 SDS
+      (mean - (val1SD - mean), -1.0), // -1SD_value, -1.0 SDS
+      (mean, 0.0),                    //  Mean_value,  0.0 SDS
+      (val1SD, 1.0),                  // +1SD_value,  1.0 SDS
+      (val2SD, 2.0),                  // +2SD_value,  2.0 SDS
+      (val3SD, 3.0),                  // +3SD_value,  3.0 SDS
+    ];
+
+    // Check for values outside the +/-3SD range defined by your data points
+    // sortedPoints.last is the (+3SD_value, 3.0) record
+    // sortedPoints.first is the (-3SD_value, -3.0) record
+    if (inputValue >= sortedPoints.last.$1) { // inputValue >= +3SD_value
+      double sds = 3.0; // Cap at +3.0 SDS
+      // Optional extrapolation logic can be added here if desired
+      return (sds, sdsToCentile(sds));
+    }
+    if (inputValue <= sortedPoints.first.$1) { // inputValue <= -3SD_value
+      double sds = -3.0; // Cap at -3.0 SDS
+      // Optional extrapolation logic can be added here if desired
+      return (sds, sdsToCentile(sds));
+    }
+
+    // Find the segment for interpolation
+    for (int i = 0; i < sortedPoints.length - 1; i++) {
+      var p0 = sortedPoints[i];     // Lower point of the segment: (value_low, sds_low)
+      var p1 = sortedPoints[i + 1]; // Upper point of the segment: (value_high, sds_high)
+
+      // Check if inputValue falls between p0's value and p1's value
+      if (inputValue >= p0.$1 && inputValue <= p1.$1) {
+        // Handle cases where the segment has zero width (p0 value == p1 value)
+        // This indicates an issue with the normative data points.
+        if ((p1.$1 - p0.$1).abs() < 1e-9) { // Using a small tolerance for double comparison
+          // If inputValue is effectively at p0's value, use p0's SDS.
+          // Otherwise (it's effectively at p1's value, or segment width is zero), use p1's SDS.
+          // This is a simplification; you might log an error or handle differently.
+          if ((inputValue - p0.$1).abs() < 1e-9) {
+            double sds = p0.$2; // sds_low
+            return (sds, sdsToCentile(sds));
+          } else {
+            double sds = p1.$2; // sds_high
+            return (sds, sdsToCentile(sds));
+          }
+        }
+
+        // Linearly interpolate for SDS
+        // SDS = y0 + (inputValue - x0) * (y1 - y0) / (x1 - x0)
+        // y0 = p0.$2 (sds_low)
+        // x0 = p0.$1 (value_low)
+        // y1 = p1.$2 (sds_high)
+        // x1 = p1.$1 (value_high)
+        double sds = p0.$2 + (inputValue - p0.$1) * (p1.$2 - p0.$2) / (p1.$1 - p0.$1);
+        return (sds, sdsToCentile(sds));
+      }
+    }
+
+    // Fallback: Should not be reached if inputValue is within the range of sortedPoints
+    // or handled by the capping logic. This might occur for NaN inputValue or
+    // if there's an unexpected issue with the sortedPoints data.
+    return (double.nan, double.nan);
   }
 
 }

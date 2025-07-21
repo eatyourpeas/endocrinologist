@@ -39,7 +39,7 @@ class _FetalCLLChartState extends State<FetalCLLChart>{
               xValueMapper: (FetalCLLData data, _) => data.gestationalWeeks,
               yValueMapper: (FetalCLLData data, _) => widget.isWidth ? data.meanWidth : data.meanLength,
               color: Colors.blue,
-              name: 'Mean Width',
+              name: widget.isWidth ?'Mean Width' : 'Mean Length',
             ),
             LineSeries<FetalCLLData, int>(
               dataSource: FetalCLLData.dataList,

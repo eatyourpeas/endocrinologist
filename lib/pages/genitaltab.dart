@@ -1,4 +1,5 @@
 
+import 'package:endocrinologist/calculations/cllpretermnormativevalues.dart';
 import 'package:endocrinologist/pages/childbulgariansplchart.dart';
 import 'package:endocrinologist/pages/childindiansplchart.dart';
 import 'package:endocrinologist/pages/fetalsplchart.dart';
@@ -43,41 +44,71 @@ class _GenitalTabState extends State<GenitalTab>{
     _currentSex = widget.initialSex;
   }
 
+  void _restart() {
+    _splController.clear();
+    _cllController.clear();
+    _cwlController.clear();
+    _decimalAgeController.clear();
+    setState(() {
+      _sdsString = '';
+      _centileString = '';
+      showScatterPoint = false;
+      selectedGestationWeek = 40;
+    });
+  }
+
   void _calculateResult() {
     double inputValue;
     double sds;
     double centile;
 
+    decimalAge = double.tryParse(_decimalAgeController.text) ?? 0;
+
     if (_currentSex == Sex.male){
       spl = double.tryParse(_splController.text) ?? 0;
       inputValue = spl;
+
+      if (_neonateSelected[0]) {
+        (sds, centile) = FetalSPLData.calculateSDSAndCentile(
+            selectedGestationWeek, spl);
+      } else {
+        if (_ethnicityIsSelected[0]) {
+          sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(
+              measuredStretchedPenileLength: spl,
+              decimalAgeYears: decimalAge,
+              ethnicity: Ethnicity.Bulgarian);
+        } else {
+          sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(
+              measuredStretchedPenileLength: spl,
+              decimalAgeYears: decimalAge,
+              ethnicity: Ethnicity.Indian);
+        }
+        centile = sdsToCentile(sds);
+
+        setState(() {
+          _sdsString = 'SDS: ${sds.toStringAsFixed(1)}';
+          _centileString = 'Centile: ${centile.toStringAsFixed(1)}';
+          showScatterPoint = true;
+        });
+      }
+
     } else {
       if (showCLL){
         cll = double.tryParse(_cllController.text) ?? 0;
         inputValue = cll;
+        (sds, centile) = FetalCLLData.calculateSDSAndCentile(
+            gestation: selectedGestationWeek, inputValue: inputValue, measurementType: CLLMeasurementType.length);
       } else {
         cwl = double.tryParse(_cwlController.text) ?? 0;
         inputValue = cwl;
+        (sds, centile) = FetalCLLData.calculateSDSAndCentile(gestation: selectedGestationWeek, inputValue: inputValue, measurementType: CLLMeasurementType.width);
       }
+      setState(() {
+        _sdsString = 'SDS: ${sds.toStringAsFixed(1)}';
+        _centileString = 'Centile: ${centile.toStringAsFixed(1)}';
+        showScatterPoint = true;
+      });
     }
-    decimalAge = double.tryParse(_decimalAgeController.text) ?? 0;
-
-    if (_neonateSelected[0]){
-      (sds, centile) = FetalSPLData.calculateSDSAndCentile(selectedGestationWeek, spl);
-    } else {
-      if (_ethnicityIsSelected[0])
-        sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(measuredStretchedPenileLength: spl, decimalAgeYears: decimalAge, ethnicity: Ethnicity.Bulgarian);
-      else
-        sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(measuredStretchedPenileLength: spl, decimalAgeYears: decimalAge, ethnicity: Ethnicity.Indian);
-      centile = sdsToCentile(sds);
-    }
-
-
-    setState(() {
-      _sdsString = 'SDS: ${sds.toStringAsFixed(1)}';
-      _centileString = 'Centile: ${centile.toStringAsFixed(1)}';
-      showScatterPoint = true;
-    });
   }
 
   @override
@@ -96,25 +127,27 @@ class _GenitalTabState extends State<GenitalTab>{
           labelText: _neonateSelected[0] ? 'SPL Neonate (cm)' : 'SPL Child (cm)',
         ),
       );
-      if (_neonateSelected[0])
+      if (_neonateSelected[0]) {
         chartSpecificWidget = FetalSPLChart(
           selectedGestationWeek: selectedGestationWeek,
           spl: spl,
           showScatterPoint: showScatterPoint,
         );
-      else
-        if (_ethnicityIsSelected[0])
+      } else {
+        if (_ethnicityIsSelected[0]) {
           chartSpecificWidget = ChildBulgarianSPLChart(
             decimal_age: decimalAge,
             spl: spl,
             showScatterPoint: showScatterPoint,
           );
-        else
+        } else {
           chartSpecificWidget = ChildIndianSPLChart(
-            decimal_age: decimalAge,
-            spl: spl,
-            showScatterPoint: showScatterPoint
+              decimal_age: decimalAge,
+              spl: spl,
+              showScatterPoint: showScatterPoint
           );
+        }
+      }
 
     } else { // Female
       inputSpecificFields = Column(children: [
@@ -140,13 +173,10 @@ class _GenitalTabState extends State<GenitalTab>{
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Text(showCLL
+            Text(showCLL
                   ? 'Showing Clitoral Length'
                   : 'Showing Clitoral Width'),
-            ),
-            Expanded(
-              child: Switch(
+            Switch(
                 value: showCLL,
                 onChanged: (value) {
                   setState(() {
@@ -164,8 +194,7 @@ class _GenitalTabState extends State<GenitalTab>{
                     showScatterPoint = false;
                   });
                 },
-              ),
-            )
+            ),
           ],
         ),
       ]);
@@ -260,36 +289,55 @@ class _GenitalTabState extends State<GenitalTab>{
                   )
                 ],
               ),
-
-              TextField(
-                  controller: _decimalAgeController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'decimal age (years)',
-                  )),
+              if (_neonateSelected[0]==false)
+                TextField(
+                    controller: _decimalAgeController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'decimal age (years)',
+                    )),
             const SizedBox(height: 6),
             inputSpecificFields, // Show SPL or CLL/CWL input
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _calculateResult,
-              child: const Text('Calculate'),
-            ),
-            Column(
+            Row(
               children: [
-                const SizedBox(height: 10),
-                Text(_sdsString,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    )),
-                Text(_centileString,
-                    style: TextStyle(
+                Expanded(
+                    child:ElevatedButton(
+                      onPressed: _calculateResult,
+                      child: const Text('Calculate'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlueAccent,
+                      ),
+                    ),
+                ),
+                Expanded(
+                    child:ElevatedButton(
+                      onPressed: _restart,
+                      child: const Text('Restart'),
+                    ),
+                )
+              ]
+            ),
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              Text(_sdsString,
+                  style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
-                )),
-                chartSpecificWidget, // Show correct chart
-              ],
+                    fontSize: TextTheme.of(context).headlineSmall?.fontSize
+                  )),
+              const SizedBox(width: 10),
+              Text(_centileString,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold, fontSize: TextTheme.of(context).headlineSmall?.fontSize
+                  )),
+              ]
             ),
+            const SizedBox(height: 10),
+            chartSpecificWidget, // Show correct chart
           ],
         ),
       ),

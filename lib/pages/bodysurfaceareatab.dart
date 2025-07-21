@@ -293,8 +293,7 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
                   minWidth: (MediaQuery.of(context).size.width - 64) / bsaMethods.length,
                 ),
                 children: bsaMethods.map((method) {
-                  return Expanded(
-                      child:Padding(
+                  return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
                       _getBsaMethodName(method),
@@ -302,7 +301,7 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ));
+                  );
                 }).toList()
               )
             ],

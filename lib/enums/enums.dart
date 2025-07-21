@@ -10,3 +10,8 @@ enum BsaCalculationMethod {
   dubois,
   gehangeorge
 }
+
+enum CLLMeasurementType {
+  length,
+  width,
+}

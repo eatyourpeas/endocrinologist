@@ -55,13 +55,6 @@ jobs:
           mkdir -p android/keystore
           echo "Attempting to decode keystore..."
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/keystore/eatyourpeas.jks
-          
-          echo "Verifying decoded keystore file:"
-          ls -l android/keystore/eatyourpeas.jks
-          
-          echo "Calculating SHA1 of the decoded keystore on the runner:"
-          keytool -list -v -keystore android/keystore/eatyourpeas.jks -storepass ${{ secrets.KEYSTORE_PASSWORD }} | grep "SHA1:"
-          
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties

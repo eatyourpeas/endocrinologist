@@ -5,10 +5,41 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Load key properties if the file exists
+val keyPropertiesFile = rootProject.file("key.properties") // Assumes key.properties is in the android directory
+val keyProperties = loadProperties(keyPropertiesFile.absolutePath)
+
+// Function to load properties from a file
+fun loadProperties(filePath: String): androidx.room.vo.Properties {
+    val properties = androidx.room.vo.Properties()
+    val file = File(filePath)
+    if (file.exists() && file.isFile) {
+        FileInputStream(file).use { properties.load(it) }
+    }
+    return properties
+}
+
 android {
     namespace = "uk.co.eatyourpeas.endocrinologist"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
+
+    signingConfigs {
+        create("release") {
+            // Only configure if key.properties and its required entries exist
+            if (keyPropertiesFile.exists()) {
+                storeFile = file(keyProperties.getProperty("storeFile"))
+                storePassword = keyProperties.getProperty("storePassword")
+                keyAlias = keyProperties.getProperty("keyAlias")
+                keyPassword = keyProperties.getProperty("keyPassword")
+            } else {
+                // Fallback or error if key.properties is missing for a release build
+                // For CI, you expect this to be present. For local builds, you might have other setups.
+                println("Warning: key.properties not found. Release build may not be signed correctly.")
+                throw GradleException("key.properties not found for release signing configuration.")
+            }
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -20,10 +51,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "uk.co.eatyourpeas.endocrinologist"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -32,8 +60,11 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        debug {
             signingConfig = signingConfigs.getByName("debug")
         }
     }

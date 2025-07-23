@@ -1,3 +1,10 @@
+import java.util.Properties
+import java.io.File
+import java.io.FileInputStream
+import org.gradle.api.JavaVersion
+import org.gradle.api.GradleException
+import org.gradle.api.tasks.Delete
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -5,19 +12,19 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Load key properties if the file exists
-val keyPropertiesFile = rootProject.file("key.properties") // Assumes key.properties is in the android directory
-val keyProperties = loadProperties(keyPropertiesFile.absolutePath)
-
 // Function to load properties from a file
-fun loadProperties(filePath: String): androidx.room.vo.Properties {
-    val properties = androidx.room.vo.Properties()
+fun loadProperties(filePath: String): Properties {
+    val properties = Properties()
     val file = File(filePath)
     if (file.exists() && file.isFile) {
         FileInputStream(file).use { properties.load(it) }
     }
     return properties
 }
+
+// Load key properties if the file exists
+val keyPropertiesFile = rootProject.file("key.properties") // Assumes key.properties is in the android directory
+val keyProperties = loadProperties(keyPropertiesFile.absolutePath)
 
 android {
     namespace = "uk.co.eatyourpeas.endocrinologist"

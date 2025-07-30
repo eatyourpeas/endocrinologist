@@ -61,7 +61,7 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
         return;
       }
 
-      final double currentHeight = double.tryParse(_currentHeightController.text)!;
+      final double currentHeight = double.tryParse(_currentHeightController.text)!/2.54;
 
       PredictedFinalHeightData? exampleResult = heightPredictionService.predictFinalHeight(childCurrentHeightInches: currentHeight, childSkeletalAgeStr: skeletalAgeStr, childActualAgeDecimalYears: actualAge, sex: sexStr);
       _showResultModal(exampleResult);
@@ -91,13 +91,73 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
       return;
     }
 
+    final String resultString = result.finalHeight();
+
+    String category = '';
+    if (result.skeletalAgeDifferenceCategory == 'advanced_gt_1yr'){
+      category = 'Advanced';
+    } else if (result.skeletalAgeDifferenceCategory == 'delayed_gt_1yr'){
+      category = 'Delayed';
+    } else {
+      category = 'Normal';
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Predicted Final Height'),
-          content: SingleChildScrollView( // In case the result string is long
-            child: Text(result.toString()), // Using the toString() from your data class
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                    'Current Height: ${(result.childCurrentHeightInches*2.54).toStringAsFixed(1)} cm (${result.childCurrentHeightInches.toStringAsFixed(1)} in)',
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                        color: Colors.blue
+                    ),
+                  ),
+              Text(
+                'Actual Age: ${result.childActualAgeDecimalYears.toStringAsFixed(2)} yrs',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  fontSize: 14.0,
+                ),
+              ),
+              Text(
+                  'Bone Age: ${result.childSkeletalAgeString.split('-')[0]} years (${result.childSkeletalAgeString.split('-')[1]} mths)',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                  ),
+              ),
+              Text(
+                '$category',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  fontSize: 14.0,
+                ),
+              ),
+              Text(
+                  'Sex: ${result.sex}',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                    fontSize: 14.0,
+                  ),
+              ),
+              Text(
+                'Final Height: $resultString',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue
+                  ),
+              ),
+            ]
           ),
           actions: <Widget>[
             TextButton(
@@ -137,13 +197,6 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(
-                'Enter Child Details',
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-
               // Current Height
               TextFormField(
                 controller: _currentHeightController,
@@ -213,11 +266,9 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 20),
 
               // Sex Toggle
               Text('Sex:', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
               ToggleButtons(
                 isSelected: [_selectedSex == Sex.male, _selectedSex == Sex.female],
                 onPressed: (int index) {

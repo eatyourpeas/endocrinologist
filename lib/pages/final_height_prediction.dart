@@ -51,15 +51,17 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
 
       final double? actualAge = double.tryParse(_actualAgeController.text);
       final String skeletalAgeStr = _skeletalAgeController.text; // e.g., "10-6"
-      final double? currentHeight = double.tryParse(_currentHeightController.text);
+
       final String sexStr = _selectedSex == Sex.male ? 'boy' : 'girl';
 
-      if (actualAge == null || currentHeight == null || skeletalAgeStr.isEmpty) {
+      if (actualAge == null || double.tryParse(_currentHeightController.text) == null || skeletalAgeStr.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please fill all fields correctly.')),
         );
         return;
       }
+
+      final double currentHeight = double.tryParse(_currentHeightController.text)!;
 
       PredictedFinalHeightData? exampleResult = heightPredictionService.predictFinalHeight(childCurrentHeightInches: currentHeight, childSkeletalAgeStr: skeletalAgeStr, childActualAgeDecimalYears: actualAge, sex: sexStr);
       _showResultModal(exampleResult);
@@ -146,8 +148,8 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
               TextFormField(
                 controller: _currentHeightController,
                 decoration: const InputDecoration(
-                  labelText: 'Current Height (inches)',
-                  hintText: 'e.g., 50.5',
+                  labelText: 'Current Height (cm)',
+                  hintText: 'e.g., 84.5',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.height),
                 ),

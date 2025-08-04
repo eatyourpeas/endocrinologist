@@ -318,13 +318,13 @@ PredictedFinalHeightData? predictFinalHeight({
                         predictedFinalHeightCm: directPredictedHeight * inchesToCm,
                 );
             } else {
-              print('DEBUG: Exact row found for Current Height: $roundedCurrentHeight, but skeletal age "$childSkeletalAgeStr" not found as exact key in that row. Proceeding to interpolation.');
+              // print('DEBUG: Exact row found for Current Height: $roundedCurrentHeight, but skeletal age "$childSkeletalAgeStr" not found as exact key in that row. Proceeding to interpolation.');
             }
         } else {
-          print('DEBUG: Current height $roundedCurrentHeight is an integer, but no exact data row found. Proceeding to interpolation for current height.');
+          // print('DEBUG: Current height $roundedCurrentHeight is an integer, but no exact data row found. Proceeding to interpolation for current height.');
         }
       } else {
-        print('DEBUG: Current height ${childCurrentHeightInches.toStringAsFixed(2)} is not an exact integer. Proceeding directly to interpolation for current height.');
+        // print('DEBUG: Current height ${childCurrentHeightInches.toStringAsFixed(2)} is not an exact integer. Proceeding directly to interpolation for current height.');
       }
 
     // --- 2. Prepare Data Points for Bilinear Interpolation ---

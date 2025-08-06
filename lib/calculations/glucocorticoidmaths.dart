@@ -2,17 +2,17 @@ import 'package:endocrinologist/classes/glucocorticoid.dart';
 
 double maintenanceHydrocortisoneDoseMin(double bodySurfaceArea){
   // maintenance hydrocortisone in 8-10 mg/m2/d
-  return 8/bodySurfaceArea;
+  return 8*bodySurfaceArea;
 }
 
 double maintenanceHydrocortisoneDoseMax(double bodySurfaceArea){
   // maintenance hydrocortisone in 8-10 mg/m2/d
-  return 10/bodySurfaceArea;
+  return 10*bodySurfaceArea;
 }
 
 double oralStressHydrocortisoneDoseMax(double bodySurfaceArea){
   // oral stress hydrocortisone dose is 30 mg/m2/d
-  return 30/bodySurfaceArea;
+  return 30*bodySurfaceArea;
 }
 
 double hydrocortisoneEquivalentDose(double dose, Glucocorticoid steroid){
@@ -32,11 +32,11 @@ List<double> dividedDoses(double originalDose, int numberOfDoses) {
   }
 
   // Calculate the target total dose.
-  double targetTotalDose = (originalDose / 1.25).ceil() * 1.25;
+  double targetTotalDose = (originalDose / 1.0).ceil() * 1.0;
 
   List<double> doses = [];
   double remainingOverallDoseToDistribute = targetTotalDose;
-  double doseIncrement = 1.25;
+  double doseIncrement = 1.0;
 
   double baseIndividualDoseNotRounded = targetTotalDose / numberOfDoses;
 

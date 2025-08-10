@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:endocrinologist/pages/bayley_pineau_page.dart';
-import 'package:endocrinologist/pages/twiiii_page.dart';
+import 'package:endocrinologist/pages/height_prediction/bayley_pineau_page.dart';
+import 'package:endocrinologist/pages/height_prediction/twiiii_page.dart';
 
 
 class FinalHeightSelectionPage extends StatelessWidget {
@@ -30,24 +30,21 @@ class FinalHeightSelectionPage extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.calculate_outlined),
-            title: const Text('TW3 Method (Tanner-Whitehouse III)'),
-            subtitle: const Text('Uses RUS bone age for height prediction.'),
+            title: const Text('TWIII Method (Tanner-Whitehouse)'),
+            subtitle: const Text('Uses RUS bone age, height and sex.'),
             trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const TWIIIHeightPredictionPage()),
               );
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('TW3 Method page not yet implemented.')),
-              );
             },
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.calculate_outlined),
-            title: const Text('Another Method'),
-            subtitle: const Text('Description of another final height prediction method.'),
+            title: const Text('The Roche-Wainer-Thissen (RWT) method'),
+            subtitle: const Text('Uses length, weight, midparent height, and bone age.'),
             trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
               // Replace with navigation to your other method page
@@ -56,7 +53,7 @@ class FinalHeightSelectionPage extends StatelessWidget {
               //   MaterialPageRoute(builder: (context) => const AnotherFinalHeightPage()),
               // );
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Another method page not yet implemented.')),
+                const SnackBar(content: Text('Coming soon...')),
               );
             },
           ),

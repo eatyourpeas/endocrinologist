@@ -2,7 +2,7 @@ import "package:endocrinologist/enums/enums.dart";
 import "package:endocrinologist/classes/rwt_final_height_weight_class.dart";
 
 /// A service class to manage and query RWTFinalHeightWeights data.
-class GrowthDataService {
+class RWTFinalHeightPredictionService {
   /// Raw CSV data for boys.
   static const String _boysCsvData = r'''
 age_years,age_months,height_length_coefficient,weight_coefficient,midparental_height_coefficient,bone_age_coefficient,regression_intercept
@@ -133,9 +133,9 @@ age_years,age_months,height_length_coefficient,weight_coefficient,midparental_he
 
   final List<RWTFinalHeightWeights> _allData;
 
-  /// Constructs a [GrowthDataService] and populates it with data
+  /// Constructs a [RWTFinalHeightPredictionService] and populates it with data
   /// from the embedded CSV strings for boys and girls.
-  GrowthDataService() : _allData = [] {
+  RWTFinalHeightPredictionService() : _allData = [] {
     _loadData();
   }
 

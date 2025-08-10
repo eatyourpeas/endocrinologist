@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:endocrinologist/pages/bayley_pineau_page.dart'; // Assuming BayleyPinneauPage is here
-// Import other final height calculator pages as you create them
-// import 'package:endocrinologist/pages/tw3_final_height_page.dart';
-// import 'package:endocrinologist/pages/another_final_height_page.dart';
+import 'package:endocrinologist/pages/bayley_pineau_page.dart';
+import 'package:endocrinologist/pages/twiiii_page.dart';
+
 
 class FinalHeightSelectionPage extends StatelessWidget {
   const FinalHeightSelectionPage({super.key});
@@ -31,15 +30,14 @@ class FinalHeightSelectionPage extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.calculate_outlined),
-            title: const Text('TW3 Method (Tanner-Whitehouse 3)'),
+            title: const Text('TW3 Method (Tanner-Whitehouse III)'),
             subtitle: const Text('Uses RUS bone age for height prediction.'),
             trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
-              // Replace with navigation to your TW3 page when created
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const TW3FinalHeightPage()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const TWIIIHeightPredictionPage()),
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('TW3 Method page not yet implemented.')),
               );

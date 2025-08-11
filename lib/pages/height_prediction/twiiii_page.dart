@@ -377,6 +377,14 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 8.0),
+              const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Prediction of adult height from height, bone age, and occurrence ofmenarche, at ages 4 to 16 with allowance for midparent height, J. M. TANNER, R. H. WHITEHOUSE, W. A. MARSHALL, and B. S. CARTER, From the Department of Growth and Development, Institute of Child Health, University of London',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 12),
+                  )),
               const SizedBox(height: 20),
             ],
           ),

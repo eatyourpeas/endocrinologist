@@ -34,12 +34,17 @@ class _AuxologyPageState extends State<AuxologyPage> {
     // This Scaffold represents the overall "Auxology" section
     // which itself might be a destination if AuxologyPage is part of a larger app navigation
     return Scaffold(
-      // appBar: AppBar( // Optional: Add an AppBar if Auxology needs its own title
-      //   title: const Text('Auxology'),
-      //   // You might want to change the title based on _selectedIndex or remove it
-      //   // if the content of each page is self-explanatory
-      // ),
-      body: Center(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+            'Auxology',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            )
+        ),
+      ),
+      body: Container(
         // Display the widget associated with the currently selected index
         child: _auxologyPages.elementAt(_selectedIndex),
       ),

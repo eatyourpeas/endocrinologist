@@ -289,6 +289,13 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
                   ),
                 ],
               ),
+              const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Bayley, N. & Pinneau, S.R. 1952. Tables for predicting adult height from skeletal age: revised for use with the Greulich-Pyle hand standards. JPediatr, 40, (4) 423-441 ',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 12),
+                  )),
               const SizedBox(height: 20), // Added some padding at the bottom
             ],
           ),

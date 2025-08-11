@@ -401,7 +401,7 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('RWT Height Prediction (v2)'),
+        title: const Text('RWT Height Prediction'),
       ),
       body: SingleChildScrollView( // Ensures content is scrollable
         padding: const EdgeInsets.all(16.0),
@@ -412,7 +412,7 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               // Sex Toggle
-              Text('Biological Sex:', style: Theme.of(context).textTheme.titleMedium),
+              Text('Sex:', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               SegmentedButton<Sex>(
                 segments: const <ButtonSegment<Sex>>[
@@ -543,6 +543,14 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Roche AF, Wainer H, Thissen D. The RWT method for the prediction of adult stature. Pediatrics. 1975 Dec;56(6):1027-33. PMID: 172855.',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 12),
+                  )),
               const SizedBox(height: 20), // Bottom padding
             ],
           ),

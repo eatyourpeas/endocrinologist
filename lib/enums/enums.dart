@@ -4,6 +4,8 @@ enum Centile { P3, P5, P10, P25, P50, P75, P90, P95, P97 }
 
 enum Ethnicity { Bulgarian, Indian }
 
+enum AgeGroup { neonate, child }
+
 enum BsaCalculationMethod {
   mosteller,
   boyd,
@@ -15,3 +17,5 @@ enum CLLMeasurementType {
   length,
   width,
 }
+
+enum AgeInputMode { decimal, yearsMonths }

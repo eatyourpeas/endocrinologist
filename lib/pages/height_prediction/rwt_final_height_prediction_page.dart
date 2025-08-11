@@ -12,6 +12,7 @@ class RWTPredictionPage extends StatefulWidget {
 
 class _RWTPredictionPageState extends State<RWTPredictionPage> {
   final _formKey = GlobalKey<FormState>();
+  bool _useAmendedData = false; // Defaults to false
   final RWTFinalHeightPredictionService _heightPredictionService =
   RWTFinalHeightPredictionService();
 
@@ -183,11 +184,12 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
         boneAgeDecimalYears: boneAgeDecimal,
         midparentalHeightCm: midparentalHeight,
         sex: _selectedSex,
+        useAmendedData: _useAmendedData,
       );
       setState(() {
         _predictedHeightResult = estimatedHeight;
       });
-      _showResultModal(estimatedHeight, currentHeight, ageDecimal, weight, boneAgeDecimal, midparentalHeight);
+      _showResultModal(estimatedHeight, currentHeight, ageDecimal, weight, boneAgeDecimal, midparentalHeight, _useAmendedData);
     } catch (e) {
       _showErrorModal('Calculation Error: ${e.toString()}');
       setState(() {
@@ -196,12 +198,12 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
     }
   }
 
-  void _showResultModal(double predictedHeight, double currentH, double ageD, double w, double boneAgeD, double mph) {
+  void _showResultModal(double predictedHeight, double currentH, double ageD, double w, double boneAgeD, double mph, bool amendedDataUsed) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('RWT Predicted Adult Height'),
+          title: Text('RWT Predicted Adult Height ${ amendedDataUsed ? ' (Amended Data)' : ''}'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -411,6 +413,24 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              SwitchListTile(
+                title: const Text('Use Amended RWT Data (1993)'),
+                subtitle: const Text('Applies alternative coefficients.'),
+                value: _useAmendedData,
+                onChanged: (bool value) {
+                  setState(() {
+                    _useAmendedData = value;
+                    // Optional: if changing this toggle should immediately affect validation
+                    // or the calculable state, you might call:
+                    // _formKey.currentState?.validate();
+                    // _checkFormValidity();
+                    // However, for this specific boolean, it usually just affects the calculation itself.
+                  });
+                },
+                activeColor: Theme.of(context).colorScheme.primary,
+                contentPadding: EdgeInsets.zero, // Adjust padding as needed
+              ),
+              const SizedBox(height: 16),
               // Sex Toggle
               Text('Sex:', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
@@ -544,10 +564,10 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
                 ],
               ),
               const SizedBox(height: 16),
-              const Padding(
+              Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    'Roche AF, Wainer H, Thissen D. The RWT method for the prediction of adult stature. Pediatrics. 1975 Dec;56(6):1027-33. PMID: 172855.',
+                    '${ _useAmendedData ? "Khamis HJ, Guo S. Improvement in the Roche-Wainer-Thissen stature prediction model: A comparative study. Am J Hum Biol. 1993;5(6):669-679. doi: 10.1002/ajhb.1310050609. PMID: 28548358." : "Roche AF, Wainer H, Thissen D. The RWT method for the prediction of adult stature. Pediatrics. 1975 Dec;56(6):1027-33. PMID: 172855."}',
                     textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 12),
                   )),

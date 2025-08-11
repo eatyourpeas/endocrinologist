@@ -17,3 +17,5 @@ enum CLLMeasurementType {
   length,
   width,
 }
+
+enum AgeInputMode { decimal, yearsMonths }

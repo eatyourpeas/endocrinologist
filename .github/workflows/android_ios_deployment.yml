@@ -125,6 +125,13 @@ jobs:
         run: |
           sudo xcrun simctl runtime install iOS 18.2 || true
 
+      - name: Create iOS 18.2 Simulator
+        run: |
+          xcrun simctl create "iPhone 14 (iOS 18.2)" com.apple.CoreSimulator.SimDeviceType.iPhone-14 com.apple.CoreSimulator.SimRuntime.iOS-18-2 || true
+
+      - name: List available simulators - verify iOS 18.2 and iPhone 14 are available
+        run: xcrun simctl list devices
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -164,7 +171,7 @@ jobs:
           api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
           bundle-id: ${{ secrets.IOS_BUNDLE_ID }}
 
-      # Step 1: Build the .xcarchive without code signing
+      # Step 1: Build the .xcarchive without code signing - note the phone and target are set here
       - name: Build iOS Archive (without signing)
         run: |
           # The --no-codesign flag tells Flutter to build the archive but skip the signing step.
@@ -173,6 +180,7 @@ jobs:
             --build-name=${{ env.VERSION_NAME }} \
             --build-number=${{ env.BUILD_NUMBER }} \
             --no-codesign
+            --destination="platform=iOS Simulator,OS=18.2,name=iPhone 14"
         # Ensure your project has 'Runner.xcworkspace' and 'Runner.xcscheme'
 
       # Step 2: Export the IPA from the archive with explicit signing

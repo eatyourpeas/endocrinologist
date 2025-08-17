@@ -180,7 +180,7 @@ jobs:
 
       # Step 2: Export the IPA from the archive with explicit signing
       - name: Export IPA from Archive
-        id: export_ipa_step # Added ID to set output
+        id: export_ipa_step # The ID is still useful if you refer to the step itself, though outputs are now different
         run: |
           # Find the generated .xcarchive file
           ARCHIVE_PATH=$(find build/ios/archive -name "*.xcarchive" -print -quit)
@@ -189,26 +189,27 @@ jobs:
             echo "Error: .xcarchive not found after flutter build."
             exit 1
           fi
-
+          
           # Create a directory for the exported IPA
           mkdir -p build/ios/ipa
-
+          
           # Use xcodebuild to export the IPA with explicit signing parameters.
-          # This command respects the ExportOptions.plist and overrides project settings.
           xcodebuild -exportArchive \
             -archivePath "$ARCHIVE_PATH" \
             -exportOptionsPlist ./ios/ExportOptions.plist \
             -exportPath build/ios/ipa/
-
+          
           # Find the actual .ipa file created in the build/ios/ipa/ directory
           IPA_FILE_PATH=$(find build/ios/ipa -name "*.ipa" -print -quit)
-
+          
           if [ -z "$IPA_FILE_PATH" ]; then
             echo "Error: .ipa file not found after export. Check xcodebuild output."
             exit 1
           fi
-
-          echo "::set-output name=ipa_path::$IPA_FILE_PATH" # Set output with the full IPA path
+          
+          # New way to set an output parameter for subsequent steps
+          echo "ipa_path=$IPA_FILE_PATH" >> $GITHUB_OUTPUT
+      
 
       - name: Create TestFlight Release Notes
         id: create_release_notes

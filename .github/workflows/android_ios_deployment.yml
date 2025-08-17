@@ -115,22 +115,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # This step sets the desired Xcode version. Xcode 16 is required for iOS 18 SDK.
+      # This step sets the desired Xcode version. Setting latest to ensure supports available runtimes
       - name: Select Xcode 16
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.2'
+          xcode-version: 'latest-stable'
 
-      - name: Install iOS 18.2 Simulator runtime
+      - name: List available simulators and runtimes (for debugging)
         run: |
-          sudo xcrun simctl runtime install iOS 18.2 || true
-
-      - name: Create iOS 18.2 Simulator
-        run: |
-          xcrun simctl create "iPhone 14 (iOS 18.2)" com.apple.CoreSimulator.SimDeviceType.iPhone-14 com.apple.CoreSimulator.SimRuntime.iOS-18-2 || true
-
-      - name: List available simulators - verify iOS 18.2 and iPhone 14 are available
-        run: xcrun simctl list devices
+          echo "Available runtimes:"
+          xcrun simctl list runtimes
+          echo "Available devices:"
+          xcrun simctl list devices
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -180,7 +176,6 @@ jobs:
             --build-name=${{ env.VERSION_NAME }} \
             --build-number=${{ env.BUILD_NUMBER }} \
             --no-codesign
-            --destination="platform=iOS Simulator,OS=18.2,name=iPhone 14"
         # Ensure your project has 'Runner.xcworkspace' and 'Runner.xcscheme'
 
       # Step 2: Export the IPA from the archive with explicit signing

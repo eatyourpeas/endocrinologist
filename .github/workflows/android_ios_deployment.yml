@@ -121,6 +121,10 @@ jobs:
         with:
           xcode-version: '16.2'
 
+      - name: Install iOS 18.2 Simulator runtime
+        run: |
+          sudo xcrun simctl runtime install iOS 18.2 || true
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:

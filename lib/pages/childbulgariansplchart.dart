@@ -31,7 +31,7 @@ class ChildBulgarianSPLChart extends StatefulWidget {
   @override
   State <ChildBulgarianSPLChart> createState() => _ChildBulgarianSPLChartState();
 }
-
+// Tomova A, Deepinder F, Robeva R, Lalabonova H, Kumanov P, Agarwal A. Growth and Development of Male External Genitalia: A Cross-sectional Study of 6200 Males Aged 0 to 19 Years. Arch Pediatr Adolesc Med. 2010;164(12):1152–1157. doi:10.1001/archpediatrics.2010.223
 class _ChildBulgarianSPLChartState extends State<ChildBulgarianSPLChart>{
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class _ChildBulgarianSPLChartState extends State<ChildBulgarianSPLChart>{
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
-              'Pediatric penile anthropometry nomogram: Establishing standardized reference values, Goel, Prabudh et al. Journal of Pediatric Urology, Volume 21, Issue 2, 454 - 459, April 2025',
+              'Tomova A, Deepinder F, Robeva R, Lalabonova H, Kumanov P, Agarwal A. Growth and Development of Male External Genitalia: A Cross-sectional Study of 6200 Males Aged 0 to 19 Years. Arch Pediatr Adolesc Med. 2010;164(12):1152–1157. doi:10.1001/archpediatrics.2010.223',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12),
             ),

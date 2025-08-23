@@ -19,10 +19,6 @@ class _GenitalSizePageState extends State<GenitalSizePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          // Optional: Add a title for this section if not clear from context
-          // Text("Genital Size Centiles", style: Theme.of(context).textTheme.headlineSmall),
-          // const SizedBox(height: 16),
-
           SegmentedButton<Sex>(
             segments: const <ButtonSegment<Sex>>[
               ButtonSegment<Sex>(value: Sex.male, label: Text('Male'), icon: Icon(Icons.male)),
@@ -35,8 +31,7 @@ class _GenitalSizePageState extends State<GenitalSizePage> {
               });
             },
             style: SegmentedButton.styleFrom(
-              // Consider adjusting padding for visual balance
-              // visualDensity: VisualDensity(horizontal: -2, vertical: -2),
+              visualDensity: VisualDensity(horizontal: -2, vertical: -2),
             ),
           ),
           const SizedBox(height: 20),

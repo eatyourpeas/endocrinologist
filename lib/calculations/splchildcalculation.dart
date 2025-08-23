@@ -86,11 +86,6 @@ class PenileStatsCalculator {
     // Ensure P95 > P5 to avoid division by zero or negative SD if data is unusual
     if (interpolatedP95 <= interpolatedP5) {
       // print("Warning: P95 is not greater than P5 for age $decimalAgeYears. Cannot reliably calculate SD.");
-      // Alternative SD estimation if P95-P5 is not usable:
-      // double sdFromP95 = (interpolatedP95 - meanCircumference) / 1.645;
-      // double sdFromP5 = (meanCircumference - interpolatedP5) / 1.645;
-      // if (sdFromP95 > 0) return (measuredCircumferenceCm - meanCircumference) / sdFromP95;
-      // if (sdFromP5 > 0) return (measuredCircumferenceCm - meanCircumference) / sdFromP5;
       return double.nan; // Or handle as appropriate
     }
     final double standardDeviation = (interpolatedP95 - interpolatedP5) / (2 * 1.64485); // 1.64485 is Z for 95th/5th percentile

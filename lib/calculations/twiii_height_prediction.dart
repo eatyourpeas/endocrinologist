@@ -9,6 +9,8 @@ double predictAdultHeight({
   required double chronologicalAge,
   required double rusBoneAge,
   bool menarchealStatus = false,
+  bool useMidParentalHeight = false,
+  double? midParentalHeight,
 }) {
   final List<TWIIIAdultHeightPrediction> relevantData;
   if (sex == Sex.male) {
@@ -126,10 +128,21 @@ double predictAdultHeight({
   interpolate(lower.constant.toDouble(), upper.constant.toDouble());
 
   // Predicted adult height equation
-  return height * interpolatedHeightCoefficient +
+  double predictedHeight = height * interpolatedHeightCoefficient +
       chronologicalAge * interpolatedChronologicalAgeCoefficient +
       rusBoneAge * interpolatedBoneAgeCoefficient +
       interpolatedConstant;
+  if (useMidParentalHeight) {
+    if (midParentalHeight == null) {
+      throw ArgumentError("Mid-parental height must be provided when useMidParentalHeight is true.");
+    }
+    if (midParentalHeight < 168){
+      predictedHeight -= (168 - midParentalHeight)/3;
+    } else {
+      predictedHeight += (midParentalHeight - 168)/3;
+    }
+  }
+  return predictedHeight;
 }
 
 /// Parses the age string from TWIIIAdultHeightPrediction data to a decimal year value.

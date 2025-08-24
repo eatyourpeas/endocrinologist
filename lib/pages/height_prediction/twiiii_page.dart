@@ -19,11 +19,13 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
   final TextEditingController _chronologicalAgeMonthsController = TextEditingController();
   final TextEditingController _rusBoneAgeYearsController = TextEditingController();
   final TextEditingController _rusBoneAgeMonthsController = TextEditingController();
+  final TextEditingController _midParentalHeightController = TextEditingController();
 
   // State variables
   Sex _selectedSex = Sex.male;
   bool _isPostMenarcheal = false; // Default to premenarcheal or not applicable
   bool _canCalculate = false; // To control button enable state
+  bool _useMidParentalHeight = false;
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
     _chronologicalAgeMonthsController.addListener(_checkFormValidity);
     _rusBoneAgeYearsController.addListener(_checkFormValidity);
     _rusBoneAgeMonthsController.addListener(_checkFormValidity);
+    _midParentalHeightController.addListener(_checkFormValidity);
   }
 
   @override
@@ -49,6 +52,7 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
     _chronologicalAgeMonthsController.dispose();
     _rusBoneAgeYearsController.dispose();
     _rusBoneAgeMonthsController.dispose();
+    _midParentalHeightController.dispose();
     super.dispose();
   }
 
@@ -58,6 +62,13 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
     bool isRusBoneAgeYearsValid = _rusBoneAgeYearsController.text.isNotEmpty && int.tryParse(_rusBoneAgeYearsController.text) != null;
     bool isRusBoneAgeMonthsValid = _rusBoneAgeMonthsController.text.isNotEmpty && int.tryParse(_rusBoneAgeMonthsController.text) != null;
     bool isHeightValid = _currentHeightController.text.isNotEmpty && double.tryParse(_currentHeightController.text) != null;
+    bool isMidParentalHeightValid = true;
+
+    if (_useMidParentalHeight) {
+      isMidParentalHeightValid =
+          _midParentalHeightController.text.isNotEmpty &&
+              double.tryParse(_midParentalHeightController.text) != null;
+    }
 
     // The menarcheal status toggle doesn't have a controller, its state is _isPostMenarcheal.
     // It's always "valid" in terms of input, its relevance is handled by the _selectedSex.
@@ -83,9 +94,11 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
     _chronologicalAgeMonthsController.clear();
     _rusBoneAgeYearsController.clear();
     _rusBoneAgeMonthsController.clear();
+    _midParentalHeightController.clear();
     setState(() {
       _selectedSex = Sex.male;
       _isPostMenarcheal = false;
+      _useMidParentalHeight = false;
       _canCalculate = false; // Reset button state
     });
   }
@@ -99,9 +112,8 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
 
   void _calculateHeight() {
     if (!_formKey.currentState!.validate()) {
-      // If form is not valid (even if button was enabled due to manual check, double check with form validation)
       setState(() {
-        _canCalculate = false; // Ensure button reflects validation state
+        _canCalculate = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please correct the errors in the form.')),
@@ -115,30 +127,53 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
         _chronologicalAgeMonthsController.text);
     final double rusBoneAge = _convertToDecimalYears(
         _rusBoneAgeYearsController.text, _rusBoneAgeMonthsController.text);
+    bool statusForCalculation =
+    (_selectedSex == Sex.female) ? _isPostMenarcheal : false;
 
-    // The menarchealStatus parameter for predictAdultHeight is only relevant if sex is female.
-    // The function signature has `bool menarchealStatus = false`, so if it's a male,
-    // passing the current _isPostMenarcheal (which might be true if user toggled then switched sex)
-    // shouldn't matter as the function should ignore it for males.
-    // However, for clarity, you could explicitly pass false for males.
-    bool statusForCalculation = (_selectedSex == Sex.female) ? _isPostMenarcheal : false;
-
+    double? midParentalHeightValue;
+    if (_useMidParentalHeight) {
+      midParentalHeightValue =
+          double.tryParse(_midParentalHeightController.text);
+      // Validator ensures it's not null if _useMidParentalHeight is true and field is filled
+    }
 
     try {
-      final double predictedHeight = predictAdultHeight(
+      // Call the service, which now returns a record (double, double)
+      final (double predicted, double predictedAdjusted) = predictAdultHeight( // Destructuring the record
         sex: _selectedSex,
         height: height,
         chronologicalAge: chronologicalAge,
         rusBoneAge: rusBoneAge,
         menarchealStatus: statusForCalculation,
+        useMidParentalHeight: _useMidParentalHeight,
+        midParentalHeight: midParentalHeightValue,
       );
-      _showResultModal(predictedHeight, height, chronologicalAge, rusBoneAge, statusForCalculation);
+
+      _showResultModal(
+        predicted, // Pass the base prediction
+        predictedAdjusted, // Pass the (potentially) adjusted prediction
+        height,
+        chronologicalAge,
+        rusBoneAge,
+        statusForCalculation,
+        _useMidParentalHeight, // Pass the flag indicating if MPH was used
+      );
     } catch (e) {
       _showErrorModal('Calculation Error: ${e.toString()}');
     }
   }
 
-  void _showResultModal(double predictedHeight, double currentHeight, double ca, double ba, bool menarcheStatus) {
+  // In _TWIIIHeightPredictionPageState:
+
+  void _showResultModal(
+      double basePredictedHeight, // The first value from the tuple
+      double adjustedPredictedHeight, // The second value from the tuple
+      double currentHeight,
+      double ca,
+      double ba,
+      bool menarcheStatus,
+      bool usedMph, // This flag tells us if the MPH adjustment was intended by the user
+      ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -154,16 +189,33 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                 Text('RUS Bone Age: ${ba.toStringAsFixed(2)} yrs'),
                 Text('Sex: ${_selectedSex == Sex.male ? "Male" : "Female"}'),
                 if (_selectedSex == Sex.female)
-                  Text('Menarcheal Status: ${_isPostMenarcheal ? "Post-menarcheal" : "Pre-menarcheal"}'),
+                  Text(
+                      'Menarcheal Status: ${_isPostMenarcheal ? "Post-menarcheal" : "Pre-menarcheal"}'),
+                if (usedMph && _midParentalHeightController.text.isNotEmpty)
+                  Text(
+                      'Mid-parental Height: ${_midParentalHeightController.text} cm'),
                 const SizedBox(height: 16),
                 Text(
-                  'Predicted Adult Height: ${predictedHeight.toStringAsFixed(1)} cm',
+                  'Predicted Adult Height: ${basePredictedHeight.toStringAsFixed(1)} cm',
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
+                // Conditionally display the adjusted height text
+                // Only show if MPH was used AND the adjusted value is different from the base
+                if (usedMph) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Predicted Adult Height (Adjusted for MPH): ${adjustedPredictedHeight.toStringAsFixed(1)} cm',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ]
               ],
             ),
           ),
@@ -179,6 +231,7 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
       },
     );
   }
+
 
   void _showErrorModal(String message) {
     showDialog(
@@ -214,6 +267,20 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
     final int? months = int.tryParse(value);
     if (months == null || months < 0 || months >= 12) return '0-11';
     return null;
+  }
+
+  String? _validateMidParentalHeight(String? value) {
+    if (_useMidParentalHeight) {
+      // Only validate if the toggle is on
+      if (value == null || value.isEmpty) {
+        return 'Enter mid-parental height';
+      }
+      final double? height = double.tryParse(value);
+      if (height == null || height <= 50 || height > 250) { // Example realistic range
+        return 'Invalid (50-250 cm)';
+      }
+    }
+    return null; // No error if not used or if valid
   }
 
   @override
@@ -343,7 +410,46 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16), // Spacing before MPH toggle
+
+              // Mid-parental Height Toggle and Input
+              SwitchListTile(
+                title: const Text('Adjust for Mid-parental Height'),
+                value: _useMidParentalHeight,
+                onChanged: (bool value) {
+                  setState(() {
+                    _useMidParentalHeight = value;
+                    if (!_useMidParentalHeight) {
+                      _midParentalHeightController.clear(); // Clear if toggled off
+                    }
+                    // Crucial: Re-validate the form when toggle changes,
+                    // especially to trigger validation of MPH field if it becomes visible and required.
+                    _formKey.currentState?.validate();
+                    _checkFormValidity(); // Update button state
+                  });
+                },
+                activeColor: Theme.of(context).colorScheme.primary,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 0), // Adjust padding
+              ),
+              // Conditionally display the Mid-parental Height TextFormField
+              if (_useMidParentalHeight) ...[
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _midParentalHeightController,
+                  decoration: const InputDecoration(
+                    labelText: 'Mid-parental Height (cm)',
+                    hintText: 'e.g., 170.0',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.family_restroom),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                  ],
+                  validator: _validateMidParentalHeight, // Use the new validator
+                ),
+              ],
+              const SizedBox(height: 32), // Spacing before buttons
 
               // Action Buttons
               Row(

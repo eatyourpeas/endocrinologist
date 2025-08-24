@@ -287,7 +287,7 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TW-III Height Prediction'),
+        title: const Text('TWIII Height Prediction'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

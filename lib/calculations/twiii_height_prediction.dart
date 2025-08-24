@@ -3,12 +3,14 @@ import 'package:endocrinologist/enums/enums.dart';
 import 'package:endocrinologist/referencedata/twiii_data.dart';
 // Predicted adult height = a present height+b chronological age+c RUS bone age+d,a constant.
 
-double predictAdultHeight({
+(double, double) predictAdultHeight({
   required Sex sex,
   required double height,
   required double chronologicalAge,
   required double rusBoneAge,
   bool menarchealStatus = false,
+  bool useMidParentalHeight = false,
+  double? midParentalHeight,
 }) {
   final List<TWIIIAdultHeightPrediction> relevantData;
   if (sex == Sex.male) {
@@ -37,11 +39,15 @@ double predictAdultHeight({
     // or ensure your decimal ages are precise enough.
     // For simplicity here, we'll assume direct comparison works if _parseAgeToDouble is consistent.
     if (chronologicalAge == entryAgeLowerBound) {
-      print("Exact match found for chronological age $chronologicalAge. Using direct data.");
-      return height * dataEntry.heightCoefficient +
+      double predictedAdultHeight = height * dataEntry.heightCoefficient +
           chronologicalAge * dataEntry.chronologicalAgeCoefficient +
           rusBoneAge * dataEntry.boneAgeCoefficient +
           dataEntry.constant;
+      double predictedAdultHeightAdjustedForMidParentalHeight = predictedAdultHeight;
+      if (useMidParentalHeight) {
+        predictedAdultHeightAdjustedForMidParentalHeight = adjustPredictedFinalHeightForMidParentalHeight(predictedAdultHeight, midParentalHeight!);
+      }
+      return (predictedAdultHeight, predictedAdultHeightAdjustedForMidParentalHeight);
     }
   }
 
@@ -56,10 +62,15 @@ double predictAdultHeight({
     print("Warning: Chronological age ($chronologicalAge) is below the first data entry range starting at $firstEntryLowerBound. Using first entry.");
     final prediction = relevantData.first;
 
-    return height * prediction.heightCoefficient +
+    double predictedAdultHeight = height * prediction.heightCoefficient +
         chronologicalAge * prediction.chronologicalAgeCoefficient +
         rusBoneAge * prediction.boneAgeCoefficient +
         prediction.constant;
+    double predictedAdultHeightAdjustedForMidParentalHeight = predictedAdultHeight;
+    if (useMidParentalHeight) {
+      predictedAdultHeightAdjustedForMidParentalHeight = adjustPredictedFinalHeightForMidParentalHeight(predictedAdultHeight, midParentalHeight!);
+    }
+    return (predictedAdultHeight, predictedAdultHeightAdjustedForMidParentalHeight);
   }
 
   // Get the lower bound of the last entry.
@@ -72,10 +83,16 @@ double predictAdultHeight({
     // Use the last entry's coefficients without interpolation.
     print("Chronological age ($chronologicalAge) is within or beyond the last data entry range starting at $lastEntryLowerBound. Using last entry.");
     final prediction = relevantData.last;
-    return height * prediction.heightCoefficient +
+    // Predicted adult height equation
+    double predictedAdultHeight = height * prediction.heightCoefficient +
         chronologicalAge * prediction.chronologicalAgeCoefficient +
         rusBoneAge * prediction.boneAgeCoefficient +
         prediction.constant;
+    double predictedAdultHeightAdjustedForMidParentalHeight = predictedAdultHeight;
+    if (useMidParentalHeight) {
+      predictedAdultHeightAdjustedForMidParentalHeight = adjustPredictedFinalHeightForMidParentalHeight(predictedAdultHeight, midParentalHeight!);
+    }
+    return (predictedAdultHeight, predictedAdultHeightAdjustedForMidParentalHeight);
   }
 
   // Find the two closest data points for interpolation
@@ -126,10 +143,25 @@ double predictAdultHeight({
   interpolate(lower.constant.toDouble(), upper.constant.toDouble());
 
   // Predicted adult height equation
-  return height * interpolatedHeightCoefficient +
+  double predictedAdultHeight = height * interpolatedHeightCoefficient +
       chronologicalAge * interpolatedChronologicalAgeCoefficient +
       rusBoneAge * interpolatedBoneAgeCoefficient +
       interpolatedConstant;
+  double predictedAdultHeightAdjustedForMidParentalHeight = predictedAdultHeight;
+  if (useMidParentalHeight) {
+    predictedAdultHeightAdjustedForMidParentalHeight = adjustPredictedFinalHeightForMidParentalHeight(predictedAdultHeight, midParentalHeight!);
+  }
+  return (predictedAdultHeight, predictedAdultHeightAdjustedForMidParentalHeight);
+}
+
+double adjustPredictedFinalHeightForMidParentalHeight(double predictedAdultHeight, double midParentalHeight){
+  double predictedAdultHeightAdjustedForMidParentalHeight = predictedAdultHeight;
+  if (midParentalHeight < 168){
+    predictedAdultHeightAdjustedForMidParentalHeight -= (168 - midParentalHeight)/3;
+  } else {
+    predictedAdultHeightAdjustedForMidParentalHeight += (midParentalHeight - 168)/3;
+  }
+  return predictedAdultHeightAdjustedForMidParentalHeight;
 }
 
 /// Parses the age string from TWIIIAdultHeightPrediction data to a decimal year value.

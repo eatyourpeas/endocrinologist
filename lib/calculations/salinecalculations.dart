@@ -1,3 +1,6 @@
+import 'dart:math' as Math;
+import "package:endocrinologist/enums/enums.dart";
+
 double calculateDeltaSodium({
   required double infusateSodiumConcentration, // Infusate sodium concentration in mmol/L
   required double plasmaSodium, // Plasma sodium concentration in mmol/L
@@ -14,4 +17,20 @@ double calculateDeltaSodium({
   double deltaSodium = (infusateSodiumConcentration - plasmaSodium) / (totalBodyWater + 1);
 
   return deltaSodium;
+}
+
+double totalBodyWaterUnderElevens(double age, double height, double weight, Sex sex){
+  // Wells JC, Fewtrell MS, Davies PS, Williams JE, Coward WA, Cole TJ. Prediction of total body water in infants and children. Arch Dis Child. 2005 Sep;90(9):965-71. doi: 10.1136/adc.2004.067538. PMID: 16113134; PMCID: PMC1720559.
+  double constant = -2.952;
+  double lnWt = 0.551;
+  double lnHt = 0.796;
+  double femaleConstant = -0.047;
+  double ageConstant = 0.008;
+
+  double lnTotalBodyWeight = constant + lnWt * Math.log(weight) + lnHt * Math.log(height) + ageConstant * age;
+  if (sex == Sex.female) {
+    lnTotalBodyWeight += femaleConstant;
+  }
+
+  return Math.exp(lnTotalBodyWeight);
 }

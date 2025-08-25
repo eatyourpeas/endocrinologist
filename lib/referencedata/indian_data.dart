@@ -1,5 +1,3 @@
-import '../enums/enums.dart';
-
 /*
 Pediatric penile anthropometry nomogram: Establishing standardized reference values
 Goel, Prabudh et al.
@@ -86,7 +84,7 @@ class IndianStretchedPenileLength {
 }
 
 // 2. Create a list of IndianStretchedPenileLength objects
-List<IndianStretchedPenileLength> IndianStretchedPenileLengthList = [
+List<IndianStretchedPenileLength> indianStretchedPenileLengthList = [
   IndianStretchedPenileLength(
     ageYears: 1,
     sampleSizeN: 80,
@@ -328,7 +326,8 @@ List<IndianStretchedPenileLength> IndianStretchedPenileLengthList = [
     max: 10.1,
     m: 7.3,
     s: 0.2,
-    l: 0.1, // Note: This value was 0.1 in the original, careful if expecting a different distribution parameter.
+    l: 0.1,
+    // Note: This value was 0.1 in the original, careful if expecting a different distribution parameter.
     t: 2.2,
     percentile3rd: 5.1,
     percentile5th: 5.3,

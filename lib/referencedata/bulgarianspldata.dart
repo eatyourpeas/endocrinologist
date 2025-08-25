@@ -5,7 +5,7 @@ import '../enums/enums.dart';
 final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ChildBulgarianSPLDataPoint(
     age: 0,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 67.0,
     weightKg: 7.7,
     penileLengthCm: 3.5,
@@ -15,7 +15,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 0,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 53.0,
     weightKg: 4.0,
     penileLengthCm: 2.8,
@@ -25,7 +25,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 0,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 77.0,
     weightKg: 10.94,
     penileLengthCm: 4.4,
@@ -35,7 +35,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 1,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 80.6,
     weightKg: 11.27,
     penileLengthCm: 3.7,
@@ -45,7 +45,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 1,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 73.0,
     weightKg: 8.53,
     penileLengthCm: 3.0,
@@ -55,7 +55,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 1,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 89.73,
     weightKg: 14.36,
     penileLengthCm: 4.6,
@@ -65,7 +65,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 2,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 91.5,
     weightKg: 14.0,
     penileLengthCm: 4.0,
@@ -75,7 +75,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 2,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 83.0,
     weightKg: 11.0,
     penileLengthCm: 3.0,
@@ -85,7 +85,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 2,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 99.73,
     weightKg: 17.54,
     penileLengthCm: 4.8,
@@ -95,7 +95,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 3,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 99.0,
     weightKg: 16.0,
     penileLengthCm: 4.0,
@@ -105,7 +105,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 3,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 91.67,
     weightKg: 13.0,
     penileLengthCm: 3.0,
@@ -115,7 +115,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 3,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 106.05,
     weightKg: 19.0,
     penileLengthCm: 5.0,
@@ -125,7 +125,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 4,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 105.95,
     weightKg: 17.92,
     penileLengthCm: 4.2,
@@ -135,7 +135,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 4,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 97.11,
     weightKg: 14.5,
     penileLengthCm: 3.2,
@@ -145,7 +145,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 4,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 114.45,
     weightKg: 23.0,
     penileLengthCm: 5.3,
@@ -155,7 +155,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 5,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 112.5,
     weightKg: 20.0,
     penileLengthCm: 4.5,
@@ -165,7 +165,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 5,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 104.28,
     weightKg: 16.0,
     penileLengthCm: 3.46,
@@ -175,7 +175,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 5,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 120.89,
     weightKg: 26.94,
     penileLengthCm: 5.5,
@@ -185,7 +185,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 6,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 119.0,
     weightKg: 22.0,
     penileLengthCm: 4.5,
@@ -195,7 +195,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 6,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 110.0,
     weightKg: 18.5,
     penileLengthCm: 3.5,
@@ -205,7 +205,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 6,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 127.09,
     weightKg: 28.89,
     penileLengthCm: 5.5,
@@ -215,7 +215,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 7,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 125.1,
     weightKg: 24.5,
     penileLengthCm: 4.6,
@@ -225,7 +225,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 7,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 115.0,
     weightKg: 19.0,
     penileLengthCm: 3.56,
@@ -235,7 +235,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 7,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 135.28,
     weightKg: 36.0,
     penileLengthCm: 6.0,
@@ -245,7 +245,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 8,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 130.4,
     weightKg: 27.5,
     penileLengthCm: 4.6,
@@ -255,7 +255,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 8,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 120.26,
     weightKg: 21.0,
     penileLengthCm: 3.7,
@@ -265,7 +265,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 8,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 140.45,
     weightKg: 40.72,
     penileLengthCm: 6.0,
@@ -275,7 +275,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 9,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 136.05,
     weightKg: 30.0,
     penileLengthCm: 4.6,
@@ -285,7 +285,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 9,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 125.0,
     weightKg: 24.0,
     penileLengthCm: 3.61,
@@ -295,7 +295,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 9,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 146.5,
     weightKg: 44.72,
     penileLengthCm: 5.89,
@@ -305,7 +305,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 10,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 141.55,
     weightKg: 34.0,
     penileLengthCm: 4.8,
@@ -315,7 +315,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 10,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 129.82,
     weightKg: 27.0,
     penileLengthCm: 3.66,
@@ -325,7 +325,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 10,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 152.63,
     weightKg: 53.0,
     penileLengthCm: 6.0,
@@ -335,7 +335,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 11,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 146.55,
     weightKg: 37.75,
     penileLengthCm: 5.0,
@@ -345,7 +345,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 11,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 135.46,
     weightKg: 28.28,
     penileLengthCm: 4.0,
@@ -355,7 +355,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 11,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 158.89,
     weightKg: 56.22,
     penileLengthCm: 6.9,
@@ -365,7 +365,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 12,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 150.6,
     weightKg: 42.0,
     penileLengthCm: 5.6,
@@ -375,7 +375,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 12,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 139.56,
     weightKg: 30.78,
     penileLengthCm: 4.0,
@@ -385,7 +385,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 12,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 165.09,
     weightKg: 62.45,
     penileLengthCm: 8.8,
@@ -395,7 +395,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 13,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 159.1,
     weightKg: 48.5,
     penileLengthCm: 7.25,
@@ -405,7 +405,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 13,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 145.37,
     weightKg: 34.0,
     penileLengthCm: 4.5,
@@ -415,7 +415,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 13,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 173.4,
     weightKg: 75.45,
     penileLengthCm: 9.5,
@@ -425,7 +425,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 14,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 166.0,
     weightKg: 55.75,
     penileLengthCm: 8.0,
@@ -435,7 +435,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 14,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 150.76,
     weightKg: 39.0,
     penileLengthCm: 5.56,
@@ -445,7 +445,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 14,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 177.5,
     weightKg: 80.0,
     penileLengthCm: 10.0,
@@ -455,7 +455,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 15,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 170.35,
     weightKg: 60.0,
     penileLengthCm: 8.7,
@@ -465,7 +465,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 15,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 156.67,
     weightKg: 45.28,
     penileLengthCm: 7.0,
@@ -475,7 +475,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 15,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 182.83,
     weightKg: 83.45,
     penileLengthCm: 10.5,
@@ -485,7 +485,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 16,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 171.85,
     weightKg: 63.25,
     penileLengthCm: 9.0,
@@ -495,7 +495,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 16,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 162.0,
     weightKg: 50.0,
     penileLengthCm: 7.2,
@@ -505,7 +505,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 16,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 182.94,
     weightKg: 85.0,
     penileLengthCm: 11.0,
@@ -515,7 +515,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 17,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 173.7,
     weightKg: 68.0,
     penileLengthCm: 9.0,
@@ -525,7 +525,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 17,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 164.27,
     weightKg: 54.28,
     penileLengthCm: 7.41,
@@ -535,7 +535,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 17,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 185.29,
     weightKg: 90.0,
     penileLengthCm: 11.0,
@@ -545,7 +545,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 18,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 174.35,
     weightKg: 69.0,
     penileLengthCm: 9.0,
@@ -555,7 +555,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 18,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 164.46,
     weightKg: 53.78,
     penileLengthCm: 7.5,
@@ -565,7 +565,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 18,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 184.51,
     weightKg: 88.45,
     penileLengthCm: 11.0,
@@ -575,7 +575,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 19,
-    centile: Centile.P50,
+    centile: Centile.p50,
     heightCm: 173.5,
     weightKg: 69.5,
     penileLengthCm: 9.5,
@@ -585,7 +585,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 19,
-    centile: Centile.P5,
+    centile: Centile.p5,
     heightCm: 163.17,
     weightKg: 57.0,
     penileLengthCm: 8.0,
@@ -595,7 +595,7 @@ final List<ChildBulgarianSPLDataPoint> childBulgarianSPLData = [
   ),
   ChildBulgarianSPLDataPoint(
     age: 19,
-    centile: Centile.P95,
+    centile: Centile.p95,
     heightCm: 184.0,
     weightKg: 89.45,
     penileLengthCm: 11.0,

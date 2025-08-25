@@ -1,12 +1,43 @@
-import 'package:google_fonts/google_fonts.dart';
+// framework imports
+// local imports
 import 'package:endocrinologist/pages/auxology.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+// third party imports
+import 'package:google_fonts/google_fonts.dart';
+import 'package:logging/logging.dart';
+
 import 'pages/glucosepage.dart';
-import 'pages/steroidpage.dart';
 import 'pages/sodium.dart';
+import 'pages/steroidpage.dart';
 
 void main() {
+  _setupLogging();
   runApp(const Endocrinologist());
+}
+
+void _setupLogging() {
+  Logger.root.level =
+      kDebugMode ? Level.ALL : Level.WARNING; // More verbose in debug
+  Logger.root.onRecord.listen((record) {
+    // Simple console output, you can customize this
+    // ignore: avoid_print
+    print(
+        '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
+    if (record.error != null) {
+      // ignore: avoid_print
+      print('  ERROR: ${record.error}');
+    }
+    if (record.stackTrace != null && record.level.value >= Level.SEVERE.value) {
+      // Only print stack for severe issues
+      // ignore: avoid_print
+      print('  STACKTRACE: ${record.stackTrace}');
+    }
+  });
+
+  // Example: Log an info message when logging is set up
+  final mainLogger = Logger('AppMain');
+  mainLogger.info('Logging initialized. Debug mode: $kDebugMode');
 }
 
 class Endocrinologist extends StatelessWidget {
@@ -58,7 +89,6 @@ class Endocrinologist extends StatelessWidget {
             ],
           );
         }
-        return appContent;
       },
       home: const EndocrinologyTabBars(),
     );

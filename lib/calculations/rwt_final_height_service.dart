@@ -1,5 +1,11 @@
-import "package:endocrinologist/enums/enums.dart";
+// framework imports
+// local imports
 import "package:endocrinologist/classes/rwt_final_height_weight_class.dart";
+import "package:endocrinologist/enums/enums.dart";
+import "package:logging/logging.dart";
+
+// Instantiate logging service
+final Logger _logger = Logger('RWTFinalHeightPredictionService');
 
 /// A service class to manage and query RWTFinalHeightWeights data and predict final height.
 class RWTFinalHeightPredictionService {
@@ -219,7 +225,7 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
       if (values.length == boysOriginalHeaders.length) {
         _allDataOriginal.add(_parseOriginalBoyRow(boysOriginalHeaders, values));
       } else {
-        print(
+        _logger.warning(
             'Warning: Skipping malformed original boy data row: ${boysOriginalLines[i]}');
       }
     }
@@ -235,7 +241,7 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
         _allDataOriginal
             .add(_parseOriginalGirlRow(girlsOriginalHeaders, values));
       } else {
-        print(
+        _logger.warning(
             'Warning: Skipping malformed original girl data row: ${girlsOriginalLines[i]}');
       }
     }
@@ -243,15 +249,13 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
     // Process amended boys data
     final List<String> boysAmendedLines =
         _boysCsvDataAmended.trim().split('\n');
-    final List<String> boysAmendedHeaders = boysAmendedLines.first
-        .split(','); // Not strictly needed for parsing, but good for validation
     for (int i = 1; i < boysAmendedLines.length; i++) {
       final List<String> values = boysAmendedLines[i].split(',');
       if (values.length == 6) {
         // Expect 6 columns for amended format
         _allDataAmended.add(_parseAmendedBoyRow(values));
       } else {
-        print(
+        _logger.warning(
             'Warning: Skipping malformed amended boy data row: ${boysAmendedLines[i]}');
       }
     }
@@ -259,15 +263,13 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
     // Process amended girls data
     final List<String> girlsAmendedLines =
         _girlsCsvDataAmended.trim().split('\n');
-    final List<String> girlsAmendedHeaders = girlsAmendedLines.first
-        .split(','); // Not strictly needed for parsing, but good for validation
     for (int i = 1; i < girlsAmendedLines.length; i++) {
       final List<String> values = girlsAmendedLines[i].split(',');
       if (values.length == 6) {
         // Expect 6 columns for amended format
         _allDataAmended.add(_parseAmendedGirlRow(values));
       } else {
-        print(
+        _logger.warning(
             'Warning: Skipping malformed amended girl data row: ${girlsAmendedLines[i]}');
       }
     }
@@ -536,8 +538,8 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
       // Create a temporary RWTFinalHeightWeights object to hold the interpolated coefficients
       final RWTFinalHeightWeights interpolatedCoefficients =
           RWTFinalHeightWeights.fromDecimalYears(
-        decimalYears:
-            ageDecimalYears, // Use the actual decimal age for the interpolated object
+        decimalYears: ageDecimalYears,
+        // Use the actual decimal age for the interpolated object
         heightLengthCoefficient: interpolatedHeightLengthCoefficient,
         weightCoefficient: interpolatedWeightCoefficient,
         midparentalHeightCoefficient: interpolatedMidparentalHeightCoefficient,

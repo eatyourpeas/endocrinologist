@@ -1,8 +1,12 @@
+// framework imports
+// local imports
 import 'package:endocrinologist/classes/twiii_height_prediction.dart';
 import 'package:endocrinologist/enums/enums.dart';
 import 'package:endocrinologist/referencedata/twiii_data.dart';
-// Predicted adult height = a present height+b chronological age+c RUS bone age+d,a constant.
+import "package:logging/logging.dart";
 
+final _logger = Logger('TWIIIAdultHeightPrediction');
+// Predicted adult height = a present height+b chronological age+c RUS bone age+d,a constant.
 (double, double) predictAdultHeight({
   required Sex sex,
   required double height,
@@ -14,7 +18,6 @@ import 'package:endocrinologist/referencedata/twiii_data.dart';
 }) {
   final List<TWIIIAdultHeightPrediction> relevantData;
   if (sex == Sex.male) {
-    // Assuming male data is available in a similar list
     relevantData =
         twiiiMaleAdultHeightPredictions; // Placeholder for male data list
   } else if (sex == Sex.female) {
@@ -37,7 +40,7 @@ import 'package:endocrinologist/referencedata/twiii_data.dart';
   // NEW: Check for an exact match before attempting range checks or interpolation
   for (final dataEntry in relevantData) {
     final double entryAgeLowerBound = _parseAgeToDouble(dataEntry.age);
-    print(
+    _logger.finer(
         "Checking for exact match for age $chronologicalAge against $entryAgeLowerBound.");
     // Use a small epsilon for floating point comparison if necessary,
     // or ensure your decimal ages are precise enough.
@@ -69,7 +72,7 @@ import 'package:endocrinologist/referencedata/twiii_data.dart';
     // Use the first entry's coefficients without interpolation.
     // This assumes it's appropriate to extrapolate using the earliest data.
     // You might want to throw an error or handle this differently based on clinical practice.
-    print(
+    _logger.warning(
         "Warning: Chronological age ($chronologicalAge) is below the first data entry range starting at $firstEntryLowerBound. Using first entry.");
     final prediction = relevantData.first;
 
@@ -99,7 +102,7 @@ import 'package:endocrinologist/referencedata/twiii_data.dart';
     // Use >= for the last entry
     // Chronological age is within or beyond the last data entry's start range.
     // Use the last entry's coefficients without interpolation.
-    print(
+    _logger.warning(
         "Chronological age ($chronologicalAge) is within or beyond the last data entry range starting at $lastEntryLowerBound. Using last entry.");
     final prediction = relevantData.last;
     // Predicted adult height equation
@@ -154,7 +157,7 @@ import 'package:endocrinologist/referencedata/twiii_data.dart';
     if (lowerBoundAgeForUpperEntry == lowerBoundAgeForLowerEntry) {
       // This case implies data points are at the same age or an issue with parsing.
       // Return the lower value or average, or handle as an error.
-      print(
+      _logger.warning(
           "Warning: Interpolation age points are identical ($lowerBoundAgeForLowerEntry). Using lower value.");
       return lowerValue;
     }

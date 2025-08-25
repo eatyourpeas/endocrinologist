@@ -1,4 +1,5 @@
-import 'dart:math' as Math;
+import 'dart:math';
+
 import "package:endocrinologist/enums/enums.dart";
 
 double calculateDeltaSodium({
@@ -43,15 +44,13 @@ double totalBodyWater(
     double femaleConstant = -0.047;
     double ageConstant = 0.008;
 
-    double lnTotalBodyWater = constant +
-        lnWt * Math.log(weight) +
-        lnHt * Math.log(height) +
-        ageConstant * age;
+    double lnTotalBodyWater =
+        constant + lnWt * log(weight) + lnHt * log(height) + ageConstant * age;
     if (sex == Sex.female) {
       lnTotalBodyWater += femaleConstant;
     }
 
-    return Math.exp(lnTotalBodyWater);
+    return exp(lnTotalBodyWater);
   } else {
     // Chumlea WC, Schubert CM, Reo NV, Sun SS, Siervogel RM. Total body water volume for white children and adolescents and anthropometric prediction equations: the Fels Longitudinal Study. Kidney Int. 2005 Nov;68(5):2317-22. doi: 10.1111/j.1523-1755.2005.00692.x. PMID: 16221235.
     // TBW = −25.87 + 0.23 (stature) + 0.37(weight) for boys
@@ -60,6 +59,5 @@ double totalBodyWater(
     return sex == Sex.male
         ? constant + (0.23 * height) + (0.37 * weight)
         : constant + (0.18 * height) + (0.25 * weight);
-    ;
   }
 }

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../classes/scatterdata.dart';
-import '../referencedata/indian_data.dart';
-
 import '../enums/enums.dart';
+import '../referencedata/indian_data.dart';
 
 /*
 Child specific data is likely ethnicity-sensitive.
@@ -23,13 +22,13 @@ https://jamanetwork.com/journals/jamapediatrics/fullarticle/384064
 */
 
 class ChildIndianSPLChart extends StatefulWidget {
-  final double decimal_age;
+  final double decimalAge;
   final double spl;
   final bool showScatterPoint;
 
   const ChildIndianSPLChart(
       {super.key,
-      required this.decimal_age,
+      required this.decimalAge,
       required this.spl,
       required this.showScatterPoint});
 
@@ -46,31 +45,27 @@ class _ChildIndianSPLChartState extends State<ChildIndianSPLChart> {
     List<ChildSPLDataPoint> p95Data = [];
     // You can add more lists for other centiles if needed (e.g., p5, p10, p25, p75, p90, p97)
 
-    for (var dataEntry in IndianStretchedPenileLengthList) {
+    for (var dataEntry in indianStretchedPenileLengthList) {
       int? age = dataEntry.ageYears;
-      if (age == null) {
-        // print("Warning: Could not parse age '${dataEntry.ageYears}' to int. Skipping entry.");
-        continue; // Skip this entry if age is not a valid integer
-      }
 
       // Add data point for 3rd percentile
       p5Data.add(ChildSPLDataPoint(
         age: age,
-        centile: Centile.P5, // Tagging with the Centile enum
+        centile: Centile.p5, // Tagging with the Centile enum
         value: dataEntry.percentile5th,
       ));
 
       // Add data point for 50th percentile
       p50Data.add(ChildSPLDataPoint(
         age: age,
-        centile: Centile.P50,
+        centile: Centile.p50,
         value: dataEntry.percentile50th,
       ));
 
       // Add data point for 95th percentile
       p95Data.add(ChildSPLDataPoint(
         age: age,
-        centile: Centile.P95,
+        centile: Centile.p95,
         value: dataEntry.percentile95th,
       ));
     }
@@ -127,8 +122,9 @@ class _ChildIndianSPLChartState extends State<ChildIndianSPLChart> {
                 .showScatterPoint) // Assuming showScatterPoint comes from widget
               ScatterSeries<DecimalAgeScatterData, double>(
                 dataSource: [
-                  DecimalAgeScatterData(widget.decimal_age, widget.spl)
-                ], // Use patient input
+                  DecimalAgeScatterData(widget.decimalAge, widget.spl)
+                ],
+                // Use patient input
                 xValueMapper: (DecimalAgeScatterData data, _) => data.x,
                 yValueMapper: (DecimalAgeScatterData data, _) => data.y,
                 name: 'Patient Data',

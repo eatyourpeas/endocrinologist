@@ -1,7 +1,7 @@
+import 'package:endocrinologist/enums/enums.dart';
+import 'package:endocrinologist/referencedata/bayley_pinneau.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For TextInputFormatters
-import 'package:endocrinologist/referencedata/bayley_pinneau.dart';
-import 'package:endocrinologist/enums/enums.dart';
 
 class BayleyPinneauPage extends StatefulWidget {
   const BayleyPinneauPage({super.key});
@@ -154,8 +154,9 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
   }
 
   bool _isValidSkeletalAgeFormat(String input) {
-    if (input.isEmpty)
-      return true; // Allow empty initially, validator handles 'please enter'
+    if (input.isEmpty) {
+      return true;
+    } // Allow empty initially, validator handles 'please enter'
     final RegExp skeletalAgeRegex = RegExp(r'^\d{1,2}-\d{1,2}$');
     if (!skeletalAgeRegex.hasMatch(input)) return false;
     final parts = input.split('-');

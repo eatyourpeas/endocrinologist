@@ -4,14 +4,16 @@ import 'package:endocrinologist/pages/childindiansplchart.dart';
 import 'package:endocrinologist/pages/fetalsplchart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../calculations/spltermpretermnormativevalues.dart';
-import '../calculations/splchildcalculation.dart';
-import 'cllchart.dart';
-import '../enums/enums.dart';
+
 import '../calculations/centile.dart';
+import '../calculations/splchildcalculation.dart';
+import '../calculations/spltermpretermnormativevalues.dart';
+import '../enums/enums.dart';
+import 'cllchart.dart';
 
 class GenitalTab extends StatefulWidget {
   final Sex initialSex;
+
   const GenitalTab({super.key, required this.initialSex});
 
   @override
@@ -22,7 +24,7 @@ class _GenitalTabState extends State<GenitalTab> {
   final _formKey = GlobalKey<FormState>();
   late Sex _currentSex;
   AgeGroup _selectedAgeGroup = AgeGroup.neonate;
-  Ethnicity _selectedEthnicity = Ethnicity.Bulgarian;
+  Ethnicity _selectedEthnicity = Ethnicity.bulgarian;
   int selectedGestationWeek = 40; // Initial value
   String _sdsString = '';
   String _centileString = '';
@@ -91,11 +93,11 @@ class _GenitalTabState extends State<GenitalTab> {
         // Ensure you have an Ethnicity enum defined in your calculations
         // For example, in PenileStatsCalculator.calculateStretchedPenileLengthSDS
         Ethnicity calculationEthnicity = _selectedEthnicity ==
-                Ethnicity.Bulgarian
+                Ethnicity.bulgarian
             ? Ethnicity
-                .Bulgarian // Make sure this matches your enum in calculations
+                .bulgarian // Make sure this matches your enum in calculations
             : Ethnicity
-                .Indian; // Make sure this matches your enum in calculations
+                .indian; // Make sure this matches your enum in calculations
 
         sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(
             measuredStretchedPenileLength: spl,
@@ -168,16 +170,16 @@ class _GenitalTabState extends State<GenitalTab> {
         );
       } else {
         // Child Male
-        if (_selectedEthnicity == Ethnicity.Bulgarian) {
+        if (_selectedEthnicity == Ethnicity.bulgarian) {
           chartSpecificWidget = ChildBulgarianSPLChart(
-            decimal_age: decimalAge,
+            decimalAge: decimalAge,
             spl: spl,
             showScatterPoint: showScatterPoint,
           );
         } else {
-          // Indian
+          // indian
           chartSpecificWidget = ChildIndianSPLChart(
-              decimal_age: decimalAge,
+              decimalAge: decimalAge,
               spl: spl,
               showScatterPoint: showScatterPoint);
         }
@@ -286,7 +288,7 @@ class _GenitalTabState extends State<GenitalTab> {
                     // If switching to neonate, clear ethnicity selection if it's only for child
                     if (_selectedAgeGroup == AgeGroup.neonate) {
                       _selectedEthnicity =
-                          Ethnicity.Bulgarian; // Reset if needed
+                          Ethnicity.bulgarian; // Reset if needed
                     }
                   });
                 },
@@ -318,7 +320,7 @@ class _GenitalTabState extends State<GenitalTab> {
                       });
                     }
                   },
-                  value: selectedGestationWeek,
+                  initialValue: selectedGestationWeek,
                 )
               else if (_selectedAgeGroup == AgeGroup.child) ...[
                 // Using '...' collection-if
@@ -331,9 +333,9 @@ class _GenitalTabState extends State<GenitalTab> {
                   SegmentedButton<Ethnicity>(
                     segments: const <ButtonSegment<Ethnicity>>[
                       ButtonSegment<Ethnicity>(
-                          value: Ethnicity.Bulgarian, label: Text('Bulgarian')),
+                          value: Ethnicity.bulgarian, label: Text('bulgarian')),
                       ButtonSegment<Ethnicity>(
-                          value: Ethnicity.Indian, label: Text('Indian')),
+                          value: Ethnicity.indian, label: Text('indian')),
                     ],
                     selected: <Ethnicity>{_selectedEthnicity},
                     onSelectionChanged: (Set<Ethnicity> newSelection) {
@@ -361,10 +363,13 @@ class _GenitalTabState extends State<GenitalTab> {
                   ),
                   validator: (value) {
                     // Add validator if needed
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return 'Please enter age.';
+                    }
                     if (double.tryParse(value) == null ||
-                        double.parse(value) < 0) return 'Invalid age.';
+                        double.parse(value) < 0) {
+                      return 'Invalid age.';
+                    }
                     return null;
                   },
                 ),

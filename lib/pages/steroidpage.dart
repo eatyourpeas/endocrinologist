@@ -1,17 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:endocrinologist/classes/glucocorticoid.dart';
-import 'package:endocrinologist/enums/enums.dart';
-import 'package:endocrinologist/referencedata/glucocorticoids.dart';
 import 'package:endocrinologist/calculations/glucocorticoidmaths.dart';
-import 'package:endocrinologist/calculations/bodysurfacearea.dart';
+import 'package:endocrinologist/classes/glucocorticoid.dart';
+import 'package:endocrinologist/referencedata/glucocorticoids.dart';
+import 'package:flutter/material.dart';
 
 class SteroidPage extends StatefulWidget {
   const SteroidPage({super.key});
+
   @override
-  _SteroidPageState createState() => _SteroidPageState();
+  SteroidPageState createState() => SteroidPageState();
 }
 
-class _SteroidPageState extends State<SteroidPage> {
+class SteroidPageState extends State<SteroidPage> {
   // Global key for form state
   final _formKey = GlobalKey<FormState>();
   bool _showInfoBox = true;
@@ -234,7 +233,7 @@ class _SteroidPageState extends State<SteroidPage> {
                             children: [
                               Flexible(
                                   child: Text(
-                                      "2 mg/kg (${weight != null ? (weight * 2).toStringAsFixed(0) : 'no weight supplied'} mg) 6 hourly or",
+                                      "2 mg/kg (${(weight * 2).toStringAsFixed(0)} mg) 6 hourly or",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold))),
                               const SizedBox(width: 4),
@@ -257,7 +256,7 @@ class _SteroidPageState extends State<SteroidPage> {
                             children: [
                               Flexible(
                                   child: Text(
-                                      "4 mg/kg (${weight != null ? (weight * 4).toStringAsFixed(0) : 'no weight supplied'} mg) 6 hourly in neonates",
+                                      "4 mg/kg (${(weight * 4).toStringAsFixed(0)} mg) 6 hourly in neonates",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold))),
                               const SizedBox(width: 4),
@@ -321,7 +320,7 @@ class _SteroidPageState extends State<SteroidPage> {
                             children: [
                               Flexible(
                                   child: Text(
-                                      "1mg/kg (${weight ?? 'no weight supplied'} mg) IV 6 hourly or",
+                                      "1mg/kg ($weight mg) IV 6 hourly or",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold))),
                               const SizedBox(width: 4),
@@ -344,7 +343,7 @@ class _SteroidPageState extends State<SteroidPage> {
                             children: [
                               Flexible(
                                   child: Text(
-                                      "2mg/kg (${weight != null ? weight * 2 : 'no weight supplied'} mg) IV 6 hourly in neonates",
+                                      "2mg/kg (${weight * 2} mg) IV 6 hourly in neonates",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold))),
                               const SizedBox(width: 4),
@@ -578,7 +577,8 @@ class _SteroidPageState extends State<SteroidPage> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0), // Adjust padding
+                            horizontal: 12.0, vertical: 8.0),
+                        // Adjust padding
                         decoration: BoxDecoration(
                           color: Colors.lightBlueAccent[100],
                           borderRadius: BorderRadius.circular(8.0),
@@ -598,8 +598,8 @@ class _SteroidPageState extends State<SteroidPage> {
                                   top: 2.0), // Adjust padding for alignment
                               child: Icon(
                                 Icons.info_outline,
-                                color: Colors.blue[
-                                    700], // Choose a suitable color for the icon
+                                color: Colors.blue[700],
+                                // Choose a suitable color for the icon
                                 size: 20,
                               ),
                             ),
@@ -616,9 +616,8 @@ class _SteroidPageState extends State<SteroidPage> {
                             ),
                             // Close Icon (at the end)
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  left:
-                                      8.0), // Add some space before the close icon
+                              padding: const EdgeInsets.only(left: 8.0),
+                              // Add some space before the close icon
                               child: InkWell(
                                 // Makes the icon clickable
                                 onTap: () {
@@ -627,8 +626,8 @@ class _SteroidPageState extends State<SteroidPage> {
                                         false; // Update state to hide the box
                                   });
                                 },
-                                borderRadius: BorderRadius.circular(
-                                    12), // Optional: for ripple effect shape
+                                borderRadius: BorderRadius.circular(12),
+                                // Optional: for ripple effect shape
                                 child: Icon(
                                   Icons.close,
                                   color: Colors
@@ -699,8 +698,8 @@ class _SteroidPageState extends State<SteroidPage> {
                           Tooltip(
                             message:
                                 'If the child or young person is on steroids already, include these here. The relative potencies are listed',
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 20.0), // Add margin to both sides
+                            margin: EdgeInsets.symmetric(horizontal: 20.0),
+                            // Add margin to both sides
                             child: Icon(Icons.info_outline, color: Colors.blue),
                           ),
                         ],
@@ -732,7 +731,7 @@ class _SteroidPageState extends State<SteroidPage> {
                               }
                               return null;
                             },
-                            value: _selectedGlucocorticoid,
+                            initialValue: _selectedGlucocorticoid,
                             items: _dropdownItems.map((Glucocorticoid item) {
                               return DropdownMenuItem<Glucocorticoid>(
                                   value: item,

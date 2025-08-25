@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
-import '../referencedata/milks.dart';
+
 import '../calculations/glucosemaths.dart';
 import '../classes/milk.dart';
+import '../referencedata/milks.dart';
 
-class _GlucosePageState extends State<GlucosePage> {
+class GlucosePage extends StatefulWidget {
+  const GlucosePage({super.key});
+
+  @override
+  GlucosePageState createState() => GlucosePageState();
+}
+
+class GlucosePageState extends State<GlucosePage> {
   // Global key for form state
   final _formKey = GlobalKey<FormState>();
 
   // State for the selected dropdown item
   Milk? _selectedMilk;
+
   // List of dropdown items
   final List<Milk> _dropdownItems = sortedMilks(milks);
 
@@ -229,9 +238,8 @@ class _GlucosePageState extends State<GlucosePage> {
                               ),
                               // Close Icon (at the end)
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    left:
-                                        8.0), // Add some space before the close icon
+                                padding: const EdgeInsets.only(left: 8.0),
+                                // Add some space before the close icon
                                 child: InkWell(
                                   // Makes the icon clickable
                                   onTap: () {
@@ -292,8 +300,8 @@ class _GlucosePageState extends State<GlucosePage> {
                             Tooltip(
                               message:
                                   'If the child or young person is on intravenous dextrose or TPN, include this here.',
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 20.0), // Add margin to both sides
+                              margin: EdgeInsets.symmetric(horizontal: 20.0),
+                              // Add margin to both sides
                               child:
                                   Icon(Icons.info_outline, color: Colors.blue),
                             ),
@@ -444,7 +452,7 @@ class _GlucosePageState extends State<GlucosePage> {
                                           }
                                           return null;
                                         },
-                                        value: _selectedMilk,
+                                        initialValue: _selectedMilk,
                                         items: _dropdownItems.map((Milk item) {
                                           return DropdownMenuItem<Milk>(
                                               value: item,
@@ -520,8 +528,8 @@ class _GlucosePageState extends State<GlucosePage> {
                                           message:
                                               'If the milk does cannot be found in the list, enter the carb amount per 100ml. It may be labelled as a percentage.',
                                           margin: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  20.0), // Add margin to both sides
+                                              horizontal: 20.0),
+                                          // Add margin to both sides
                                           child: Icon(Icons.info_outline,
                                               color: Colors.blue),
                                         ),
@@ -572,10 +580,4 @@ class _GlucosePageState extends State<GlucosePage> {
           ),
         ));
   }
-}
-
-class GlucosePage extends StatefulWidget {
-  const GlucosePage({super.key});
-  @override
-  _GlucosePageState createState() => _GlucosePageState();
 }

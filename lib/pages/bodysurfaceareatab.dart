@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import '../enums/enums.dart';
 import 'package:endocrinologist/calculations/bodysurfacearea.dart';
+import 'package:flutter/material.dart';
+
+import '../enums/enums.dart';
 
 class BodySurfaceAreaTab extends StatefulWidget {
   const BodySurfaceAreaTab({super.key});
@@ -15,6 +16,7 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
 
   // Store the selected method, not just an int. Initialize to a default.
   BsaCalculationMethod _selectedMethod = BsaCalculationMethod.boyd;
+
   // _isSelected will correspond to the order of methods in BsaCalculationMethod.values
   late List<bool> _isSelected;
 
@@ -32,8 +34,6 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
         return "Du Bois";
       case BsaCalculationMethod.gehangeorge:
         return "Gehan & George";
-      default:
-        return "Unknown";
     }
   }
 
@@ -143,6 +143,7 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
 
   // To update button state reactively (optional but good UX)
   bool _canSubmit = false;
+
   void _updateButtonState() {
     setState(() {
       _canSubmit = _weightController.text.isNotEmpty &&
@@ -255,7 +256,8 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
               return null;
             },
           ),
-          const SizedBox(height: 16), // Increased spacing
+          const SizedBox(height: 16),
+          // Increased spacing
           TextFormField(
             controller: _heightController,
             decoration: const InputDecoration(
@@ -278,7 +280,8 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
               return null;
             },
           ),
-          const SizedBox(height: 16), // Increased spacing
+          const SizedBox(height: 16),
+          // Increased spacing
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [

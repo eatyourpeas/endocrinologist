@@ -38,24 +38,7 @@ List<double> dividedDoses(double originalDose, int numberOfDoses) {
   // A common approach might be to check if originalDose itself is 'close' or naturally a multiple.
   // However, the provided code structure effectively recalculates targetTotalDose *after* choosing increment.
 
-  // Let's refine the initial choice of increment and then the target total dose:
-  double tentativeInitialTarget =
-      originalDose.ceilToDouble(); // A starting point for consideration
   double doseIncrement;
-
-  // If the *originalDose* itself (or its ceiling) is a multiple of 1.25, prefer 1.25 increments.
-  // A practical way to check if 1.25 is a "natural fit" for the originalDose.
-  // We check if originalDose * 4 is an integer. If so, originalDose is a multiple of 0.25.
-  // And if originalDose * 100 is divisible by 125.
-  bool canUse125Increment = ((originalDose * 100).round() % 125 == 0) ||
-      (((originalDose / 1.25).ceil() * 1.25) - originalDose <
-          1.0); // Or if rounding to 1.25 is "closer" than rounding to 1.0
-
-  // More direct: If the original dose, when rounded up to the nearest 1.25,
-  // is "sensible" (e.g. not drastically increasing the dose just to hit a 1.25 multiple
-  // if a 1.0 multiple is closer).
-  // The provided code from the file makes a decision for `doseIncrement` and then
-  // calculates `finalTargetTotalDose`. Let's stick to that structure for clarity of the fix.
 
   // Determine the dose increment (as per the file's logic structure)
   // This was the logic block from the file you had:

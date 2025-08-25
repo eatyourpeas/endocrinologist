@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../classes/scatterdata.dart';
 import '../classes/bulgarianspl.dart';
-import '../referencedata/bulgarianspldata.dart';
-
+import '../classes/scatterdata.dart';
 import '../enums/enums.dart';
+import '../referencedata/bulgarianspldata.dart';
 
 /*
 Child specific data is likely ethnicity-sensitive.
@@ -17,13 +16,13 @@ Journal of Pediatric Urology, Volume 21, Issue 2, 454 - 459
 */
 
 class ChildBulgarianSPLChart extends StatefulWidget {
-  final double decimal_age;
+  final double decimalAge;
   final double spl;
   final bool showScatterPoint;
 
   const ChildBulgarianSPLChart(
       {super.key,
-      required this.decimal_age,
+      required this.decimalAge,
       required this.spl,
       required this.showScatterPoint});
 
@@ -37,13 +36,13 @@ class _ChildBulgarianSPLChartState extends State<ChildBulgarianSPLChart> {
   Widget build(BuildContext context) {
     // filter the reference data into centile lines
     final p5Data = childBulgarianSPLData
-        .where((data) => data.centile == Centile.P5)
+        .where((data) => data.centile == Centile.p5)
         .toList();
     final p50Data = childBulgarianSPLData
-        .where((data) => data.centile == Centile.P50)
+        .where((data) => data.centile == Centile.p50)
         .toList();
     final p95Data = childBulgarianSPLData
-        .where((data) => data.centile == Centile.P95)
+        .where((data) => data.centile == Centile.p95)
         .toList();
 
     return Column(children: [
@@ -81,7 +80,7 @@ class _ChildBulgarianSPLChartState extends State<ChildBulgarianSPLChart> {
           if (widget.showScatterPoint)
             ScatterSeries<DecimalAgeScatterData, double>(
               dataSource: [
-                DecimalAgeScatterData(widget.decimal_age, widget.spl)
+                DecimalAgeScatterData(widget.decimalAge, widget.spl)
               ], // Use user input
               xValueMapper: (DecimalAgeScatterData data, _) => data.x,
               yValueMapper: (DecimalAgeScatterData data, _) => data.y,

@@ -1,5 +1,4 @@
 // Import for statistical calculations
-import 'dart:math';
 import 'package:endocrinologist/calculations/centile.dart';
 import 'package:endocrinologist/enums/enums.dart';
 

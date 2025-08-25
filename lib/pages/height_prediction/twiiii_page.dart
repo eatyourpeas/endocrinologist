@@ -1,7 +1,7 @@
+import 'package:endocrinologist/calculations/twiii_height_prediction.dart';
+import 'package:endocrinologist/enums/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:endocrinologist/enums/enums.dart';
-import 'package:endocrinologist/calculations/twiii_height_prediction.dart';
 
 class TWIIIHeightPredictionPage extends StatefulWidget {
   const TWIIIHeightPredictionPage({super.key});
@@ -91,7 +91,9 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
         isChronAgeYearsValid &&
         isChronAgeMonthsValid &&
         isRusBoneAgeYearsValid &&
-        isRusBoneAgeMonthsValid;
+        isRusBoneAgeMonthsValid &&
+        (!_useMidParentalHeight ||
+            _useMidParentalHeight == isMidParentalHeightValid);
 
     if (allFieldsFilled != _canCalculate) {
       setState(() {
@@ -164,8 +166,10 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
       );
 
       _showResultModal(
-        predicted, // Pass the base prediction
-        predictedAdjusted, // Pass the (potentially) adjusted prediction
+        predicted,
+        // Pass the base prediction
+        predictedAdjusted,
+        // Pass the (potentially) adjusted prediction
         height,
         chronologicalAge,
         rusBoneAge,
@@ -180,14 +184,15 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
   // In _TWIIIHeightPredictionPageState:
 
   void _showResultModal(
-    double basePredictedHeight, // The first value from the tuple
+    double basePredictedHeight,
+    // The first value from the tuple
     double adjustedPredictedHeight, // The second value from the tuple
     double currentHeight,
     double ca,
     double ba,
     bool menarcheStatus,
-    bool
-        usedMph, // This flag tells us if the MPH adjustment was intended by the user
+    bool usedMph,
+    // This flag tells us if the MPH adjustment was intended by the user
   ) {
     showDialog(
       context: context,
@@ -475,7 +480,7 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                     _checkFormValidity(); // Update button state
                   });
                 },
-                activeColor: Theme.of(context).colorScheme.primary,
+                activeThumbColor: Theme.of(context).colorScheme.primary,
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 0), // Adjust padding
               ),
@@ -529,8 +534,8 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor:
                             Theme.of(context).colorScheme.onPrimary,
-                        disabledBackgroundColor:
-                            Colors.grey[300], // Style for disabled button
+                        disabledBackgroundColor: Colors.grey[300],
+                        // Style for disabled button
                         disabledForegroundColor: Colors.grey[700],
                       ),
                     ),

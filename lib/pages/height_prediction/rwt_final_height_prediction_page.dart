@@ -1,7 +1,7 @@
 import 'package:endocrinologist/calculations/rwt_final_height_service.dart';
+import 'package:endocrinologist/enums/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:endocrinologist/enums/enums.dart';
 
 class RWTPredictionPage extends StatefulWidget {
   const RWTPredictionPage({super.key});
@@ -43,8 +43,6 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
   AgeInputMode _chronoAgeInputMode = AgeInputMode.decimal; // Default to decimal
   AgeInputMode _boneAgeInputMode = AgeInputMode.decimal; // Default to decimal
   bool _canCalculate = false;
-
-  double? _predictedHeightResult;
 
   @override
   void initState() {
@@ -137,7 +135,6 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
       _chronoAgeInputMode = AgeInputMode.decimal;
       _boneAgeInputMode = AgeInputMode.decimal;
       _canCalculate = false;
-      _predictedHeightResult = null;
     });
     // Force re-validation to clear errors from now-hidden fields if necessary
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -195,16 +192,10 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
         sex: _selectedSex,
         useAmendedData: _useAmendedData,
       );
-      setState(() {
-        _predictedHeightResult = estimatedHeight;
-      });
       _showResultModal(estimatedHeight, currentHeight, ageDecimal, weight,
           boneAgeDecimal, midparentalHeight, _useAmendedData);
     } catch (e) {
       _showErrorModal('Calculation Error: ${e.toString()}');
-      setState(() {
-        _predictedHeightResult = null;
-      });
     }
   }
 
@@ -223,11 +214,11 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               children: [
                 Text('Sex: ${_selectedSex == Sex.male ? "Male" : "Female"}'),
                 Text('Current Height: ${currentH.toStringAsFixed(1)} cm'),
-                Text(
-                    'Age: ${ageD.toStringAsFixed(1)} years'), // Displayed as decimal
+                Text('Age: ${ageD.toStringAsFixed(1)} years'),
+                // Displayed as decimal
                 Text('Weight: ${w.toStringAsFixed(1)} kg'),
-                Text(
-                    'Bone Age: ${boneAgeD.toStringAsFixed(1)} years'), // Displayed as decimal
+                Text('Bone Age: ${boneAgeD.toStringAsFixed(1)} years'),
+                // Displayed as decimal
                 Text('Mid-parental Height: ${mph.toStringAsFixed(1)} cm'),
                 const SizedBox(height: 16),
                 Text(
@@ -285,8 +276,9 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
   String? _validateAgeYears(String? value) {
     if (value == null || value.isEmpty) return 'Enter years';
     final int? years = int.tryParse(value);
-    if (years == null || years < 0 || years > 25)
-      return '0-25'; // Example upper limit
+    if (years == null || years < 0 || years > 25) {
+      return '0-25';
+    } // Example upper limit
     return null;
   }
 
@@ -316,10 +308,12 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
       if (yearsStr.isNotEmpty && monthsStr.isNotEmpty) {
         final double ageDecimal =
             _convertYearsMonthsToDecimal(yearsStr, monthsStr);
-        if (_selectedSex == Sex.female && ageDecimal > 14)
+        if (_selectedSex == Sex.female && ageDecimal > 14) {
           return 'Max 14y for females';
-        if (_selectedSex == Sex.male && ageDecimal > 16)
+        }
+        if (_selectedSex == Sex.male && ageDecimal > 16) {
           return 'Max 16y for males';
+        }
       }
     }
     return null;
@@ -331,8 +325,9 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
     if (_boneAgeInputMode == AgeInputMode.decimal) {
       if (value == null || value.isEmpty) return 'Enter bone age';
       final double? age = double.tryParse(value);
-      if (age == null || age <= 0 || age > 25)
-        return 'Invalid (0-25y)'; // Example range
+      if (age == null || age <= 0 || age > 18) {
+        return 'Invalid (0-18y)';
+      } // Example range
     }
     // For Years/Months, individual fields will have their validators.
     // No specific sex-based limit for bone age mentioned in requirements.
@@ -453,14 +448,9 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
                 onChanged: (bool value) {
                   setState(() {
                     _useAmendedData = value;
-                    // Optional: if changing this toggle should immediately affect validation
-                    // or the calculable state, you might call:
-                    // _formKey.currentState?.validate();
-                    // _checkFormValidity();
-                    // However, for this specific boolean, it usually just affects the calculation itself.
                   });
                 },
-                activeColor: Theme.of(context).colorScheme.primary,
+                activeThumbColor: Theme.of(context).colorScheme.primary,
                 contentPadding: EdgeInsets.zero, // Adjust padding as needed
               ),
               const SizedBox(height: 16),
@@ -626,11 +616,11 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
                         disabledBackgroundColor: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.12),
+                            .withAlpha(12),
                         disabledForegroundColor: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.38),
+                            .withAlpha(64),
                       ),
                     ),
                   ),
@@ -640,7 +630,9 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    '${_useAmendedData ? "Khamis HJ, Guo S. Improvement in the Roche-Wainer-Thissen stature prediction model: A comparative study. Am J Hum Biol. 1993;5(6):669-679. doi: 10.1002/ajhb.1310050609. PMID: 28548358." : "Roche AF, Wainer H, Thissen D. The RWT method for the prediction of adult stature. Pediatrics. 1975 Dec;56(6):1027-33. PMID: 172855."}',
+                    _useAmendedData
+                        ? "Khamis HJ, Guo S. Improvement in the Roche-Wainer-Thissen stature prediction model: A comparative study. Am J Hum Biol. 1993;5(6):669-679. doi: 10.1002/ajhb.1310050609. PMID: 28548358."
+                        : "Roche AF, Wainer H, Thissen D. The RWT method for the prediction of adult stature. Pediatrics. 1975 Dec;56(6):1027-33. PMID: 172855.",
                     textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 12),
                   )),

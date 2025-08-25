@@ -1,8 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:endocrinologist/referencedata/bayley_pinneau.dart';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:endocrinologist/referencedata/bayley_pinneau.dart'; // Adjust this import path if your file is elsewhere
 
 void main() {
   // Initialize the service once for all tests
@@ -11,10 +8,6 @@ void main() {
   setUpAll(() {
     // This runs once before all tests in this group
     service = HeightPredictionService();
-    print('\n--- Initializing HeightPredictionService for tests ---');
-    // The service's constructor already calls _setupAllGrowthData, which prints debug info.
-    // We can add a small delay if the prints are asynchronous and we want to ensure they finish.
-    // Future.delayed(Duration(seconds: 1)); // Optional: if previous prints are async
   });
 
   group('HeightPredictionService Tests', () {
@@ -25,7 +18,6 @@ void main() {
     // --- Test Cases for Boy - Normal Category ---
     group('Boy - Normal Growth', () {
       const String sex = 'boy';
-      const String category = 'normal';
 
       test('Exact lookup: Current Height 60 inches, Skeletal Age 10-0', () {
         // Expected from _boyNormalGrowthCsv, row 60, col 10-0
@@ -39,8 +31,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(76.5, delta));
-        print(
-            'Boy Normal - Exact Lookup (60in, 10-0): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
 
       test(
@@ -60,15 +50,12 @@ void main() {
         // Manually calculate expected for precision if needed, or set a wider delta
         // For 59.5 inches, 10-1 skeletal age in normal boy:
         expect(result!.predictedFinalHeightInches, closeTo(75.7, delta));
-        print(
-            'Boy Normal - Interpolation (59.5in, 10-1): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
     });
 
     // --- Test Cases for Boy - Delayed Category ---
     group('Boy - Delayed Growth', () {
       const String sex = 'boy';
-      const String category = 'delayed_gt_1yr';
 
       test('Exact lookup: Current Height 50 inches, Skeletal Age 9-0', () {
         // Expected from _boyDelayedGrowthCsv, row 50, col 9-0
@@ -82,8 +69,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(62.3, delta));
-        print(
-            'Boy Delayed - Exact Lookup (50in, 9-0): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
 
       test(
@@ -99,15 +84,12 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(62.8, delta));
-        print(
-            'Boy Delayed - Interpolation (50.5in, 9-1): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
     });
 
     // --- Test Cases for Boy - Advanced Category ---
     group('Boy - Advanced Growth', () {
       const String sex = 'boy';
-      const String category = 'advanced_gt_1yr';
 
       test('Exact lookup: Current Height 59 inches, Skeletal Age 12-6', () {
         // This was the user's problematic case, now it should work.
@@ -122,8 +104,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(71.3, delta));
-        print(
-            'Boy Advanced - Exact Lookup (59in, 12-6): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
 
       test(
@@ -141,15 +121,12 @@ void main() {
         expect(result, isNotNull);
         // Rough estimate: should be between 79.6 and 80.0
         expect(result!.predictedFinalHeightInches, closeTo(71.6, delta));
-        print(
-            'Boy Advanced - Interpolation (59.5in, 12-7): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
     });
 
     // --- Test Cases for Girl - Normal Category ---
     group('Girl - Normal Growth', () {
       const String sex = 'girl';
-      const String category = 'normal';
 
       test('Exact lookup: Current Height 50 inches, Skeletal Age 10-0', () {
         // Expected from _girlNormalGrowthCsv, row 50, col 10-0
@@ -162,8 +139,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(58, delta));
-        print(
-            'Girl Normal - Exact Lookup (50in, 10-0): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
 
       test(
@@ -177,8 +152,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(58.3, delta));
-        print(
-            'Girl Normal - Interpolation (50.5in, 10-1): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
 
       test(
@@ -192,15 +165,12 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(70.5, delta));
-        print(
-            'Girl Normal - Extrapolation (70.5in, 17-3): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
     });
 
     // --- Test Cases for Girl - Delayed Category ---
     group('Girl - Delayed Growth', () {
       const String sex = 'girl';
-      const String category = 'delayed_gt_1yr';
 
       test('Exact lookup: Current Height 50 inches, Skeletal Age 10-0', () {
         // Expected from _girlDelayedGrowthCsv, row 50, col 10-0
@@ -213,8 +183,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(57.2, delta));
-        print(
-            'Girl Delayed - Exact Lookup (50in, 10-0): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
 
       test(
@@ -228,8 +196,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(57.6, delta));
-        print(
-            'Girl Delayed - Interpolation (50.5in, 10-1): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
 
       test(
@@ -243,15 +209,12 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(70.5, delta));
-        print(
-            'Girl Delayed - Extrapolation (70.5in, 17-3): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
     });
 
     // --- Test Cases for Girl - Advanced Category ---
     group('Girl - Advanced Growth', () {
       const String sex = 'girl';
-      const String category = 'advanced_gt_1yr';
 
       test('Exact lookup: Current Height 50 inches, Skeletal Age 10-0', () {
         // Expected from _girlAdvancedGrowthCsv, row 50, col 10-0
@@ -264,8 +227,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(60.4, delta));
-        print(
-            'Girl Advanced - Exact Lookup (50in, 10-0): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
 
       test(
@@ -279,8 +240,6 @@ void main() {
         );
         expect(result, isNotNull);
         expect(result!.predictedFinalHeightInches, closeTo(60.7, delta));
-        print(
-            'Girl Advanced - Interpolation (50.5in, 10-1): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
     });
 
@@ -314,8 +273,6 @@ void main() {
         // Let's use a slightly wider delta or a range check if exact value is hard to pin down.
         expect(result!.predictedFinalHeightInches,
             closeTo(68.90, delta)); // Adjusted delta for this specific case
-        print(
-            'Boy Advanced - Problem Case (145cm/57.09in, 12-6): ${result.predictedFinalHeightInches.toStringAsFixed(2)}');
       });
     });
   });

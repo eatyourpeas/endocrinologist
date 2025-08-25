@@ -1,17 +1,17 @@
+import 'package:endocrinologist/calculations/salinecalculations.dart';
+import 'package:endocrinologist/classes/saline.dart';
+import 'package:endocrinologist/enums/enums.dart';
 import 'package:endocrinologist/referencedata/saline_strengths.dart';
 import 'package:flutter/material.dart';
-import 'package:endocrinologist/classes/saline.dart';
-import 'package:endocrinologist/calculations/salinecalculations.dart';
-import 'package:endocrinologist/enums/enums.dart';
 import 'package:flutter/services.dart';
 
-class _SodiumPageState extends State<SodiumPage> {
+class SodiumPageState extends State<SodiumPage> {
   // Global key for form state
   final _formKey = GlobalKey<FormState>();
   bool _showInfoBox = true;
 
   Saline? _selectedSaline;
-  final List<Saline> _salines = sortedSalineStrengths(saline_strengths);
+  final List<Saline> _salines = sortedSalineStrengths(salineStrengths);
 
   final _plasmaSodiumController = TextEditingController();
   final _totalBodyWaterController = TextEditingController();
@@ -83,7 +83,7 @@ class _SodiumPageState extends State<SodiumPage> {
     super.dispose();
   }
 
-  // In _SodiumPageState:
+  // In SodiumPageState:
 
   void _submitForm() {
     // Always trigger validation before proceeding
@@ -235,7 +235,7 @@ class _SodiumPageState extends State<SodiumPage> {
     return null;
   }
 
-  // In _SodiumPageState:
+  // In SodiumPageState:
 
   void _resetForm() {
     _formKey.currentState?.reset(); // Resets validation state
@@ -284,7 +284,8 @@ class _SodiumPageState extends State<SodiumPage> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 8.0), // Adjust padding
+                          horizontal: 12.0, vertical: 8.0),
+                      // Adjust padding
                       decoration: BoxDecoration(
                         color: Colors.lightBlueAccent[100],
                         borderRadius: BorderRadius.circular(8.0),
@@ -322,9 +323,8 @@ class _SodiumPageState extends State<SodiumPage> {
                           ),
                           // Close Icon (at the end)
                           Padding(
-                            padding: const EdgeInsets.only(
-                                left:
-                                    8.0), // Add some space before the close icon
+                            padding: const EdgeInsets.only(left: 8.0),
+                            // Add some space before the close icon
                             child: InkWell(
                               // Makes the icon clickable
                               onTap: () {
@@ -362,7 +362,7 @@ class _SodiumPageState extends State<SodiumPage> {
                       }
                       return null;
                     },
-                    value: _selectedSaline,
+                    initialValue: _selectedSaline,
                     items: _salines.map((Saline saline) {
                       return DropdownMenuItem<Saline>(
                           value: saline,
@@ -389,7 +389,8 @@ class _SodiumPageState extends State<SodiumPage> {
                   ],
                   validator: (value) => _validateDecimalField(
                       value, 'plasma sodium',
-                      min: 80, max: 200), // Example range
+                      min: 80, max: 200),
+                  // Example range
                   decoration: const InputDecoration(
                     labelText: 'Plasma Sodium (mmol/L)',
                     border: OutlineInputBorder(),
@@ -417,7 +418,7 @@ class _SodiumPageState extends State<SodiumPage> {
                       _checkFormValidity(); // Update button state
                     });
                   },
-                  activeColor: Theme.of(context).colorScheme.primary,
+                  activeThumbColor: Theme.of(context).colorScheme.primary,
                   contentPadding: EdgeInsets.zero,
                 ),
                 const SizedBox(height: 8),
@@ -528,10 +529,10 @@ class _SodiumPageState extends State<SodiumPage> {
                     Expanded(
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.refresh),
-                        label: const Text(
-                            'Reset Form'), // Changed label slightly for clarity
-                        onPressed:
-                            _resetForm, // You'll need to create this method
+                        label: const Text('Reset Form'),
+                        // Changed label slightly for clarity
+                        onPressed: _resetForm,
+                        // You'll need to create this method
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           textStyle: const TextStyle(fontSize: 16),
@@ -562,11 +563,12 @@ class _SodiumPageState extends State<SodiumPage> {
                           disabledBackgroundColor: Theme.of(context)
                               .colorScheme
                               .onSurface
-                              .withOpacity(0.12), // Material 3 disable style
+                              .withAlpha(12),
+                          // Material 3 disable style
                           disabledForegroundColor: Theme.of(context)
                               .colorScheme
                               .onSurface
-                              .withOpacity(0.38), // Material 3 disable style
+                              .withAlpha(38), // Material 3 disable style
                         ),
                       ),
                     ),
@@ -650,6 +652,7 @@ class _SodiumPageState extends State<SodiumPage> {
 
 class SodiumPage extends StatefulWidget {
   const SodiumPage({super.key});
+
   @override
-  _SodiumPageState createState() => _SodiumPageState();
+  SodiumPageState createState() => SodiumPageState();
 }

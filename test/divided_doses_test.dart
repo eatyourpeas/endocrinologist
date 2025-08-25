@@ -1,7 +1,7 @@
 // test/divided_doses_test.dart
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:endocrinologist/calculations/glucocorticoidmaths.dart'; // Ensure this path is correct
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('dividedDoses Function Tests (New Logic)', () {
@@ -13,8 +13,9 @@ void main() {
     // Helper to check if all doses are multiples of a given number
     bool areAllMultiplesOf(List<double> doses, double multiple) {
       const double tolerance = 0.00001;
-      if (multiple == 0)
+      if (multiple == 0) {
         return doses.every((dose) => dose == 0); // Handle multiple of 0 case
+      }
       return doses.every((dose) =>
           (dose % multiple).abs() < tolerance ||
           (dose % multiple).abs() > (multiple - tolerance));

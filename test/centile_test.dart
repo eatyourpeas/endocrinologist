@@ -1,6 +1,5 @@
-import 'dart:math'; // Required for pi and other math functions if not already imported by the source file
-import 'package:flutter_test/flutter_test.dart';
 import 'package:endocrinologist/calculations/centile.dart'; // Or the correct path
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('sdsToCentile', () {
@@ -48,7 +47,8 @@ void main() {
 
     test('should return ~95.0 for SDS of 1.645 (P95)', () {
       // Φ(1.645) ≈ 0.9500
-      expect(sdsToCentile(1.645), closeTo(95.0, 0.05)); // Approximation might be less precise here
+      expect(sdsToCentile(1.645),
+          closeTo(95.0, 0.05)); // Approximation might be less precise here
     });
 
     test('should return ~5.0 for SDS of -1.645 (P5)', () {
@@ -92,7 +92,9 @@ void main() {
     });
 
     // Test the clamping behavior specifically
-    test('result should be clamped to 0.0 if approximation yields negative probability', () {
+    test(
+        'result should be clamped to 0.0 if approximation yields negative probability',
+        () {
       // This is hard to trigger with valid SDS inputs for this specific approximation,
       // as it's designed for the normal CDF.
       // However, if we could somehow force `cdfApprox` to be > 1 for z < 0,
@@ -103,7 +105,9 @@ void main() {
       expect(sdsToCentile(-8.0), closeTo(0.0, 0.00001));
     });
 
-    test('result should be clamped to 100.0 if approximation yields probability > 1', () {
+    test(
+        'result should be clamped to 100.0 if approximation yields probability > 1',
+        () {
       // Similarly, an SDS of 8 should produce a value extremely close to 100.
       expect(sdsToCentile(8.0), closeTo(100.0, 0.00001));
     });

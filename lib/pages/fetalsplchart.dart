@@ -9,28 +9,24 @@ class FetalSPLChart extends StatefulWidget {
   final double spl;
   final bool showScatterPoint;
 
-  const FetalSPLChart({
-    super.key,
-    required this.selectedGestationWeek,
-    required this.spl,
-    required this.showScatterPoint
-  });
+  const FetalSPLChart(
+      {super.key,
+      required this.selectedGestationWeek,
+      required this.spl,
+      required this.showScatterPoint});
 
   @override
-  State <FetalSPLChart> createState() => _FetalSPLChartState();
+  State<FetalSPLChart> createState() => _FetalSPLChartState();
 }
 
-class _FetalSPLChartState extends State<FetalSPLChart>{
+class _FetalSPLChartState extends State<FetalSPLChart> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [SfCartesianChart(
+    return Column(children: [
+      SfCartesianChart(
         primaryXAxis: NumericAxis(title: AxisTitle(text: 'Gestational Weeks')),
         primaryYAxis: NumericAxis(title: AxisTitle(text: 'Size (cm)')),
-        legend: Legend(
-            isVisible: true,
-            isResponsive: true
-        ),
+        legend: Legend(isVisible: true, isResponsive: true),
         series: <CartesianSeries>[
           LineSeries<FetalSPLData, int>(
             dataSource: FetalSPLData.dataList,
@@ -55,7 +51,9 @@ class _FetalSPLChartState extends State<FetalSPLChart>{
           ),
           if (widget.showScatterPoint)
             ScatterSeries<ScatterData, int>(
-              dataSource: [ScatterData(widget.selectedGestationWeek, widget.spl)], // Use user input
+              dataSource: [
+                ScatterData(widget.selectedGestationWeek, widget.spl)
+              ], // Use user input
               xValueMapper: (ScatterData data, _) => data.x,
               yValueMapper: (ScatterData data, _) => data.y,
               markerSettings: const MarkerSettings(
@@ -77,8 +75,7 @@ class _FetalSPLChartState extends State<FetalSPLChart>{
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 12),
         ),
-      ),]
-    );
+      ),
+    ]);
   }
-
 }

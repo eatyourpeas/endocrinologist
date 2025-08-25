@@ -1,10 +1,8 @@
 // Import for statistical calculations
-import 'dart:math';
 import 'package:endocrinologist/calculations/centile.dart';
 import 'package:endocrinologist/enums/enums.dart';
 
 class FetalCLLData {
-
   /*
   Alaei M, Rohani F, Norouzi E, Hematian Boroujeni N, Tafreshi RI, Salehiniya H, Soheilipour F.
   The Nomogram of Clitoral Length and Width in Iranian Term and Preterm Neonates.
@@ -22,7 +20,6 @@ class FetalCLLData {
     [42, 187, 4.21, 4.64, 5.07, 5.5, 6.11, 6.49, 6.87, 7.25]
   ];
 
-
 // Static list to store the data
   static List<FetalCLLData> dataList = _createFetalCLLDataList(_rawData);
 
@@ -37,22 +34,23 @@ class FetalCLLData {
   final double meanLengthOneSDS;
   final double meanLengthTwoSDS;
   final double meanLengthThreeSDS;
-  static String reference = "Alaei M, Rohani F, Norouzi E, Hematian Boroujeni N, Tafreshi RI, Salehiniya H, Soheilipour F. The Nomogram of Clitoral Length and Width in Iranian Term and Preterm Neonates. Front Endocrinol (Lausanne). 2020;11:297.";
+  static String reference =
+      "Alaei M, Rohani F, Norouzi E, Hematian Boroujeni N, Tafreshi RI, Salehiniya H, Soheilipour F. The Nomogram of Clitoral Length and Width in Iranian Term and Preterm Neonates. Front Endocrinol (Lausanne). 2020;11:297.";
 
-  FetalCLLData._({
-    required this.gestationalWeeks,
-    required this.numberOfCases,
-    required this.meanWidth,
-    required this.meanWidthOneSDS,
-    required this.meanWidthTwoSDS,
-    required this.meanWidthThreeSDS,
-    required this.meanLength,
-    required this.meanLengthOneSDS,
-    required this.meanLengthTwoSDS,
-    required this.meanLengthThreeSDS
-  });
+  FetalCLLData._(
+      {required this.gestationalWeeks,
+      required this.numberOfCases,
+      required this.meanWidth,
+      required this.meanWidthOneSDS,
+      required this.meanWidthTwoSDS,
+      required this.meanWidthThreeSDS,
+      required this.meanLength,
+      required this.meanLengthOneSDS,
+      required this.meanLengthTwoSDS,
+      required this.meanLengthThreeSDS});
 
-  static List<FetalCLLData> _createFetalCLLDataList(List<List<dynamic>> rawData) {
+  static List<FetalCLLData> _createFetalCLLDataList(
+      List<List<dynamic>> rawData) {
     List<FetalCLLData> dataList = [];
     for (var row in _rawData) {
       dataList.add(FetalCLLData._(
@@ -65,8 +63,7 @@ class FetalCLLData {
           meanLength: row[6] as double,
           meanLengthOneSDS: row[7] as double,
           meanLengthTwoSDS: row[8] as double,
-          meanLengthThreeSDS: row[9] as double
-      ));
+          meanLengthThreeSDS: row[9] as double));
     }
     return dataList;
   }
@@ -83,7 +80,8 @@ class FetalCLLData {
   static FetalCLLData? findNearestGestationCLLSizesForGestation(int gestation) {
     // Find the nearest gestation
     FetalCLLData? nearestData;
-    int minDifference = double.maxFinite.toInt(); // Initialize with a large value
+    int minDifference =
+        double.maxFinite.toInt(); // Initialize with a large value
     for (var data in dataList) {
       int difference = (data.gestationalWeeks - gestation).abs();
       if (difference < minDifference) {
@@ -100,7 +98,8 @@ class FetalCLLData {
     required double inputValue,
     required CLLMeasurementType measurementType,
   }) {
-    FetalCLLData? nearestData = findNearestGestationCLLSizesForGestation(gestation);
+    FetalCLLData? nearestData =
+        findNearestGestationCLLSizesForGestation(gestation);
 
     if (nearestData == null) {
       return (double.nan, double.nan);
@@ -132,21 +131,23 @@ class FetalCLLData {
       (mean - (val3SD - mean), -3.0), // -3SD_value, -3.0 SDS
       (mean - (val2SD - mean), -2.0), // -2SD_value, -2.0 SDS
       (mean - (val1SD - mean), -1.0), // -1SD_value, -1.0 SDS
-      (mean, 0.0),                    //  Mean_value,  0.0 SDS
-      (val1SD, 1.0),                  // +1SD_value,  1.0 SDS
-      (val2SD, 2.0),                  // +2SD_value,  2.0 SDS
-      (val3SD, 3.0),                  // +3SD_value,  3.0 SDS
+      (mean, 0.0), //  Mean_value,  0.0 SDS
+      (val1SD, 1.0), // +1SD_value,  1.0 SDS
+      (val2SD, 2.0), // +2SD_value,  2.0 SDS
+      (val3SD, 3.0), // +3SD_value,  3.0 SDS
     ];
 
     // Check for values outside the +/-3SD range defined by your data points
     // sortedPoints.last is the (+3SD_value, 3.0) record
     // sortedPoints.first is the (-3SD_value, -3.0) record
-    if (inputValue >= sortedPoints.last.$1) { // inputValue >= +3SD_value
+    if (inputValue >= sortedPoints.last.$1) {
+      // inputValue >= +3SD_value
       double sds = 3.0; // Cap at +3.0 SDS
       // Optional extrapolation logic can be added here if desired
       return (sds, sdsToCentile(sds));
     }
-    if (inputValue <= sortedPoints.first.$1) { // inputValue <= -3SD_value
+    if (inputValue <= sortedPoints.first.$1) {
+      // inputValue <= -3SD_value
       double sds = -3.0; // Cap at -3.0 SDS
       // Optional extrapolation logic can be added here if desired
       return (sds, sdsToCentile(sds));
@@ -154,14 +155,17 @@ class FetalCLLData {
 
     // Find the segment for interpolation
     for (int i = 0; i < sortedPoints.length - 1; i++) {
-      var p0 = sortedPoints[i];     // Lower point of the segment: (value_low, sds_low)
-      var p1 = sortedPoints[i + 1]; // Upper point of the segment: (value_high, sds_high)
+      var p0 =
+          sortedPoints[i]; // Lower point of the segment: (value_low, sds_low)
+      var p1 = sortedPoints[
+          i + 1]; // Upper point of the segment: (value_high, sds_high)
 
       // Check if inputValue falls between p0's value and p1's value
       if (inputValue >= p0.$1 && inputValue <= p1.$1) {
         // Handle cases where the segment has zero width (p0 value == p1 value)
         // This indicates an issue with the normative data points.
-        if ((p1.$1 - p0.$1).abs() < 1e-9) { // Using a small tolerance for double comparison
+        if ((p1.$1 - p0.$1).abs() < 1e-9) {
+          // Using a small tolerance for double comparison
           // If inputValue is effectively at p0's value, use p0's SDS.
           // Otherwise (it's effectively at p1's value, or segment width is zero), use p1's SDS.
           // This is a simplification; you might log an error or handle differently.
@@ -180,7 +184,8 @@ class FetalCLLData {
         // x0 = p0.$1 (value_low)
         // y1 = p1.$2 (sds_high)
         // x1 = p1.$1 (value_high)
-        double sds = p0.$2 + (inputValue - p0.$1) * (p1.$2 - p0.$2) / (p1.$1 - p0.$1);
+        double sds =
+            p0.$2 + (inputValue - p0.$1) * (p1.$2 - p0.$2) / (p1.$1 - p0.$1);
         return (sds, sdsToCentile(sds));
       }
     }
@@ -190,5 +195,4 @@ class FetalCLLData {
     // if there's an unexpected issue with the sortedPoints data.
     return (double.nan, double.nan);
   }
-
 }

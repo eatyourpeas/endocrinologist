@@ -1,5 +1,11 @@
-import "package:endocrinologist/enums/enums.dart";
+// framework imports
+// local imports
 import "package:endocrinologist/classes/rwt_final_height_weight_class.dart";
+import "package:endocrinologist/enums/enums.dart";
+import "package:logging/logging.dart";
+
+// Instantiate logging service
+final Logger _logger = Logger('RWTFinalHeightPredictionService');
 
 /// A service class to manage and query RWTFinalHeightWeights data and predict final height.
 class RWTFinalHeightPredictionService {
@@ -211,80 +217,102 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
   /// Parses the CSV data and populates the [_allDataOriginal] and [_allDataAmended] lists.
   void _loadData() {
     // Process original boys data
-    final List<String> boysOriginalLines = _boysCsvDataOriginal.trim().split('\n');
+    final List<String> boysOriginalLines =
+        _boysCsvDataOriginal.trim().split('\n');
     final List<String> boysOriginalHeaders = boysOriginalLines.first.split(',');
     for (int i = 1; i < boysOriginalLines.length; i++) {
       final List<String> values = boysOriginalLines[i].split(',');
       if (values.length == boysOriginalHeaders.length) {
         _allDataOriginal.add(_parseOriginalBoyRow(boysOriginalHeaders, values));
       } else {
-        print('Warning: Skipping malformed original boy data row: ${boysOriginalLines[i]}');
+        _logger.warning(
+            'Warning: Skipping malformed original boy data row: ${boysOriginalLines[i]}');
       }
     }
 
     // Process original girls data
-    final List<String> girlsOriginalLines = _girlsCsvDataOriginal.trim().split('\n');
-    final List<String> girlsOriginalHeaders = girlsOriginalLines.first.split(',');
+    final List<String> girlsOriginalLines =
+        _girlsCsvDataOriginal.trim().split('\n');
+    final List<String> girlsOriginalHeaders =
+        girlsOriginalLines.first.split(',');
     for (int i = 1; i < girlsOriginalLines.length; i++) {
       final List<String> values = girlsOriginalLines[i].split(',');
       if (values.length == girlsOriginalHeaders.length) {
-        _allDataOriginal.add(_parseOriginalGirlRow(girlsOriginalHeaders, values));
+        _allDataOriginal
+            .add(_parseOriginalGirlRow(girlsOriginalHeaders, values));
       } else {
-        print('Warning: Skipping malformed original girl data row: ${girlsOriginalLines[i]}');
+        _logger.warning(
+            'Warning: Skipping malformed original girl data row: ${girlsOriginalLines[i]}');
       }
     }
 
     // Process amended boys data
-    final List<String> boysAmendedLines = _boysCsvDataAmended.trim().split('\n');
-    final List<String> boysAmendedHeaders = boysAmendedLines.first.split(','); // Not strictly needed for parsing, but good for validation
+    final List<String> boysAmendedLines =
+        _boysCsvDataAmended.trim().split('\n');
     for (int i = 1; i < boysAmendedLines.length; i++) {
       final List<String> values = boysAmendedLines[i].split(',');
-      if (values.length == 6) { // Expect 6 columns for amended format
+      if (values.length == 6) {
+        // Expect 6 columns for amended format
         _allDataAmended.add(_parseAmendedBoyRow(values));
       } else {
-        print('Warning: Skipping malformed amended boy data row: ${boysAmendedLines[i]}');
+        _logger.warning(
+            'Warning: Skipping malformed amended boy data row: ${boysAmendedLines[i]}');
       }
     }
 
     // Process amended girls data
-    final List<String> girlsAmendedLines = _girlsCsvDataAmended.trim().split('\n');
-    final List<String> girlsAmendedHeaders = girlsAmendedLines.first.split(','); // Not strictly needed for parsing, but good for validation
+    final List<String> girlsAmendedLines =
+        _girlsCsvDataAmended.trim().split('\n');
     for (int i = 1; i < girlsAmendedLines.length; i++) {
       final List<String> values = girlsAmendedLines[i].split(',');
-      if (values.length == 6) { // Expect 6 columns for amended format
+      if (values.length == 6) {
+        // Expect 6 columns for amended format
         _allDataAmended.add(_parseAmendedGirlRow(values));
       } else {
-        print('Warning: Skipping malformed amended girl data row: ${girlsAmendedLines[i]}');
+        _logger.warning(
+            'Warning: Skipping malformed amended girl data row: ${girlsAmendedLines[i]}');
       }
     }
   }
 
   /// Helper method to parse a single CSV row for original boys data.
   /// Uses RWTFinalHeightWeights.fromYearsMonths.
-  RWTFinalHeightWeights _parseOriginalBoyRow(List<String> headers, List<String> values) {
+  RWTFinalHeightWeights _parseOriginalBoyRow(
+      List<String> headers, List<String> values) {
     return RWTFinalHeightWeights.fromYearsMonths(
       ageYears: int.parse(values[headers.indexOf('age_years')].trim()),
       ageMonths: int.parse(values[headers.indexOf('age_months')].trim()),
-      heightLengthCoefficient: double.parse(values[headers.indexOf('height_length_coefficient')].trim()),
-      weightCoefficient: double.parse(values[headers.indexOf('weight_coefficient')].trim()),
-      midparentalHeightCoefficient: double.parse(values[headers.indexOf('midparental_height_coefficient')].trim()),
-      boneAgeCoefficient: double.parse(values[headers.indexOf('bone_age_coefficient')].trim()),
-      regressionIntercept: double.parse(values[headers.indexOf('regression_intercept')].trim()),
+      heightLengthCoefficient: double.parse(
+          values[headers.indexOf('height_length_coefficient')].trim()),
+      weightCoefficient:
+          double.parse(values[headers.indexOf('weight_coefficient')].trim()),
+      midparentalHeightCoefficient: double.parse(
+          values[headers.indexOf('midparental_height_coefficient')].trim()),
+      boneAgeCoefficient:
+          double.parse(values[headers.indexOf('bone_age_coefficient')].trim()),
+      regressionIntercept:
+          double.parse(values[headers.indexOf('regression_intercept')].trim()),
       sex: Sex.male,
     );
   }
 
   /// Helper method to parse a single CSV row for original girls data.
   /// Uses RWTFinalHeightWeights.fromYearsMonths.
-  RWTFinalHeightWeights _parseOriginalGirlRow(List<String> headers, List<String> values) {
+  RWTFinalHeightWeights _parseOriginalGirlRow(
+      List<String> headers, List<String> values) {
     return RWTFinalHeightWeights.fromYearsMonths(
       ageYears: int.parse(values[headers.indexOf('age_years')].trim()),
       ageMonths: int.parse(values[headers.indexOf('age_months')].trim()),
-      heightLengthCoefficient: double.parse(values[headers.indexOf('height_length_coefficient')].trim()),
-      weightCoefficient: double.parse(values[headers.indexOf('weight_coefficient')].trim()),
-      midparentalHeightCoefficient: double.parse(values[headers.indexOf('midparental_height_coefficient')].trim()),
-      boneAgeCoefficient: double.parse(values[headers.indexOf('bone_age_coefficient')].trim()),
-      regressionIntercept: double.parse(values[headers.indexOf('regression_intercept')].trim()),
+      heightLengthCoefficient: double.parse(
+          values[headers.indexOf('height_length_coefficient')].trim()),
+      weightCoefficient:
+          double.parse(values[headers.indexOf('weight_coefficient')].trim()),
+      midparentalHeightCoefficient: double.parse(
+          values[headers.indexOf('midparental_height_coefficient')].trim()),
+      boneAgeCoefficient:
+          double.parse(values[headers.indexOf('bone_age_coefficient')].trim()),
+      regressionIntercept:
+          double.parse(values[headers.indexOf('regression_intercept')].trim()),
       sex: Sex.female,
     );
   }
@@ -320,10 +348,12 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
   }
 
   /// Returns an immutable list of all loaded original growth data.
-  List<RWTFinalHeightWeights> get allDataOriginal => List.unmodifiable(_allDataOriginal);
+  List<RWTFinalHeightWeights> get allDataOriginal =>
+      List.unmodifiable(_allDataOriginal);
 
   /// Returns an immutable list of all loaded amended growth data.
-  List<RWTFinalHeightWeights> get allDataAmended => List.unmodifiable(_allDataAmended);
+  List<RWTFinalHeightWeights> get allDataAmended =>
+      List.unmodifiable(_allDataAmended);
 
   /// Filters the growth data by age (years) and sex from the specified dataset.
   ///
@@ -333,7 +363,8 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
     Sex? sex,
     bool useAmendedData = false, // New parameter
   }) {
-    final List<RWTFinalHeightWeights> dataSource = useAmendedData ? _allDataAmended : _allDataOriginal;
+    final List<RWTFinalHeightWeights> dataSource =
+        useAmendedData ? _allDataAmended : _allDataOriginal;
     return dataSource.where((data) {
       bool matchesAge = (ageYears == null || data.ageYears == ageYears);
       bool matchesSex = (sex == null || data.sex == sex);
@@ -350,11 +381,12 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
     required Sex sex,
     bool useAmendedData = false, // New parameter
   }) {
-    final List<RWTFinalHeightWeights> dataSource = useAmendedData ? _allDataAmended : _allDataOriginal;
+    final List<RWTFinalHeightWeights> dataSource =
+        useAmendedData ? _allDataAmended : _allDataOriginal;
     try {
       return dataSource.firstWhere(
-            (data) =>
-        data.ageYears == ageYears &&
+        (data) =>
+            data.ageYears == ageYears &&
             data.ageMonths == ageMonths &&
             data.sex == sex,
       );
@@ -364,7 +396,8 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
   }
 
   /// Helper function to perform linear interpolation.
-  double _linearInterpolate(double x, double x1, double y1, double x2, double y2) {
+  double _linearInterpolate(
+      double x, double x1, double y1, double x2, double y2) {
     if (x1 == x2) {
       return y1;
     }
@@ -373,12 +406,12 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
 
   /// Helper function to calculate final height based on coefficients.
   double _calculateHeight(
-      double currentHeightCm,
-      double weightKg,
-      double boneAgeDecimalYears,
-      double midparentalHeightCm,
-      RWTFinalHeightWeights coefficients,
-      ) {
+    double currentHeightCm,
+    double weightKg,
+    double boneAgeDecimalYears,
+    double midparentalHeightCm,
+    RWTFinalHeightWeights coefficients,
+  ) {
     return (currentHeightCm * coefficients.heightLengthCoefficient) +
         (weightKg * coefficients.weightCoefficient) +
         (midparentalHeightCm * coefficients.midparentalHeightCoefficient) +
@@ -415,7 +448,8 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
     required Sex sex,
     bool useAmendedData = false, // New parameter
   }) {
-    final List<RWTFinalHeightWeights> dataSource = useAmendedData ? _allDataAmended : _allDataOriginal;
+    final List<RWTFinalHeightWeights> dataSource =
+        useAmendedData ? _allDataAmended : _allDataOriginal;
 
     final List<RWTFinalHeightWeights> dataForSex = dataSource
         .where((data) => data.sex == sex)
@@ -423,7 +457,8 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
       ..sort((a, b) => a.decimalYears.compareTo(b.decimalYears));
 
     if (dataForSex.isEmpty) {
-      throw ArgumentError('No growth data available for $sex in the selected dataset. Cannot estimate height.');
+      throw ArgumentError(
+          'No growth data available for $sex in the selected dataset. Cannot estimate height.');
     }
 
     final double minAge = dataForSex.first.decimalYears;
@@ -432,8 +467,8 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
     if (ageDecimalYears < minAge || ageDecimalYears > maxAge) {
       throw ArgumentError(
         'Age $ageDecimalYears is beyond the supported range for $sex '
-            'in the ${useAmendedData ? "amended" : "original"} dataset. '
-            'Supported range: $minAge to $maxAge decimal years.',
+        'in the ${useAmendedData ? "amended" : "original"} dataset. '
+        'Supported range: $minAge to $maxAge decimal years.',
       );
     }
 
@@ -455,11 +490,11 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
       );
     } else {
       RWTFinalHeightWeights lowerBound = dataForSex.lastWhere(
-            (data) => data.decimalYears < ageDecimalYears,
+        (data) => data.decimalYears < ageDecimalYears,
         orElse: () => dataForSex.first,
       );
       RWTFinalHeightWeights upperBound = dataForSex.firstWhere(
-            (data) => data.decimalYears > ageDecimalYears,
+        (data) => data.decimalYears > ageDecimalYears,
         orElse: () => dataForSex.last,
       );
 
@@ -477,7 +512,8 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
         upperBound.decimalYears,
         upperBound.weightCoefficient,
       );
-      final double interpolatedMidparentalHeightCoefficient = _linearInterpolate(
+      final double interpolatedMidparentalHeightCoefficient =
+          _linearInterpolate(
         ageDecimalYears,
         lowerBound.decimalYears,
         lowerBound.midparentalHeightCoefficient,
@@ -500,8 +536,10 @@ age_decimal,regression_intercept,height_length_coefficient,weight_coefficient,mi
       );
 
       // Create a temporary RWTFinalHeightWeights object to hold the interpolated coefficients
-      final RWTFinalHeightWeights interpolatedCoefficients = RWTFinalHeightWeights.fromDecimalYears(
-        decimalYears: ageDecimalYears, // Use the actual decimal age for the interpolated object
+      final RWTFinalHeightWeights interpolatedCoefficients =
+          RWTFinalHeightWeights.fromDecimalYears(
+        decimalYears: ageDecimalYears,
+        // Use the actual decimal age for the interpolated object
         heightLengthCoefficient: interpolatedHeightLengthCoefficient,
         weightCoefficient: interpolatedWeightCoefficient,
         midparentalHeightCoefficient: interpolatedMidparentalHeightCoefficient,

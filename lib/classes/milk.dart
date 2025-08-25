@@ -1,4 +1,4 @@
-class Milk{
+class Milk {
   String name;
   double carbsPer100ml;
 

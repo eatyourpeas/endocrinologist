@@ -3,5 +3,8 @@ class Saline {
   String name;
   double mmolperlitre;
 
-  Saline({required this.gramsPer100ml, required this.name, required this.mmolperlitre});
+  Saline(
+      {required this.gramsPer100ml,
+      required this.name,
+      required this.mmolperlitre});
 }

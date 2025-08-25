@@ -18,8 +18,8 @@ class _AuxologyPageState extends State<AuxologyPage> {
   // These are our "destinations" in a Flutter navigation sense
   static final List<Widget> _auxologyPages = <Widget>[
     const BodySurfaceAreaTab(), // Destination 1
-    const GenitalSizePage(),    // Destination 2 (New page to create)
-    const FinalHeightSelectionPage(),  // Destination 3 (Or a page that lets you select different prediction methods)
+    const GenitalSizePage(), // Destination 2 (New page to create)
+    const FinalHeightSelectionPage(), // Destination 3 (Or a page that lets you select different prediction methods)
     // Add more pages here if needed, and update BottomNavigationBarItems accordingly
   ];
 
@@ -54,10 +54,12 @@ class _AuxologyPageState extends State<AuxologyPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary, // Use your app's theme color
+        selectedItemColor:
+            Theme.of(context).colorScheme.primary, // Use your app's theme color
         unselectedItemColor: Colors.grey, // Or another color from your theme
         onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed, // Use 'fixed' if you have 3-5 items for better UX
+        type: BottomNavigationBarType
+            .fixed, // Use 'fixed' if you have 3-5 items for better UX
         // Use 'shifting' for more items if needed, but 'fixed' is often preferred.
       ),
     );

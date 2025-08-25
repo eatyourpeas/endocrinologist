@@ -1,0 +1,42 @@
+name: Flutter CI Tests
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches: [ main, master ] # Trigger on PRs targeting main or master
+    types: [ opened, reopened, synchronize ] # Triggers when a PR is opened, reopened, or new commits are pushed
+
+jobs:
+  test:
+    name: Run Flutter Tests
+    runs-on: ubuntu-latest # Use the latest stable Ubuntu runner
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Use the latest version of the checkout action
+
+      # Step 2: Set up Flutter environment
+      # Uses subosito/flutter-action
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.1'
+          channel: 'stable' # Or 'beta', 'dev', 'master'
+          cache: true # Enable caching of Flutter dependencies for faster builds
+
+      # Step 3: Get Flutter dependencies
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      # Step 4: Check formatting
+      - name: Check Dart formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      # Step 5: Analyze Dart code (Optional, but good practice)
+      - name: Analyze Dart code
+        run: flutter analyze
+
+      # Step 6: Run Flutter tests
+      - name: Run Flutter tests
+        run: flutter test

@@ -1,25 +1,32 @@
+import 'package:endocrinologist/calculations/twiii_height_prediction.dart';
+import 'package:endocrinologist/enums/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:endocrinologist/enums/enums.dart';
-import 'package:endocrinologist/calculations/twiii_height_prediction.dart';
 
 class TWIIIHeightPredictionPage extends StatefulWidget {
   const TWIIIHeightPredictionPage({super.key});
 
   @override
-  State<TWIIIHeightPredictionPage> createState() => _TWIIIHeightPredictionPageState();
+  State<TWIIIHeightPredictionPage> createState() =>
+      _TWIIIHeightPredictionPageState();
 }
 
 class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
   final _formKey = GlobalKey<FormState>();
 
   // Text Editing Controllers
-  final TextEditingController _currentHeightController = TextEditingController();
-  final TextEditingController _chronologicalAgeYearsController = TextEditingController();
-  final TextEditingController _chronologicalAgeMonthsController = TextEditingController();
-  final TextEditingController _rusBoneAgeYearsController = TextEditingController();
-  final TextEditingController _rusBoneAgeMonthsController = TextEditingController();
-  final TextEditingController _midParentalHeightController = TextEditingController();
+  final TextEditingController _currentHeightController =
+      TextEditingController();
+  final TextEditingController _chronologicalAgeYearsController =
+      TextEditingController();
+  final TextEditingController _chronologicalAgeMonthsController =
+      TextEditingController();
+  final TextEditingController _rusBoneAgeYearsController =
+      TextEditingController();
+  final TextEditingController _rusBoneAgeMonthsController =
+      TextEditingController();
+  final TextEditingController _midParentalHeightController =
+      TextEditingController();
 
   // State variables
   Sex _selectedSex = Sex.male;
@@ -57,17 +64,24 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
   }
 
   void _checkFormValidity() {
-    bool isChronAgeYearsValid = _chronologicalAgeYearsController.text.isNotEmpty && int.tryParse(_chronologicalAgeYearsController.text) != null;
-    bool isChronAgeMonthsValid = _chronologicalAgeMonthsController.text.isNotEmpty && int.tryParse(_chronologicalAgeMonthsController.text) != null;
-    bool isRusBoneAgeYearsValid = _rusBoneAgeYearsController.text.isNotEmpty && int.tryParse(_rusBoneAgeYearsController.text) != null;
-    bool isRusBoneAgeMonthsValid = _rusBoneAgeMonthsController.text.isNotEmpty && int.tryParse(_rusBoneAgeMonthsController.text) != null;
-    bool isHeightValid = _currentHeightController.text.isNotEmpty && double.tryParse(_currentHeightController.text) != null;
+    bool isChronAgeYearsValid =
+        _chronologicalAgeYearsController.text.isNotEmpty &&
+            int.tryParse(_chronologicalAgeYearsController.text) != null;
+    bool isChronAgeMonthsValid =
+        _chronologicalAgeMonthsController.text.isNotEmpty &&
+            int.tryParse(_chronologicalAgeMonthsController.text) != null;
+    bool isRusBoneAgeYearsValid = _rusBoneAgeYearsController.text.isNotEmpty &&
+        int.tryParse(_rusBoneAgeYearsController.text) != null;
+    bool isRusBoneAgeMonthsValid =
+        _rusBoneAgeMonthsController.text.isNotEmpty &&
+            int.tryParse(_rusBoneAgeMonthsController.text) != null;
+    bool isHeightValid = _currentHeightController.text.isNotEmpty &&
+        double.tryParse(_currentHeightController.text) != null;
     bool isMidParentalHeightValid = true;
 
     if (_useMidParentalHeight) {
-      isMidParentalHeightValid =
-          _midParentalHeightController.text.isNotEmpty &&
-              double.tryParse(_midParentalHeightController.text) != null;
+      isMidParentalHeightValid = _midParentalHeightController.text.isNotEmpty &&
+          double.tryParse(_midParentalHeightController.text) != null;
     }
 
     // The menarcheal status toggle doesn't have a controller, its state is _isPostMenarcheal.
@@ -77,7 +91,9 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
         isChronAgeYearsValid &&
         isChronAgeMonthsValid &&
         isRusBoneAgeYearsValid &&
-        isRusBoneAgeMonthsValid;
+        isRusBoneAgeMonthsValid &&
+        (!_useMidParentalHeight ||
+            _useMidParentalHeight == isMidParentalHeightValid);
 
     if (allFieldsFilled != _canCalculate) {
       setState(() {
@@ -85,7 +101,6 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
       });
     }
   }
-
 
   void _resetForm() {
     _formKey.currentState?.reset(); // Resets validation state
@@ -128,7 +143,7 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
     final double rusBoneAge = _convertToDecimalYears(
         _rusBoneAgeYearsController.text, _rusBoneAgeMonthsController.text);
     bool statusForCalculation =
-    (_selectedSex == Sex.female) ? _isPostMenarcheal : false;
+        (_selectedSex == Sex.female) ? _isPostMenarcheal : false;
 
     double? midParentalHeightValue;
     if (_useMidParentalHeight) {
@@ -139,7 +154,8 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
 
     try {
       // Call the service, which now returns a record (double, double)
-      final (double predicted, double predictedAdjusted) = predictAdultHeight( // Destructuring the record
+      final (double predicted, double predictedAdjusted) = predictAdultHeight(
+        // Destructuring the record
         sex: _selectedSex,
         height: height,
         chronologicalAge: chronologicalAge,
@@ -150,8 +166,10 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
       );
 
       _showResultModal(
-        predicted, // Pass the base prediction
-        predictedAdjusted, // Pass the (potentially) adjusted prediction
+        predicted,
+        // Pass the base prediction
+        predictedAdjusted,
+        // Pass the (potentially) adjusted prediction
         height,
         chronologicalAge,
         rusBoneAge,
@@ -166,14 +184,16 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
   // In _TWIIIHeightPredictionPageState:
 
   void _showResultModal(
-      double basePredictedHeight, // The first value from the tuple
-      double adjustedPredictedHeight, // The second value from the tuple
-      double currentHeight,
-      double ca,
-      double ba,
-      bool menarcheStatus,
-      bool usedMph, // This flag tells us if the MPH adjustment was intended by the user
-      ) {
+    double basePredictedHeight,
+    // The first value from the tuple
+    double adjustedPredictedHeight, // The second value from the tuple
+    double currentHeight,
+    double ca,
+    double ba,
+    bool menarcheStatus,
+    bool usedMph,
+    // This flag tells us if the MPH adjustment was intended by the user
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -232,7 +252,6 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
     );
   }
 
-
   void _showErrorModal(String message) {
     showDialog(
       context: context,
@@ -252,7 +271,6 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
       },
     );
   }
-
 
   String? _validateYears(String? value) {
     if (value == null || value.isEmpty) return 'Enter years';
@@ -276,7 +294,8 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
         return 'Enter mid-parental height';
       }
       final double? height = double.tryParse(value);
-      if (height == null || height <= 50 || height > 250) { // Example realistic range
+      if (height == null || height <= 50 || height > 250) {
+        // Example realistic range
         return 'Invalid (50-250 cm)';
       }
     }
@@ -293,17 +312,25 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction, // Validate as user interacts
+          autovalidateMode:
+              AutovalidateMode.onUserInteraction, // Validate as user interacts
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               // Sex Toggle
-              Text('Biological Sex:', style: Theme.of(context).textTheme.titleMedium),
+              Text('Biological Sex:',
+                  style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               SegmentedButton<Sex>(
                 segments: const <ButtonSegment<Sex>>[
-                  ButtonSegment<Sex>(value: Sex.male, label: Text('Male'), icon: Icon(Icons.male)),
-                  ButtonSegment<Sex>(value: Sex.female, label: Text('Female'), icon: Icon(Icons.female)),
+                  ButtonSegment<Sex>(
+                      value: Sex.male,
+                      label: Text('Male'),
+                      icon: Icon(Icons.male)),
+                  ButtonSegment<Sex>(
+                      value: Sex.female,
+                      label: Text('Female'),
+                      icon: Icon(Icons.female)),
                 ],
                 selected: <Sex>{_selectedSex},
                 onSelectionChanged: (Set<Sex> newSelection) {
@@ -320,12 +347,15 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
 
               // Menarcheal Status (Conditional)
               if (_selectedSex == Sex.female) ...[
-                Text('Menarcheal Status:', style: Theme.of(context).textTheme.titleMedium),
+                Text('Menarcheal Status:',
+                    style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 SegmentedButton<bool>(
                   segments: const <ButtonSegment<bool>>[
-                    ButtonSegment<bool>(value: false, label: Text('Pre-menarcheal')),
-                    ButtonSegment<bool>(value: true, label: Text('Post-menarcheal')),
+                    ButtonSegment<bool>(
+                        value: false, label: Text('Pre-menarcheal')),
+                    ButtonSegment<bool>(
+                        value: true, label: Text('Post-menarcheal')),
                   ],
                   selected: <bool>{_isPostMenarcheal},
                   onSelectionChanged: (Set<bool> newSelection) {
@@ -347,8 +377,11 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.height),
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                ],
                 validator: (value) {
                   if (value == null || value.isEmpty) return 'Enter height';
                   final double? height = double.tryParse(value);
@@ -359,15 +392,20 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
               const SizedBox(height: 16),
 
               // Chronological Age
-              Text('Chronological Age:', style: Theme.of(context).textTheme.titleMedium),
+              Text('Chronological Age:',
+                  style: Theme.of(context).textTheme.titleMedium),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _chronologicalAgeYearsController,
-                      decoration: const InputDecoration(labelText: 'Years', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(
+                          labelText: 'Years', border: OutlineInputBorder()),
                       keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2)
+                      ],
                       validator: _validateYears,
                     ),
                   ),
@@ -375,9 +413,13 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                   Expanded(
                     child: TextFormField(
                       controller: _chronologicalAgeMonthsController,
-                      decoration: const InputDecoration(labelText: 'Months', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(
+                          labelText: 'Months', border: OutlineInputBorder()),
                       keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2)
+                      ],
                       validator: _validateMonths,
                     ),
                   ),
@@ -386,15 +428,20 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
               const SizedBox(height: 16),
 
               // RUS Bone Age
-              Text('RUS TWIII Bone Age:', style: Theme.of(context).textTheme.titleMedium),
+              Text('RUS TWIII Bone Age:',
+                  style: Theme.of(context).textTheme.titleMedium),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _rusBoneAgeYearsController,
-                      decoration: const InputDecoration(labelText: 'Years', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(
+                          labelText: 'Years', border: OutlineInputBorder()),
                       keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2)
+                      ],
                       validator: _validateYears,
                     ),
                   ),
@@ -402,9 +449,13 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                   Expanded(
                     child: TextFormField(
                       controller: _rusBoneAgeMonthsController,
-                      decoration: const InputDecoration(labelText: 'Months', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(
+                          labelText: 'Months', border: OutlineInputBorder()),
                       keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2)
+                      ],
                       validator: _validateMonths,
                     ),
                   ),
@@ -420,7 +471,8 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                   setState(() {
                     _useMidParentalHeight = value;
                     if (!_useMidParentalHeight) {
-                      _midParentalHeightController.clear(); // Clear if toggled off
+                      _midParentalHeightController
+                          .clear(); // Clear if toggled off
                     }
                     // Crucial: Re-validate the form when toggle changes,
                     // especially to trigger validation of MPH field if it becomes visible and required.
@@ -428,8 +480,9 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                     _checkFormValidity(); // Update button state
                   });
                 },
-                activeColor: Theme.of(context).colorScheme.primary,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 0), // Adjust padding
+                activeThumbColor: Theme.of(context).colorScheme.primary,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 0), // Adjust padding
               ),
               // Conditionally display the Mid-parental Height TextFormField
               if (_useMidParentalHeight) ...[
@@ -442,11 +495,13 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.family_restroom),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
                   ],
-                  validator: _validateMidParentalHeight, // Use the new validator
+                  validator:
+                      _validateMidParentalHeight, // Use the new validator
                 ),
               ],
               const SizedBox(height: 32), // Spacing before buttons
@@ -470,13 +525,17 @@ class _TWIIIHeightPredictionPageState extends State<TWIIIHeightPredictionPage> {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.calculate_outlined),
                       label: const Text('Calculate'),
-                      onPressed: _canCalculate ? _calculateHeight : null, // Enable/disable button
+                      onPressed: _canCalculate
+                          ? _calculateHeight
+                          : null, // Enable/disable button
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         textStyle: const TextStyle(fontSize: 16),
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                        disabledBackgroundColor: Colors.grey[300], // Style for disabled button
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
+                        disabledBackgroundColor: Colors.grey[300],
+                        // Style for disabled button
                         disabledForegroundColor: Colors.grey[700],
                       ),
                     ),

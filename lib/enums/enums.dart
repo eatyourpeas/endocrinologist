@@ -1,17 +1,12 @@
 enum Sex { male, female }
 
-enum Centile { P3, P5, P10, P25, P50, P75, P90, P95, P97 }
+enum Centile { p3, p5, p10, p25, p50, p75, p90, p95, p97 }
 
-enum Ethnicity { Bulgarian, Indian }
+enum Ethnicity { bulgarian, indian }
 
 enum AgeGroup { neonate, child }
 
-enum BsaCalculationMethod {
-  mosteller,
-  boyd,
-  dubois,
-  gehangeorge
-}
+enum BsaCalculationMethod { mosteller, boyd, dubois, gehangeorge }
 
 enum CLLMeasurementType {
   length,

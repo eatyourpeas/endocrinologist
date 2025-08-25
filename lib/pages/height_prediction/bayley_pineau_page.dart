@@ -1,7 +1,7 @@
+import 'package:endocrinologist/enums/enums.dart';
+import 'package:endocrinologist/referencedata/bayley_pinneau.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For TextInputFormatters
-import 'package:endocrinologist/referencedata/bayley_pinneau.dart';
-import 'package:endocrinologist/enums/enums.dart';
 
 class BayleyPinneauPage extends StatefulWidget {
   const BayleyPinneauPage({super.key});
@@ -15,10 +15,12 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
 
   final TextEditingController _actualAgeController = TextEditingController();
   final TextEditingController _skeletalAgeController = TextEditingController();
-  final TextEditingController _currentHeightController = TextEditingController();
+  final TextEditingController _currentHeightController =
+      TextEditingController();
 
   Sex _selectedSex = Sex.male;
-  final HeightPredictionService heightPredictionService = HeightPredictionService();
+  final HeightPredictionService heightPredictionService =
+      HeightPredictionService();
 
   @override
   void dispose() {
@@ -44,9 +46,12 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
 
       final double? actualAge = double.tryParse(_actualAgeController.text);
       final String skeletalAgeStr = _skeletalAgeController.text;
-      final double? currentHeightCm = double.tryParse(_currentHeightController.text);
+      final double? currentHeightCm =
+          double.tryParse(_currentHeightController.text);
 
-      if (actualAge == null || currentHeightCm == null || skeletalAgeStr.isEmpty) {
+      if (actualAge == null ||
+          currentHeightCm == null ||
+          skeletalAgeStr.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please fill all fields correctly.')),
         );
@@ -56,11 +61,12 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
       final String sexStr = _selectedSex == Sex.male ? 'boy' : 'girl';
       final double currentHeightInches = currentHeightCm / 2.54;
 
-      PredictedFinalHeightData? exampleResult = heightPredictionService.predictFinalHeight(
-          childCurrentHeightInches: currentHeightInches,
-          childSkeletalAgeStr: skeletalAgeStr,
-          childActualAgeDecimalYears: actualAge,
-          sex: sexStr);
+      PredictedFinalHeightData? exampleResult =
+          heightPredictionService.predictFinalHeight(
+              childCurrentHeightInches: currentHeightInches,
+              childSkeletalAgeStr: skeletalAgeStr,
+              childActualAgeDecimalYears: actualAge,
+              sex: sexStr);
       _showResultModal(exampleResult);
     }
   }
@@ -103,7 +109,8 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Predicted Final Height (Bayley-Pinneau)'),
-          content: SingleChildScrollView( // Added for potentially long content
+          content: SingleChildScrollView(
+            // Added for potentially long content
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +154,9 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
   }
 
   bool _isValidSkeletalAgeFormat(String input) {
-    if (input.isEmpty) return true; // Allow empty initially, validator handles 'please enter'
+    if (input.isEmpty) {
+      return true;
+    } // Allow empty initially, validator handles 'please enter'
     final RegExp skeletalAgeRegex = RegExp(r'^\d{1,2}-\d{1,2}$');
     if (!skeletalAgeRegex.hasMatch(input)) return false;
     final parts = input.split('-');
@@ -162,7 +171,8 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( // ***** ADD THIS AppBar *****
+      appBar: AppBar(
+        // ***** ADD THIS AppBar *****
         title: const Text('Bayley-Pinneau Method'),
         // backgroundColor: Theme.of(context).colorScheme.surfaceVariant, // Optional styling
       ),
@@ -182,7 +192,8 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.height),
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                 ],
@@ -206,7 +217,8 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.cake_outlined),
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                 ],
@@ -228,7 +240,8 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
                   labelText: 'Skeletal/Bone Age (years-months)',
                   hintText: 'e.g., 8-6 for 8 years 6 months',
                   border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.accessibility_new_outlined), // Changed icon slightly
+                  prefixIcon: Icon(Icons
+                      .accessibility_new_outlined), // Changed icon slightly
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -243,10 +256,17 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
               const SizedBox(height: 16), // Added spacing
               Text('Sex:', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8), // Added spacing
-              SegmentedButton<Sex>( // Using SegmentedButton for a more modern feel
+              SegmentedButton<Sex>(
+                // Using SegmentedButton for a more modern feel
                 segments: const <ButtonSegment<Sex>>[
-                  ButtonSegment<Sex>(value: Sex.male, label: Text('Male'), icon: Icon(Icons.male)),
-                  ButtonSegment<Sex>(value: Sex.female, label: Text('Female'), icon: Icon(Icons.female)),
+                  ButtonSegment<Sex>(
+                      value: Sex.male,
+                      label: Text('Male'),
+                      icon: Icon(Icons.male)),
+                  ButtonSegment<Sex>(
+                      value: Sex.female,
+                      label: Text('Female'),
+                      icon: Icon(Icons.female)),
                 ],
                 selected: <Sex>{_selectedSex},
                 onSelectionChanged: (Set<Sex> newSelection) {
@@ -255,8 +275,8 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
                   });
                 },
                 style: SegmentedButton.styleFrom(
-                  // minimumSize: Size((MediaQuery.of(context).size.width - 48) / 2, 40), // Ensure buttons take reasonable width
-                ),
+                    // minimumSize: Size((MediaQuery.of(context).size.width - 48) / 2, 40), // Ensure buttons take reasonable width
+                    ),
               ),
               const SizedBox(height: 32),
               Row(
@@ -283,7 +303,8 @@ class _BayleyPinneauPageState extends State<BayleyPinneauPage> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         textStyle: const TextStyle(fontSize: 16),
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                   ),

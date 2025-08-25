@@ -11,8 +11,11 @@ void main() {
     service = RWTFinalHeightPredictionService();
   });
 
-  group('RWTFinalHeightPredictionService Exact Lookup Tests - Original Data', () {
-    test('Boy - Exact lookup for 6 years, 3 months should return correct coefficients', () {
+  group('RWTFinalHeightPredictionService Exact Lookup Tests - Original Data',
+      () {
+    test(
+        'Boy - Exact lookup for 6 years, 3 months should return correct coefficients',
+        () {
       final RWTFinalHeightWeights? data = service.getExactData(
         ageYears: 6,
         ageMonths: 3,
@@ -31,7 +34,9 @@ void main() {
       expect(data.regressionIntercept, closeTo(-12.901, 0.001));
     });
 
-    test('Girl - Exact lookup for 10 years, 6 months should return correct coefficients', () {
+    test(
+        'Girl - Exact lookup for 10 years, 6 months should return correct coefficients',
+        () {
       final RWTFinalHeightWeights? data = service.getExactData(
         ageYears: 10,
         ageMonths: 6,
@@ -47,7 +52,9 @@ void main() {
       expect(data.regressionIntercept, closeTo(56.481, 0.001));
     });
 
-    test('Boy - Exact lookup for 16 years, 0 months should return correct coefficients', () {
+    test(
+        'Boy - Exact lookup for 16 years, 0 months should return correct coefficients',
+        () {
       final RWTFinalHeightWeights? data = service.getExactData(
         ageYears: 16,
         ageMonths: 0,
@@ -64,8 +71,11 @@ void main() {
     });
   });
 
-  group('RWTFinalHeightPredictionService Exact Lookup Tests - Amended Data', () {
-    test('Boy - Exact lookup for 6.0 decimal years should return correct coefficients (amended data)', () {
+  group('RWTFinalHeightPredictionService Exact Lookup Tests - Amended Data',
+      () {
+    test(
+        'Boy - Exact lookup for 6.0 decimal years should return correct coefficients (amended data)',
+        () {
       final RWTFinalHeightWeights? data = service.getExactData(
         ageYears: 6, // 6.0 decimal years
         ageMonths: 0,
@@ -81,7 +91,9 @@ void main() {
       expect(data.regressionIntercept, closeTo(-28.5616, 0.001));
     });
 
-    test('Girl - Exact lookup for 10.5 decimal years should return correct coefficients (amended data)', () {
+    test(
+        'Girl - Exact lookup for 10.5 decimal years should return correct coefficients (amended data)',
+        () {
       final RWTFinalHeightWeights? data = service.getExactData(
         ageYears: 10, // 10.5 decimal years
         ageMonths: 6,
@@ -97,7 +109,9 @@ void main() {
       expect(data.regressionIntercept, closeTo(30.8503, 0.001));
     });
 
-    test('Boy - Exact lookup for 17.5 decimal years should return correct coefficients (amended data)', () {
+    test(
+        'Boy - Exact lookup for 17.5 decimal years should return correct coefficients (amended data)',
+        () {
       final RWTFinalHeightWeights? data = service.getExactData(
         ageYears: 17, // 17.5 decimal years
         ageMonths: 6,
@@ -114,14 +128,17 @@ void main() {
     });
   });
 
-  group('RWTFinalHeightPredictionService Interpolation Tests - Original Data', () {
+  group('RWTFinalHeightPredictionService Interpolation Tests - Original Data',
+      () {
     // Standard test input values for height calculation
     const double testCurrentHeight = 120.0;
     const double testWeight = 25.0;
     const double testBoneAge = 7.5;
     const double testMidparentalHeight = 170.0;
 
-    test('Boy - Interpolated height for 6 years, 4.5 months (6.375 decimal years) - Original Data', () {
+    test(
+        'Boy - Interpolated height for 6 years, 4.5 months (6.375 decimal years) - Original Data',
+        () {
       // Data points surrounding 6.375 decimal years for boys (original data):
       // 6y 3m (6.25) -> HLC: 1.143, WC: -0.512, MPHC: 0.389, BAC: 0.123, RI: -12.901
       // 6y 6m (6.50) -> HLC: 1.106, WC: -0.434, MPHC: 0.365, BAC: -0.077, RI: -11.834
@@ -146,10 +163,15 @@ void main() {
 
       // Expected calculation:
       // 1.139 * 120 + (-0.5055 * 25) + (0.386 * 170) + (0.104 * 7.5) + -12.742 = 136.68 - 12.6375 + 65.62 + 0.78 - 12.742 = 177.7005
-      expect(estimatedHeight, closeTo(177.70, 0.01)); // Allowing for minor floating point variations
+      expect(
+          estimatedHeight,
+          closeTo(
+              177.70, 0.01)); // Allowing for minor floating point variations
     });
 
-    test('Girl - Interpolated height for 5 years, 1.5 months (5.125 decimal years) - Original Data', () {
+    test(
+        'Girl - Interpolated height for 5 years, 1.5 months (5.125 decimal years) - Original Data',
+        () {
       // Data points surrounding 5.125 decimal years for girls (original data):
       // 5y 0m (5.00) -> HLC: 1.190, WC: -0.761, MPHC: 0.200, BAC: -0.571, RI: 17.398
       // 5y 3m (5.25) -> HLC: 1.180, WC: -0.742, MPHC: 0.197, BAC: -0.572, RI: 17.431
@@ -178,7 +200,8 @@ void main() {
     });
   });
 
-  group('RWTFinalHeightPredictionService Interpolation Tests - Amended Data', () {
+  group('RWTFinalHeightPredictionService Interpolation Tests - Amended Data',
+      () {
     const double testCurrentHeight = 120.0;
     const double testWeight = 25.0;
     const double testBoneAge = 7.5;
@@ -213,7 +236,8 @@ void main() {
       expect(estimatedHeight, closeTo(178.33, 0.01));
     });
 
-    test('Girl - Interpolated height for 5.25 decimal years - Amended Data', () {
+    test('Girl - Interpolated height for 5.25 decimal years - Amended Data',
+        () {
       // Data points surrounding 5.25 decimal years for girls (amended data):
       // 5.0 -> RI: -13.5388, HLC: 1.21884, WC: -0.97101, MPHC: 0.38620, BAC: 0.43747
       // 5.5 -> RI: -12.2278, HLC: 1.20167, WC: -0.90399, MPHC: 0.36875, BAC: -0.50281
@@ -243,17 +267,20 @@ void main() {
     });
   });
 
-  group('RWTFinalHeightPredictionService Out of Range Tests - Original Data', () {
+  group('RWTFinalHeightPredictionService Out of Range Tests - Original Data',
+      () {
     const double testCurrentHeight = 120.0;
     const double testWeight = 25.0;
     const double testBoneAge = 7.5;
     const double testMidparentalHeight = 170.0;
 
-    test('Boy - Age below minimum range should throw ArgumentError (Original Data)', () {
+    test(
+        'Boy - Age below minimum range should throw ArgumentError (Original Data)',
+        () {
       // Boys original data starts at 1.0 decimal years
       const double ageBelowMin = 0.5; // 0 years, 6 months
       expect(
-            () => service.estimateFinalAdultHeight(
+        () => service.estimateFinalAdultHeight(
           currentHeightCm: testCurrentHeight,
           ageDecimalYears: ageBelowMin,
           weightKg: testWeight,
@@ -266,11 +293,13 @@ void main() {
       );
     });
 
-    test('Boy - Age above maximum range should throw ArgumentError (Original Data)', () {
+    test(
+        'Boy - Age above maximum range should throw ArgumentError (Original Data)',
+        () {
       // Boys original data ends at 16.0 decimal years
       const double ageAboveMax = 16.1; // 16 years, 1.2 months
       expect(
-            () => service.estimateFinalAdultHeight(
+        () => service.estimateFinalAdultHeight(
           currentHeightCm: testCurrentHeight,
           ageDecimalYears: ageAboveMax,
           weightKg: testWeight,
@@ -283,11 +312,13 @@ void main() {
       );
     });
 
-    test('Girl - Age below minimum range should throw ArgumentError (Original Data)', () {
+    test(
+        'Girl - Age below minimum range should throw ArgumentError (Original Data)',
+        () {
       // Girls original data starts at 1.0 decimal years
       const double ageBelowMin = 0.9; // 0 years, 10.8 months
       expect(
-            () => service.estimateFinalAdultHeight(
+        () => service.estimateFinalAdultHeight(
           currentHeightCm: testCurrentHeight,
           ageDecimalYears: ageBelowMin,
           weightKg: testWeight,
@@ -300,11 +331,13 @@ void main() {
       );
     });
 
-    test('Girl - Age above maximum range should throw ArgumentError (Original Data)', () {
+    test(
+        'Girl - Age above maximum range should throw ArgumentError (Original Data)',
+        () {
       // Girls original data ends at 14.0 decimal years
       const double ageAboveMax = 14.0001; // Slightly above 14y 0m
       expect(
-            () => service.estimateFinalAdultHeight(
+        () => service.estimateFinalAdultHeight(
           currentHeightCm: testCurrentHeight,
           ageDecimalYears: ageAboveMax,
           weightKg: testWeight,
@@ -318,17 +351,20 @@ void main() {
     });
   });
 
-  group('RWTFinalHeightPredictionService Out of Range Tests - Amended Data', () {
+  group('RWTFinalHeightPredictionService Out of Range Tests - Amended Data',
+      () {
     const double testCurrentHeight = 120.0;
     const double testWeight = 25.0;
     const double testBoneAge = 7.5;
     const double testMidparentalHeight = 170.0;
 
-    test('Boy - Age below minimum range should throw ArgumentError (Amended Data)', () {
+    test(
+        'Boy - Age below minimum range should throw ArgumentError (Amended Data)',
+        () {
       // Boys amended data starts at 3.0 decimal years
       const double ageBelowMin = 2.9;
       expect(
-            () => service.estimateFinalAdultHeight(
+        () => service.estimateFinalAdultHeight(
           currentHeightCm: testCurrentHeight,
           ageDecimalYears: ageBelowMin,
           weightKg: testWeight,
@@ -341,11 +377,13 @@ void main() {
       );
     });
 
-    test('Boy - Age above maximum range should throw ArgumentError (Amended Data)', () {
+    test(
+        'Boy - Age above maximum range should throw ArgumentError (Amended Data)',
+        () {
       // Boys amended data ends at 17.5 decimal years
       const double ageAboveMax = 17.6;
       expect(
-            () => service.estimateFinalAdultHeight(
+        () => service.estimateFinalAdultHeight(
           currentHeightCm: testCurrentHeight,
           ageDecimalYears: ageAboveMax,
           weightKg: testWeight,
@@ -358,11 +396,13 @@ void main() {
       );
     });
 
-    test('Girl - Age below minimum range should throw ArgumentError (Amended Data)', () {
+    test(
+        'Girl - Age below minimum range should throw ArgumentError (Amended Data)',
+        () {
       // Girls amended data starts at 3.0 decimal years
       const double ageBelowMin = 2.9;
       expect(
-            () => service.estimateFinalAdultHeight(
+        () => service.estimateFinalAdultHeight(
           currentHeightCm: testCurrentHeight,
           ageDecimalYears: ageBelowMin,
           weightKg: testWeight,
@@ -375,11 +415,13 @@ void main() {
       );
     });
 
-    test('Girl - Age above maximum range should throw ArgumentError (Amended Data)', () {
+    test(
+        'Girl - Age above maximum range should throw ArgumentError (Amended Data)',
+        () {
       // Girls amended data ends at 17.5 decimal years
       const double ageAboveMax = 17.6;
       expect(
-            () => service.estimateFinalAdultHeight(
+        () => service.estimateFinalAdultHeight(
           currentHeightCm: testCurrentHeight,
           ageDecimalYears: ageAboveMax,
           weightKg: testWeight,

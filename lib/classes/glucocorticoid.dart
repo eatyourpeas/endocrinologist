@@ -1,4 +1,4 @@
-class Glucocorticoid{
+class Glucocorticoid {
   String name;
   double potency;
 

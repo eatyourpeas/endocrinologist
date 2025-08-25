@@ -1,5 +1,11 @@
 import "../classes/milk.dart";
 
+List<Milk> sortedMilks(List<Milk> milks) {
+  List<Milk> sorted =  List.from(milks);
+  sorted.sort((a, b) => a.name.compareTo(b.name));
+  return sorted;
+}
+
 final List<Milk> milks = [
   Milk(name: "Aptamil 1 First Milk", carbsPer100ml: 7.0),
   Milk(name: "Aptamil Profutura 1 First Infant Milk", carbsPer100ml: 7.0),
@@ -90,9 +96,3 @@ final List<Milk> milks = [
   Milk(name: "SHS Nutricia Kindergen", carbsPer100ml: 11.8),
   Milk(name: "Vitaflo Renastart", carbsPer100ml: 12.5),
 ];
-
-List<Milk> sortedMilks(List<Milk> milks) {
-  List<Milk> sorted =  List.from(milks);
-  sorted.sort((a, b) => a.name.compareTo(b.name));
-  return sorted;
-}

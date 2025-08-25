@@ -5,7 +5,7 @@ Useful tools for the paediatric endocrinologist
 
 ## What Is Included?
 
-This if a Flutter project to create tools to be used by paediatric endocrinologists.
+This if a Flutter project (v3.35.1) to create tools to be used by paediatric endocrinologists.
 
 Mostly a work in progress but help is definitely welcome if people are interested.
 

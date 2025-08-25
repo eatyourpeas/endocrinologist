@@ -1,63 +1,62 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:endocrinologist/calculations/salinecalculations.dart'; // Adjust path if needed
 import 'package:endocrinologist/enums/enums.dart'; // Adjust path if needed
-import 'dart:math' as math; // For direct comparison if needed, though not strictly for these tests
+import 'dart:math'
+    as math; // For direct comparison if needed, though not strictly for these tests
 
 void main() {
   group('totalBodyWater - Wells et al. method (age <= 12)', () {
-    test(
-        'Boy aged 4.4, weight 17.0 kg, height 106 cm (Wells example 1)',
-            () {
-          // Inputs from Wells et al. example
-          const double age = 4.4; // years
-          const double weight = 17.0; // kg
-          const double height = 106.0; // cm
-          const Sex sex = Sex.male; // "sex scored as zero" implies male in the formula
+    test('Boy aged 4.4, weight 17.0 kg, height 106 cm (Wells example 1)', () {
+      // Inputs from Wells et al. example
+      const double age = 4.4; // years
+      const double weight = 17.0; // kg
+      const double height = 106.0; // cm
+      const Sex sex =
+          Sex.male; // "sex scored as zero" implies male in the formula
 
-          // Expected lnTBW and TBW from the paper
-          // lnTBW = -2.952 + (0.551 * ln17) + (0.796 * ln106) + (0.008 * 4.4)
-          // lnTBW = -2.952 + (0.551 * 2.833213344) + (0.796 * 4.66343909) + (0.008 * 4.4)
-          // lnTBW = -2.952 + 1.561100552 + 3.712109516 + 0.0352 = 2.356410068
-          // TBW = exp(2.356410068) = 10.5530
-          const double expectedLiters = 10.55; // From paper
+      // Expected lnTBW and TBW from the paper
+      // lnTBW = -2.952 + (0.551 * ln17) + (0.796 * ln106) + (0.008 * 4.4)
+      // lnTBW = -2.952 + (0.551 * 2.833213344) + (0.796 * 4.66343909) + (0.008 * 4.4)
+      // lnTBW = -2.952 + 1.561100552 + 3.712109516 + 0.0352 = 2.356410068
+      // TBW = exp(2.356410068) = 10.5530
+      const double expectedLiters = 10.55; // From paper
 
-          final double result = totalBodyWater(
-            age: age,
-            height: height,
-            weight: weight,
-            sex: sex,
-          );
+      final double result = totalBodyWater(
+        age: age,
+        height: height,
+        weight: weight,
+        sex: sex,
+      );
 
-          // Using expectLater with closeTo for floating point comparisons
-          expect(result, closeTo(expectedLiters, 0.01)); // Allow a small delta
-        });
+      // Using expectLater with closeTo for floating point comparisons
+      expect(result, closeTo(expectedLiters, 0.01)); // Allow a small delta
+    });
 
-    test(
-        'Girl aged 0.23, weight 5.95 kg, height 62 cm (Wells example 2)',
-            () {
-          // Inputs from Wells et al. example
-          const double age = 0.23; // years
-          const double weight = 5.95; // kg
-          const double height = 62.0; // cm
-          const Sex sex = Sex.female; // "sex scored as 1" implies female in the formula
+    test('Girl aged 0.23, weight 5.95 kg, height 62 cm (Wells example 2)', () {
+      // Inputs from Wells et al. example
+      const double age = 0.23; // years
+      const double weight = 5.95; // kg
+      const double height = 62.0; // cm
+      const Sex sex =
+          Sex.female; // "sex scored as 1" implies female in the formula
 
-          // Expected lnTBW and TBW from the paper
-          // lnTBW = -2.952 + (0.551 * ln5.95) + (0.796 * ln62) - 0.047 + (0.008 * 0.23)
-          // lnTBW = -2.952 + (0.551 * 1.783474935) + (0.796 * 4.127134385) - 0.047 + (0.008 * 0.23)
-          // lnTBW = -2.952 + 0.982694689 + 3.28519909 - 0.047 + 0.00184
-          // lnTBW = 1.270733779
-          // TBW = exp(1.270733779) = 3.5632
-          const double expectedLiters = 3.56; // From paper
+      // Expected lnTBW and TBW from the paper
+      // lnTBW = -2.952 + (0.551 * ln5.95) + (0.796 * ln62) - 0.047 + (0.008 * 0.23)
+      // lnTBW = -2.952 + (0.551 * 1.783474935) + (0.796 * 4.127134385) - 0.047 + (0.008 * 0.23)
+      // lnTBW = -2.952 + 0.982694689 + 3.28519909 - 0.047 + 0.00184
+      // lnTBW = 1.270733779
+      // TBW = exp(1.270733779) = 3.5632
+      const double expectedLiters = 3.56; // From paper
 
-          final double result = totalBodyWater(
-            age: age,
-            height: height,
-            weight: weight,
-            sex: sex,
-          );
+      final double result = totalBodyWater(
+        age: age,
+        height: height,
+        weight: weight,
+        sex: sex,
+      );
 
-          expect(result, closeTo(expectedLiters, 0.01));
-        });
+      expect(result, closeTo(expectedLiters, 0.01));
+    });
 
     // Add more test cases for age <= 12:
     // - Edge case: age = 12 (male)
@@ -92,7 +91,6 @@ void main() {
       // TBW_female = exp(3.118037785) = 22.599
       expect(result, closeTo(22.60, 0.01));
     });
-
   });
 
   group('totalBodyWater - Chumlea et al. method (age > 12)', () {
@@ -176,4 +174,3 @@ void main() {
     expect(result, closeTo(expectedWells, 0.01));
   });
 }
-

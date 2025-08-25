@@ -15,8 +15,9 @@ List<Glucocorticoid> glucocorticoids = [
   Glucocorticoid(name: "Clobetasol", potency: 300),
 ];
 
-List<Glucocorticoid> sortedGlucocorticoids(List<Glucocorticoid> glucocorticoids) {
-  List<Glucocorticoid> sorted =  List.from(glucocorticoids);
+List<Glucocorticoid> sortedGlucocorticoids(
+    List<Glucocorticoid> glucocorticoids) {
+  List<Glucocorticoid> sorted = List.from(glucocorticoids);
   sorted.sort((a, b) => a.name.compareTo(b.name));
   return sorted;
 }

@@ -6,12 +6,7 @@ enum Ethnicity { Bulgarian, Indian }
 
 enum AgeGroup { neonate, child }
 
-enum BsaCalculationMethod {
-  mosteller,
-  boyd,
-  dubois,
-  gehangeorge
-}
+enum BsaCalculationMethod { mosteller, boyd, dubois, gehangeorge }
 
 enum CLLMeasurementType {
   length,

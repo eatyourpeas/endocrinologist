@@ -1,4 +1,3 @@
-
 import 'package:endocrinologist/calculations/cllpretermnormativevalues.dart';
 import 'package:endocrinologist/pages/childbulgariansplchart.dart';
 import 'package:endocrinologist/pages/childindiansplchart.dart';
@@ -11,15 +10,15 @@ import 'cllchart.dart';
 import '../enums/enums.dart';
 import '../calculations/centile.dart';
 
-class GenitalTab extends StatefulWidget{
+class GenitalTab extends StatefulWidget {
   final Sex initialSex;
   const GenitalTab({super.key, required this.initialSex});
 
   @override
-  State <GenitalTab> createState() => _GenitalTabState();
+  State<GenitalTab> createState() => _GenitalTabState();
 }
 
-class _GenitalTabState extends State<GenitalTab>{
+class _GenitalTabState extends State<GenitalTab> {
   final _formKey = GlobalKey<FormState>();
   late Sex _currentSex;
   AgeGroup _selectedAgeGroup = AgeGroup.neonate;
@@ -30,20 +29,19 @@ class _GenitalTabState extends State<GenitalTab>{
   double spl = 0; // Stretched Penile length
   double cll = 0; // Clitoral Length
   double cwl = 0; // Clitoral Width
-  bool showScatterPoint=false;
+  bool showScatterPoint = false;
   bool showCLL = false;
 
   double decimalAge = 0.0;
-
 
   final _cllController = TextEditingController();
   final _cwlController = TextEditingController();
   final _splController = TextEditingController();
   final _decimalAgeController = TextEditingController();
-  final List<int> gestationWeeks = List.generate(19, (index) => 41-index);
+  final List<int> gestationWeeks = List.generate(19, (index) => 41 - index);
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _currentSex = widget.initialSex;
   }
@@ -84,15 +82,20 @@ class _GenitalTabState extends State<GenitalTab>{
       spl = double.tryParse(_splController.text) ?? 0;
       inputValue = spl;
 
-      if (_selectedAgeGroup == AgeGroup.neonate) { // Updated condition
-        (sds, centile) = FetalSPLData.calculateSDSAndCentile(
-            selectedGestationWeek, spl);
-      } else { // Child
+      if (_selectedAgeGroup == AgeGroup.neonate) {
+        // Updated condition
+        (sds, centile) =
+            FetalSPLData.calculateSDSAndCentile(selectedGestationWeek, spl);
+      } else {
+        // Child
         // Ensure you have an Ethnicity enum defined in your calculations
         // For example, in PenileStatsCalculator.calculateStretchedPenileLengthSDS
-        Ethnicity calculationEthnicity = _selectedEthnicity == Ethnicity.Bulgarian
-            ? Ethnicity.Bulgarian // Make sure this matches your enum in calculations
-            : Ethnicity.Indian;  // Make sure this matches your enum in calculations
+        Ethnicity calculationEthnicity = _selectedEthnicity ==
+                Ethnicity.Bulgarian
+            ? Ethnicity
+                .Bulgarian // Make sure this matches your enum in calculations
+            : Ethnicity
+                .Indian; // Make sure this matches your enum in calculations
 
         sds = PenileStatsCalculator.calculateStretchedPenileLengthSDS(
             measuredStretchedPenileLength: spl,
@@ -105,8 +108,8 @@ class _GenitalTabState extends State<GenitalTab>{
         _centileString = 'Centile: ${centile.toStringAsFixed(1)}';
         showScatterPoint = true;
       });
-
-    } else { // Female
+    } else {
+      // Female
       if (_selectedAgeGroup == AgeGroup.neonate) {
         if (showCLL) {
           cll = double.tryParse(_cllController.text) ?? 0;
@@ -128,7 +131,8 @@ class _GenitalTabState extends State<GenitalTab>{
           _centileString = 'Centile: ${centile.toStringAsFixed(1)}';
           showScatterPoint = true;
         });
-      } else { // Child (Female) - Placeholder if you add this later
+      } else {
+        // Child (Female) - Placeholder if you add this later
         setState(() {
           _sdsString = 'Child calculations for females not implemented yet.';
           _centileString = '';
@@ -137,7 +141,6 @@ class _GenitalTabState extends State<GenitalTab>{
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +154,9 @@ class _GenitalTabState extends State<GenitalTab>{
         controller: _splController,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: _selectedAgeGroup == AgeGroup.neonate ? 'SPL Neonate (cm)' : 'SPL Child (cm)',
+          labelText: _selectedAgeGroup == AgeGroup.neonate
+              ? 'SPL Neonate (cm)'
+              : 'SPL Child (cm)',
           border: const OutlineInputBorder(), // Added for consistency
         ),
       );
@@ -161,22 +166,24 @@ class _GenitalTabState extends State<GenitalTab>{
           spl: spl,
           showScatterPoint: showScatterPoint,
         );
-      } else { // Child Male
+      } else {
+        // Child Male
         if (_selectedEthnicity == Ethnicity.Bulgarian) {
           chartSpecificWidget = ChildBulgarianSPLChart(
             decimal_age: decimalAge,
             spl: spl,
             showScatterPoint: showScatterPoint,
           );
-        } else { // Indian
+        } else {
+          // Indian
           chartSpecificWidget = ChildIndianSPLChart(
               decimal_age: decimalAge,
               spl: spl,
-              showScatterPoint: showScatterPoint
-          );
+              showScatterPoint: showScatterPoint);
         }
       }
-    } else { // Female
+    } else {
+      // Female
       // The original code only shows CLL/CWL inputs for neonates.
       // If female children also need these inputs, you'll need to adjust this.
       if (_selectedAgeGroup == AgeGroup.neonate) {
@@ -200,7 +207,9 @@ class _GenitalTabState extends State<GenitalTab>{
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(showCLL ? 'Showing Clitoral Length' : 'Showing Clitoral Width'),
+              Text(showCLL
+                  ? 'Showing Clitoral Length'
+                  : 'Showing Clitoral Width'),
               Switch(
                 value: showCLL,
                 onChanged: (value) {
@@ -228,16 +237,19 @@ class _GenitalTabState extends State<GenitalTab>{
           showScatterPoint: showScatterPoint,
           isWidth: !showCLL,
         );
-      } else { // Child Female - Placeholder or specific UI
-        inputSpecificFields = const Center(child: Text("Genital measurements for female children not yet implemented."));
-        chartSpecificWidget = const SizedBox.shrink(); // No chart or placeholder
+      } else {
+        // Child Female - Placeholder or specific UI
+        inputSpecificFields = const Center(
+            child: Text(
+                "Genital measurements for female children not yet implemented."));
+        chartSpecificWidget =
+            const SizedBox.shrink(); // No chart or placeholder
         _sdsString = '';
         _centileString = '';
         showScatterPoint = false;
       }
     }
     // --- End of logic for inputSpecificFields and chartSpecificWidget ----
-
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -246,7 +258,8 @@ class _GenitalTabState extends State<GenitalTab>{
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch, // To make SegmentedButtons take full width
+            crossAxisAlignment: CrossAxisAlignment
+                .stretch, // To make SegmentedButtons take full width
             children: [
               // Age Group Toggle (Neonate vs Child)
               SegmentedButton<AgeGroup>(
@@ -272,7 +285,8 @@ class _GenitalTabState extends State<GenitalTab>{
                     showScatterPoint = false;
                     // If switching to neonate, clear ethnicity selection if it's only for child
                     if (_selectedAgeGroup == AgeGroup.neonate) {
-                      _selectedEthnicity = Ethnicity.Bulgarian; // Reset if needed
+                      _selectedEthnicity =
+                          Ethnicity.Bulgarian; // Reset if needed
                     }
                   });
                 },
@@ -306,19 +320,20 @@ class _GenitalTabState extends State<GenitalTab>{
                   },
                   value: selectedGestationWeek,
                 )
-              else if (_selectedAgeGroup == AgeGroup.child) ...[ // Using '...' collection-if
+              else if (_selectedAgeGroup == AgeGroup.child) ...[
+                // Using '...' collection-if
                 // Ethnicity Toggle (Only for Male Children)
-                if (isMale) ...[ // Show ethnicity only for male children
-                  Text("Ethnicity (for Child SPL):", style: Theme.of(context).textTheme.titleSmall),
+                if (isMale) ...[
+                  // Show ethnicity only for male children
+                  Text("Ethnicity (for Child SPL):",
+                      style: Theme.of(context).textTheme.titleSmall),
                   const SizedBox(height: 8),
                   SegmentedButton<Ethnicity>(
                     segments: const <ButtonSegment<Ethnicity>>[
                       ButtonSegment<Ethnicity>(
-                          value: Ethnicity.Bulgarian,
-                          label: Text('Bulgarian')),
+                          value: Ethnicity.Bulgarian, label: Text('Bulgarian')),
                       ButtonSegment<Ethnicity>(
-                          value: Ethnicity.Indian,
-                          label: Text('Indian')),
+                          value: Ethnicity.Indian, label: Text('Indian')),
                     ],
                     selected: <Ethnicity>{_selectedEthnicity},
                     onSelectionChanged: (Set<Ethnicity> newSelection) {
@@ -336,15 +351,20 @@ class _GenitalTabState extends State<GenitalTab>{
                 TextFormField(
                   controller: _decimalAgeController,
                   keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                  ],
                   decoration: const InputDecoration(
                     labelText: 'Decimal Age (years)',
                     hintText: 'e.g., 2.5 for 2 years 6 months',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value){ // Add validator if needed
-                    if (value == null || value.isEmpty) return 'Please enter age.';
-                    if (double.tryParse(value) == null || double.parse(value) < 0) return 'Invalid age.';
+                  validator: (value) {
+                    // Add validator if needed
+                    if (value == null || value.isEmpty)
+                      return 'Please enter age.';
+                    if (double.tryParse(value) == null ||
+                        double.parse(value) < 0) return 'Invalid age.';
                     return null;
                   },
                 ),
@@ -357,13 +377,17 @@ class _GenitalTabState extends State<GenitalTab>{
               Row(
                 children: [
                   Expanded(
-                    child: ElevatedButton.icon( // Added icon for consistency
+                    child: ElevatedButton.icon(
+                      // Added icon for consistency
                       icon: const Icon(Icons.calculate_outlined),
                       onPressed: _calculateResult,
                       label: const Text('Calculate'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary, // Use theme color
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .primary, // Use theme color
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         textStyle: const TextStyle(fontSize: 16),
                       ),
@@ -371,7 +395,8 @@ class _GenitalTabState extends State<GenitalTab>{
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: OutlinedButton.icon( // Changed to OutlinedButton for visual difference
+                    child: OutlinedButton.icon(
+                      // Changed to OutlinedButton for visual difference
                       icon: const Icon(Icons.refresh),
                       onPressed: _restart,
                       label: const Text('Restart'),
@@ -385,7 +410,8 @@ class _GenitalTabState extends State<GenitalTab>{
               ),
               const SizedBox(height: 16), // Increased spacing
 
-              if (_sdsString.isNotEmpty || _centileString.isNotEmpty) // Show only if there are results
+              if (_sdsString.isNotEmpty ||
+                  _centileString.isNotEmpty) // Show only if there are results
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -393,15 +419,20 @@ class _GenitalTabState extends State<GenitalTab>{
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
-                            fontSize: Theme.of(context).textTheme.titleLarge?.fontSize // Using theme for font size
-                        )),
+                            fontSize: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.fontSize // Using theme for font size
+                            )),
                     const SizedBox(width: 16), // Increased spacing
                     Text(_centileString,
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
-                            fontSize: Theme.of(context).textTheme.titleLarge?.fontSize
-                        )),
+                            fontSize: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.fontSize)),
                   ],
                 ),
               const SizedBox(height: 10),

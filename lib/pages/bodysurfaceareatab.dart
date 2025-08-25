@@ -1,13 +1,12 @@
-
 import 'package:flutter/material.dart';
 import '../enums/enums.dart';
 import 'package:endocrinologist/calculations/bodysurfacearea.dart';
 
-class BodySurfaceAreaTab extends StatefulWidget{
+class BodySurfaceAreaTab extends StatefulWidget {
   const BodySurfaceAreaTab({super.key});
 
   @override
-  State <BodySurfaceAreaTab> createState() => _BodySurfaceAreaTabState();
+  State<BodySurfaceAreaTab> createState() => _BodySurfaceAreaTabState();
 }
 
 class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
@@ -60,7 +59,6 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
     );
   }
 
-
   void _submitForm() {
     // First, ensure the form's current state is valid according to validators
     if (!(_formKey.currentState?.validate() ?? false)) {
@@ -76,11 +74,13 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
 
     // These checks are now more of a fallback, as validators should prevent null/empty
     if (height == null) {
-      _showErrorDialog("Input Error", "Invalid height entered. Please enter a valid number.");
+      _showErrorDialog("Input Error",
+          "Invalid height entered. Please enter a valid number.");
       return;
     }
     if (weight == null) {
-      _showErrorDialog("Input Error", "Invalid weight entered. Please enter a valid number.");
+      _showErrorDialog("Input Error",
+          "Invalid weight entered. Please enter a valid number.");
       return;
     }
 
@@ -92,17 +92,20 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
 
     showDialog(
         context: context,
-        builder: (BuildContext dialogContext) { // Use a different context name for the dialog
+        builder: (BuildContext dialogContext) {
+          // Use a different context name for the dialog
           return AlertDialog(
             title: const Text('Body Surface Area Calculation'),
             content: SingleChildScrollView(
               child: Column(
-                  mainAxisSize: MainAxisSize.min, // Important for Column in Dialog
+                  mainAxisSize:
+                      MainAxisSize.min, // Important for Column in Dialog
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Method: $methodName",
-                      style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.normal, fontSize: 14),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -129,7 +132,7 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
     // and the initial _selectedMethod
     _isSelected = List.generate(
       BsaCalculationMethod.values.length,
-          (index) => BsaCalculationMethod.values[index] == _selectedMethod,
+      (index) => BsaCalculationMethod.values[index] == _selectedMethod,
     );
 
     // Add listeners to enable/disable button based on text field content
@@ -156,7 +159,6 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
     super.dispose();
   }
 
-
   // bool _formComplete() {
   // // This version of _formComplete is simpler if you want to enable based on just text presence
   // // Validators will handle if the text is a valid number upon submission.
@@ -169,9 +171,11 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
     final List<BsaCalculationMethod> bsaMethods = BsaCalculationMethod.values;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0), // Apply padding to SingleChildScrollView
+      padding:
+          const EdgeInsets.all(16.0), // Apply padding to SingleChildScrollView
 
-      child: Form( // Wrap with Form widget
+      child: Form(
+        // Wrap with Form widget
         key: _formKey,
         child: Column(children: [
           Visibility(
@@ -179,8 +183,8 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                 decoration: BoxDecoration(
                   color: Colors.lightBlueAccent[100],
                   borderRadius: BorderRadius.circular(8.0),
@@ -267,7 +271,8 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
                 return 'Please enter a valid number';
               }
               final heightValue = double.parse(value);
-              if (heightValue < 20 || heightValue > 250) { // Adjusted realistic range
+              if (heightValue < 20 || heightValue > 250) {
+                // Adjusted realistic range
                 return 'Height must be between 20-250 cm';
               }
               return null;
@@ -278,33 +283,35 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
             mainAxisSize: MainAxisSize.max,
             children: [
               ToggleButtons(
-                isSelected: _isSelected,
-                onPressed: (int index) {
-                  setState(() {
-                    for (int buttonIndex = 0; buttonIndex < _isSelected.length; buttonIndex++) {
-                      _isSelected[buttonIndex] = buttonIndex == index;
-                    }
-                    _selectedMethod = bsaMethods[index];
-                  });
-                },
-                selectedBorderColor: Colors.blue,
-                selectedColor: Colors.blue,
-                constraints: BoxConstraints(
-                  minHeight: 40.0,
-                  minWidth: (MediaQuery.of(context).size.width - 64) / bsaMethods.length,
-                ),
-                children: bsaMethods.map((method) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      _getBsaMethodName(method),
-                      style: const TextStyle(fontSize: 11),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                }).toList()
-              )
+                  isSelected: _isSelected,
+                  onPressed: (int index) {
+                    setState(() {
+                      for (int buttonIndex = 0;
+                          buttonIndex < _isSelected.length;
+                          buttonIndex++) {
+                        _isSelected[buttonIndex] = buttonIndex == index;
+                      }
+                      _selectedMethod = bsaMethods[index];
+                    });
+                  },
+                  selectedBorderColor: Colors.blue,
+                  selectedColor: Colors.blue,
+                  constraints: BoxConstraints(
+                    minHeight: 40.0,
+                    minWidth: (MediaQuery.of(context).size.width - 64) /
+                        bsaMethods.length,
+                  ),
+                  children: bsaMethods.map((method) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        _getBsaMethodName(method),
+                        style: const TextStyle(fontSize: 11),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    );
+                  }).toList())
             ],
           ),
           const SizedBox(height: 24),
@@ -321,8 +328,3 @@ class _BodySurfaceAreaTabState extends State<BodySurfaceAreaTab> {
     );
   }
 }
-
-
-
-
-

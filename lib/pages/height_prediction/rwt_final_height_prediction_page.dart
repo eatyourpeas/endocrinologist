@@ -14,28 +14,34 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
   final _formKey = GlobalKey<FormState>();
   bool _useAmendedData = false; // Defaults to false
   final RWTFinalHeightPredictionService _heightPredictionService =
-  RWTFinalHeightPredictionService();
+      RWTFinalHeightPredictionService();
 
   // Text Editing Controllers
-  final TextEditingController _currentHeightController = TextEditingController();
+  final TextEditingController _currentHeightController =
+      TextEditingController();
   final TextEditingController _weightKgController = TextEditingController();
-  final TextEditingController _midparentalHeightController = TextEditingController();
+  final TextEditingController _midparentalHeightController =
+      TextEditingController();
 
   // Controllers for Chronological Age
-  final TextEditingController _chronoAgeDecimalYearsController = TextEditingController();
-  final TextEditingController _chronoAgeYearsController = TextEditingController();
-  final TextEditingController _chronoAgeMonthsController = TextEditingController();
+  final TextEditingController _chronoAgeDecimalYearsController =
+      TextEditingController();
+  final TextEditingController _chronoAgeYearsController =
+      TextEditingController();
+  final TextEditingController _chronoAgeMonthsController =
+      TextEditingController();
 
   // Controllers for Bone Age
-  final TextEditingController _boneAgeDecimalYearsController = TextEditingController();
+  final TextEditingController _boneAgeDecimalYearsController =
+      TextEditingController();
   final TextEditingController _boneAgeYearsController = TextEditingController();
-  final TextEditingController _boneAgeMonthsController = TextEditingController();
-
+  final TextEditingController _boneAgeMonthsController =
+      TextEditingController();
 
   // State variables
   Sex _selectedSex = Sex.male;
   AgeInputMode _chronoAgeInputMode = AgeInputMode.decimal; // Default to decimal
-  AgeInputMode _boneAgeInputMode = AgeInputMode.decimal;   // Default to decimal
+  AgeInputMode _boneAgeInputMode = AgeInputMode.decimal; // Default to decimal
   bool _canCalculate = false;
 
   double? _predictedHeightResult;
@@ -148,7 +154,9 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
 
   void _calculateHeight() {
     if (!_formKey.currentState!.validate()) {
-      setState(() { _canCalculate = false; });
+      setState(() {
+        _canCalculate = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please correct the errors in the form.')),
       );
@@ -157,7 +165,8 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
 
     final double currentHeight = double.parse(_currentHeightController.text);
     final double weight = double.parse(_weightKgController.text);
-    final double midparentalHeight = double.parse(_midparentalHeightController.text);
+    final double midparentalHeight =
+        double.parse(_midparentalHeightController.text);
 
     double ageDecimal;
     if (_chronoAgeInputMode == AgeInputMode.decimal) {
@@ -177,7 +186,7 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
 
     try {
       final double estimatedHeight =
-      _heightPredictionService.estimateFinalAdultHeight(
+          _heightPredictionService.estimateFinalAdultHeight(
         currentHeightCm: currentHeight,
         ageDecimalYears: ageDecimal,
         weightKg: weight,
@@ -189,7 +198,8 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
       setState(() {
         _predictedHeightResult = estimatedHeight;
       });
-      _showResultModal(estimatedHeight, currentHeight, ageDecimal, weight, boneAgeDecimal, midparentalHeight, _useAmendedData);
+      _showResultModal(estimatedHeight, currentHeight, ageDecimal, weight,
+          boneAgeDecimal, midparentalHeight, _useAmendedData);
     } catch (e) {
       _showErrorModal('Calculation Error: ${e.toString()}');
       setState(() {
@@ -198,12 +208,14 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
     }
   }
 
-  void _showResultModal(double predictedHeight, double currentH, double ageD, double w, double boneAgeD, double mph, bool amendedDataUsed) {
+  void _showResultModal(double predictedHeight, double currentH, double ageD,
+      double w, double boneAgeD, double mph, bool amendedDataUsed) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('RWT Predicted Adult Height ${ amendedDataUsed ? ' (Amended Data)' : ''}'),
+          title: Text(
+              'RWT Predicted Adult Height ${amendedDataUsed ? ' (Amended Data)' : ''}'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -211,9 +223,11 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               children: [
                 Text('Sex: ${_selectedSex == Sex.male ? "Male" : "Female"}'),
                 Text('Current Height: ${currentH.toStringAsFixed(1)} cm'),
-                Text('Age: ${ageD.toStringAsFixed(1)} years'), // Displayed as decimal
+                Text(
+                    'Age: ${ageD.toStringAsFixed(1)} years'), // Displayed as decimal
                 Text('Weight: ${w.toStringAsFixed(1)} kg'),
-                Text('Bone Age: ${boneAgeD.toStringAsFixed(1)} years'), // Displayed as decimal
+                Text(
+                    'Bone Age: ${boneAgeD.toStringAsFixed(1)} years'), // Displayed as decimal
                 Text('Mid-parental Height: ${mph.toStringAsFixed(1)} cm'),
                 const SizedBox(height: 16),
                 Text(
@@ -260,8 +274,8 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
     );
   }
 
-
-  String? _validateDecimalField(String? value, String fieldName, {double min = 0.01}) {
+  String? _validateDecimalField(String? value, String fieldName,
+      {double min = 0.01}) {
     if (value == null || value.isEmpty) return 'Enter $fieldName';
     final double? val = double.tryParse(value);
     if (val == null || val < min) return 'Invalid $fieldName (must be >= $min)';
@@ -271,7 +285,8 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
   String? _validateAgeYears(String? value) {
     if (value == null || value.isEmpty) return 'Enter years';
     final int? years = int.tryParse(value);
-    if (years == null || years < 0 || years > 25) return '0-25'; // Example upper limit
+    if (years == null || years < 0 || years > 25)
+      return '0-25'; // Example upper limit
     return null;
   }
 
@@ -283,7 +298,8 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
   }
 
   // Combined validator for Chronological Age (Decimal or Years/Months)
-  String? _validateChronoAge(String? value) { // `value` is for the decimal field, others accessed via controller
+  String? _validateChronoAge(String? value) {
+    // `value` is for the decimal field, others accessed via controller
     if (_chronoAgeInputMode == AgeInputMode.decimal) {
       if (value == null || value.isEmpty) return 'Enter age';
       final double? age = double.tryParse(value);
@@ -298,20 +314,25 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
       final yearsStr = _chronoAgeYearsController.text;
       final monthsStr = _chronoAgeMonthsController.text;
       if (yearsStr.isNotEmpty && monthsStr.isNotEmpty) {
-        final double ageDecimal = _convertYearsMonthsToDecimal(yearsStr, monthsStr);
-        if (_selectedSex == Sex.female && ageDecimal > 14) return 'Max 14y for females';
-        if (_selectedSex == Sex.male && ageDecimal > 16) return 'Max 16y for males';
+        final double ageDecimal =
+            _convertYearsMonthsToDecimal(yearsStr, monthsStr);
+        if (_selectedSex == Sex.female && ageDecimal > 14)
+          return 'Max 14y for females';
+        if (_selectedSex == Sex.male && ageDecimal > 16)
+          return 'Max 16y for males';
       }
     }
     return null;
   }
 
   // Combined validator for Bone Age (Decimal or Years/Months)
-  String? _validateBoneAge(String? value) { // `value` is for the decimal field
+  String? _validateBoneAge(String? value) {
+    // `value` is for the decimal field
     if (_boneAgeInputMode == AgeInputMode.decimal) {
       if (value == null || value.isEmpty) return 'Enter bone age';
       final double? age = double.tryParse(value);
-      if (age == null || age <= 0 || age > 25) return 'Invalid (0-25y)'; // Example range
+      if (age == null || age <= 0 || age > 25)
+        return 'Invalid (0-25y)'; // Example range
     }
     // For Years/Months, individual fields will have their validators.
     // No specific sex-based limit for bone age mentioned in requirements.
@@ -335,8 +356,10 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
         const SizedBox(height: 4),
         SegmentedButton<AgeInputMode>(
           segments: const <ButtonSegment<AgeInputMode>>[
-            ButtonSegment<AgeInputMode>(value: AgeInputMode.decimal, label: Text('Decimal Years')),
-            ButtonSegment<AgeInputMode>(value: AgeInputMode.yearsMonths, label: Text('Years & Months')),
+            ButtonSegment<AgeInputMode>(
+                value: AgeInputMode.decimal, label: Text('Decimal Years')),
+            ButtonSegment<AgeInputMode>(
+                value: AgeInputMode.yearsMonths, label: Text('Years & Months')),
           ],
           selected: <AgeInputMode>{currentMode},
           onSelectionChanged: (Set<AgeInputMode> newSelection) {
@@ -366,7 +389,9 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               prefixIcon: const Icon(Icons.timelapse), // Changed icon
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+            ],
             validator: decimalValidator,
           )
         else
@@ -375,9 +400,13 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               Expanded(
                 child: TextFormField(
                   controller: yearsController,
-                  decoration: const InputDecoration(labelText: 'Years', border: OutlineInputBorder()),
+                  decoration: const InputDecoration(
+                      labelText: 'Years', border: OutlineInputBorder()),
                   keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(2)
+                  ],
                   validator: _validateAgeYears, // Specific validator
                 ),
               ),
@@ -385,9 +414,13 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               Expanded(
                 child: TextFormField(
                   controller: monthsController,
-                  decoration: const InputDecoration(labelText: 'Months', border: OutlineInputBorder()),
+                  decoration: const InputDecoration(
+                      labelText: 'Months', border: OutlineInputBorder()),
                   keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(2)
+                  ],
                   validator: _validateAgeMonths, // Specific validator
                 ),
               ),
@@ -398,14 +431,14 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('RWT Height Prediction'),
       ),
-      body: SingleChildScrollView( // Ensures content is scrollable
+      body: SingleChildScrollView(
+        // Ensures content is scrollable
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -436,15 +469,22 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               const SizedBox(height: 8),
               SegmentedButton<Sex>(
                 segments: const <ButtonSegment<Sex>>[
-                  ButtonSegment<Sex>(value: Sex.male, label: Text('Male'), icon: Icon(Icons.male)),
-                  ButtonSegment<Sex>(value: Sex.female, label: Text('Female'), icon: Icon(Icons.female)),
+                  ButtonSegment<Sex>(
+                      value: Sex.male,
+                      label: Text('Male'),
+                      icon: Icon(Icons.male)),
+                  ButtonSegment<Sex>(
+                      value: Sex.female,
+                      label: Text('Female'),
+                      icon: Icon(Icons.female)),
                 ],
                 selected: <Sex>{_selectedSex},
                 onSelectionChanged: (Set<Sex> newSelection) {
                   setState(() {
                     _selectedSex = newSelection.first;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      _formKey.currentState?.validate(); // Re-validate age fields
+                      _formKey.currentState
+                          ?.validate(); // Re-validate age fields
                       _checkFormValidity();
                     });
                   });
@@ -455,9 +495,17 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               // Current Height
               TextFormField(
                 controller: _currentHeightController,
-                decoration: const InputDecoration(labelText: 'Current Height (cm)', hintText: 'e.g., 150.5', border: OutlineInputBorder(), prefixIcon: Icon(Icons.height),),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+                decoration: const InputDecoration(
+                  labelText: 'Current Height (cm)',
+                  hintText: 'e.g., 150.5',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.height),
+                ),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                ],
                 validator: (value) => _validateDecimalField(value, 'height'),
               ),
               const SizedBox(height: 16),
@@ -489,9 +537,16 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               // Weight (kg)
               TextFormField(
                 controller: _weightKgController,
-                decoration: const InputDecoration(labelText: 'Weight (kg)', hintText: 'e.g., 45.0', border: OutlineInputBorder(), prefixIcon: Icon(Icons.scale)),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+                decoration: const InputDecoration(
+                    labelText: 'Weight (kg)',
+                    hintText: 'e.g., 45.0',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.scale)),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                ],
                 validator: (value) => _validateDecimalField(value, 'weight'),
               ),
               const SizedBox(height: 16),
@@ -523,10 +578,19 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               // Mid-parental Height (cm)
               TextFormField(
                 controller: _midparentalHeightController,
-                decoration: const InputDecoration(labelText: 'Mid-parental Height (cm)', hintText: 'e.g., 170.0', border: OutlineInputBorder(), prefixIcon: Icon(Icons.family_restroom),),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
-                validator: (value) => _validateDecimalField(value, 'mid-parental height'),
+                decoration: const InputDecoration(
+                  labelText: 'Mid-parental Height (cm)',
+                  hintText: 'e.g., 170.0',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.family_restroom),
+                ),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                ],
+                validator: (value) =>
+                    _validateDecimalField(value, 'mid-parental height'),
               ),
               const SizedBox(height: 32), // Spacer before buttons
 
@@ -550,14 +614,23 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.calculate_outlined),
                       label: const Text('Calculate'),
-                      onPressed: _canCalculate ? _calculateHeight : null, // Enable/disable button
+                      onPressed: _canCalculate
+                          ? _calculateHeight
+                          : null, // Enable/disable button
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         textStyle: const TextStyle(fontSize: 16),
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                        disabledBackgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
-                        disabledForegroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
+                        disabledBackgroundColor: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.12),
+                        disabledForegroundColor: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.38),
                       ),
                     ),
                   ),
@@ -567,7 +640,7 @@ class _RWTPredictionPageState extends State<RWTPredictionPage> {
               Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    '${ _useAmendedData ? "Khamis HJ, Guo S. Improvement in the Roche-Wainer-Thissen stature prediction model: A comparative study. Am J Hum Biol. 1993;5(6):669-679. doi: 10.1002/ajhb.1310050609. PMID: 28548358." : "Roche AF, Wainer H, Thissen D. The RWT method for the prediction of adult stature. Pediatrics. 1975 Dec;56(6):1027-33. PMID: 172855."}',
+                    '${_useAmendedData ? "Khamis HJ, Guo S. Improvement in the Roche-Wainer-Thissen stature prediction model: A comparative study. Am J Hum Biol. 1993;5(6):669-679. doi: 10.1002/ajhb.1310050609. PMID: 28548358." : "Roche AF, Wainer H, Thissen D. The RWT method for the prediction of adult stature. Pediatrics. 1975 Dec;56(6):1027-33. PMID: 172855."}',
                     textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 12),
                   )),

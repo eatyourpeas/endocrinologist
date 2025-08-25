@@ -39,7 +39,8 @@ List<double> dividedDoses(double originalDose, int numberOfDoses) {
   // However, the provided code structure effectively recalculates targetTotalDose *after* choosing increment.
 
   // Let's refine the initial choice of increment and then the target total dose:
-  double tentativeInitialTarget = originalDose.ceilToDouble(); // A starting point for consideration
+  double tentativeInitialTarget =
+      originalDose.ceilToDouble(); // A starting point for consideration
   double doseIncrement;
 
   // If the *originalDose* itself (or its ceiling) is a multiple of 1.25, prefer 1.25 increments.
@@ -47,7 +48,8 @@ List<double> dividedDoses(double originalDose, int numberOfDoses) {
   // We check if originalDose * 4 is an integer. If so, originalDose is a multiple of 0.25.
   // And if originalDose * 100 is divisible by 125.
   bool canUse125Increment = ((originalDose * 100).round() % 125 == 0) ||
-      (((originalDose / 1.25).ceil() * 1.25) - originalDose < 1.0); // Or if rounding to 1.25 is "closer" than rounding to 1.0
+      (((originalDose / 1.25).ceil() * 1.25) - originalDose <
+          1.0); // Or if rounding to 1.25 is "closer" than rounding to 1.0
 
   // More direct: If the original dose, when rounded up to the nearest 1.25,
   // is "sensible" (e.g. not drastically increasing the dose just to hit a 1.25 multiple
@@ -70,7 +72,8 @@ List<double> dividedDoses(double originalDose, int numberOfDoses) {
   if (doseIncrement == 1.25) {
     // Round up the originalDose to the NEAREST multiple of 1.25
     finalTargetTotalDose = (originalDose / 1.25).ceil() * 1.25;
-  } else { // doseIncrement == 1.0
+  } else {
+    // doseIncrement == 1.0
     // Round up the originalDose to the NEAREST whole number (multiple of 1.0)
     finalTargetTotalDose = originalDose.ceilToDouble();
   }
@@ -78,7 +81,8 @@ List<double> dividedDoses(double originalDose, int numberOfDoses) {
   // Recalculate doses based on this finalTargetTotalDose and chosen doseIncrement
   List<double> doses = List.filled(numberOfDoses, 0.0);
   double baseIndividualDoseNotRounded = finalTargetTotalDose / numberOfDoses;
-  double baseDosePerPortion = (baseIndividualDoseNotRounded / doseIncrement).floor() * doseIncrement;
+  double baseDosePerPortion =
+      (baseIndividualDoseNotRounded / doseIncrement).floor() * doseIncrement;
 
   for (int i = 0; i < numberOfDoses; i++) {
     doses[i] = baseDosePerPortion;
@@ -86,14 +90,17 @@ List<double> dividedDoses(double originalDose, int numberOfDoses) {
 
   double sumOfBaseDoses = baseDosePerPortion * numberOfDoses;
   // Ensure remainingToDistribute is calculated precisely
-  double remainingToDistribute = (finalTargetTotalDose * 100 - sumOfBaseDoses * 100).round() / 100.0;
+  double remainingToDistribute =
+      (finalTargetTotalDose * 100 - sumOfBaseDoses * 100).round() / 100.0;
 
   int k = 0;
   while (remainingToDistribute >= (doseIncrement - tolerance)) {
     doses[k % numberOfDoses] += doseIncrement;
-    doses[k % numberOfDoses] = (doses[k % numberOfDoses] * 100).round() / 100.0; // Round for precision
+    doses[k % numberOfDoses] =
+        (doses[k % numberOfDoses] * 100).round() / 100.0; // Round for precision
     remainingToDistribute -= doseIncrement;
-    remainingToDistribute = (remainingToDistribute * 100).round() / 100.0; // Round for precision
+    remainingToDistribute =
+        (remainingToDistribute * 100).round() / 100.0; // Round for precision
     k++;
   }
   return doses;

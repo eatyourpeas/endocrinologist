@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:endocrinologist/pages/height_prediction/bayley_pineau_page.dart';
 import 'package:endocrinologist/pages/height_prediction/twiiii_page.dart';
 
-
 class FinalHeightSelectionPage extends StatelessWidget {
   const FinalHeightSelectionPage({super.key});
 
@@ -24,7 +23,8 @@ class FinalHeightSelectionPage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const BayleyPinneauPage()),
+                MaterialPageRoute(
+                    builder: (context) => const BayleyPinneauPage()),
               );
             },
           ),
@@ -37,7 +37,8 @@ class FinalHeightSelectionPage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const TWIIIHeightPredictionPage()),
+                MaterialPageRoute(
+                    builder: (context) => const TWIIIHeightPredictionPage()),
               );
             },
           ),
@@ -45,12 +46,14 @@ class FinalHeightSelectionPage extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.calculate_outlined),
             title: const Text('The Roche-Wainer-Thissen (RWT) method'),
-            subtitle: const Text('Uses length, weight, midparent height, and bone age.'),
+            subtitle: const Text(
+                'Uses length, weight, midparent height, and bone age.'),
             trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const RWTPredictionPage()),
+                MaterialPageRoute(
+                    builder: (context) => const RWTPredictionPage()),
               );
             },
           ),

@@ -81,7 +81,8 @@ class RWTFinalHeightWeights {
   }) {
     // Optionally derive ageYears and ageMonths for consistency, or leave null if not strictly needed
     final int derivedAgeYears = decimalYears.floor();
-    final int derivedAgeMonths = ((decimalYears - derivedAgeYears) * 12).round();
+    final int derivedAgeMonths =
+        ((decimalYears - derivedAgeYears) * 12).round();
 
     return RWTFinalHeightWeights._(
       ageYears: derivedAgeYears, // Derived from decimal
@@ -105,12 +106,16 @@ class RWTFinalHeightWeights {
   /// by delegating to the appropriate named factory constructor.
   factory RWTFinalHeightWeights.fromMap(Map<String, dynamic> map) {
     // Extract common fields
-    final double heightLengthCoefficient = map['height_length_coefficient'] as double;
+    final double heightLengthCoefficient =
+        map['height_length_coefficient'] as double;
     final double weightCoefficient = map['weight_coefficient'] as double;
-    final double midparentalHeightCoefficient = map['midparental_height_coefficient'] as double;
+    final double midparentalHeightCoefficient =
+        map['midparental_height_coefficient'] as double;
     final double boneAgeCoefficient = map['bone_age_coefficient'] as double;
     final double regressionIntercept = map['regression_intercept'] as double;
-    final Sex sex = Sex.values.firstWhere((e) => e.toString() == 'Sex.${map['sex']}', orElse: () => Sex.male);
+    final Sex sex = Sex.values.firstWhere(
+        (e) => e.toString() == 'Sex.${map['sex']}',
+        orElse: () => Sex.male);
 
     if (map.containsKey('age_decimal')) {
       return RWTFinalHeightWeights.fromDecimalYears(
@@ -134,7 +139,8 @@ class RWTFinalHeightWeights {
         sex: sex,
       );
     } else {
-      throw ArgumentError('Map must contain either "age_decimal" or "age_years" and "age_months"');
+      throw ArgumentError(
+          'Map must contain either "age_decimal" or "age_years" and "age_months"');
     }
   }
 
@@ -154,7 +160,8 @@ class RWTFinalHeightWeights {
       map['age_years'] = ageYears;
       map['age_months'] = ageMonths;
     } else {
-      map['age_decimal'] = decimalYears; // Fallback to decimal if original was decimal
+      map['age_decimal'] =
+          decimalYears; // Fallback to decimal if original was decimal
     }
     return map;
   }

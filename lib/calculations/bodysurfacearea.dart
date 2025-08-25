@@ -1,9 +1,8 @@
 import 'dart:math';
 import '../enums/enums.dart';
 
-
-double calculateBSA(double heightCm, double weightKg, BsaCalculationMethod method) {
-
+double calculateBSA(
+    double heightCm, double weightKg, BsaCalculationMethod method) {
   double bsa = 0.0;
 
   switch (method) {
@@ -46,7 +45,6 @@ double calculateBSA(double heightCm, double weightKg, BsaCalculationMethod metho
       bsa = 0.0235 * pow(heightCm, 0.42246) * pow(weightKg, 0.51456);
       break;
   }
-
 
   return bsa;
 }

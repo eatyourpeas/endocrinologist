@@ -21,8 +21,12 @@ class _GenitalSizePageState extends State<GenitalSizePage> {
         children: <Widget>[
           SegmentedButton<Sex>(
             segments: const <ButtonSegment<Sex>>[
-              ButtonSegment<Sex>(value: Sex.male, label: Text('Male'), icon: Icon(Icons.male)),
-              ButtonSegment<Sex>(value: Sex.female, label: Text('Female'), icon: Icon(Icons.female)),
+              ButtonSegment<Sex>(
+                  value: Sex.male, label: Text('Male'), icon: Icon(Icons.male)),
+              ButtonSegment<Sex>(
+                  value: Sex.female,
+                  label: Text('Female'),
+                  icon: Icon(Icons.female)),
             ],
             selected: <Sex>{_selectedSex},
             onSelectionChanged: (Set<Sex> newSelection) {
@@ -36,9 +40,8 @@ class _GenitalSizePageState extends State<GenitalSizePage> {
           ),
           const SizedBox(height: 20),
           Expanded(
-            key: ValueKey(_selectedSex),
-            child: GenitalTab(initialSex: _selectedSex)
-          ),
+              key: ValueKey(_selectedSex),
+              child: GenitalTab(initialSex: _selectedSex)),
         ],
       ),
     );

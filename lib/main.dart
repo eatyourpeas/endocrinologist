@@ -1,4 +1,3 @@
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:endocrinologist/pages/auxology.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +28,17 @@ class Endocrinologist extends StatelessWidget {
         Widget appContent = child ?? const SizedBox.shrink();
 
         if (showDisclaimer) {
-          return Column( // Use a Column to stack the banner above the app content
+          return Column(
+            // Use a Column to stack the banner above the app content
             children: [
-              Material( // Wrap with Material for theming and elevation if needed
+              Material(
+                // Wrap with Material for theming and elevation if needed
                 elevation: 2.0, // Optional: adds a slight shadow
                 color: Colors.lightBlueAccent, // Banner background color
                 child: Container(
                   width: double.infinity, // Take full width
-                  padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 6.0, horizontal: 16.0),
                   alignment: Alignment.center,
                   child: const Text(
                     "TESTING - NOT FOR CLINICAL USE",
@@ -49,7 +51,8 @@ class Endocrinologist extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded( // Ensure the rest of the app content takes the remaining space
+              Expanded(
+                // Ensure the rest of the app content takes the remaining space
                 child: appContent,
               ),
             ],
@@ -66,31 +69,33 @@ class EndocrinologyTabBars extends StatelessWidget {
   const EndocrinologyTabBars({super.key});
 
   @override
-  Widget build(BuildContext context){
-
-    return DefaultTabController(length: 4, child: Scaffold(
-      appBar: AppBar(
-        title: Text("The Paediatric Endocrinologist", style: GoogleFonts.ibmPlexSans(),),
-        bottom: const TabBar(
-          tabs: [
-            Tab(icon: Icon(Icons.science), text: "Glucose"),
-            Tab(icon: Icon(Icons.medication), text: "Steroids"),
-            Tab(icon: Icon(Icons.straighten), text: "Auxology"),
-            Tab(icon: Icon(Icons.grain), text: "Sodium"),
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "The Paediatric Endocrinologist",
+            style: GoogleFonts.ibmPlexSans(),
+          ),
+          bottom: const TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.science), text: "Glucose"),
+              Tab(icon: Icon(Icons.medication), text: "Steroids"),
+              Tab(icon: Icon(Icons.straighten), text: "Auxology"),
+              Tab(icon: Icon(Icons.grain), text: "Sodium"),
+            ],
+          ),
+        ),
+        body: const TabBarView(
+          children: [
+            GlucosePage(),
+            SteroidPage(),
+            AuxologyPage(),
+            SodiumPage(),
           ],
         ),
       ),
-      body: const TabBarView(
-        children: [
-          GlucosePage(),
-          SteroidPage(),
-          AuxologyPage(),
-          SodiumPage(),
-        ],
-      ),
-    ),
     );
   }
 }
-
-

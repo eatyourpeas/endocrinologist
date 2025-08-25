@@ -27,18 +27,17 @@ class ChildIndianSPLChart extends StatefulWidget {
   final double spl;
   final bool showScatterPoint;
 
-  const ChildIndianSPLChart({
-    super.key,
-    required this.decimal_age,
-    required this.spl,
-    required this.showScatterPoint
-  });
+  const ChildIndianSPLChart(
+      {super.key,
+      required this.decimal_age,
+      required this.spl,
+      required this.showScatterPoint});
 
   @override
-  State <ChildIndianSPLChart> createState() => _ChildIndianSPLChartState();
+  State<ChildIndianSPLChart> createState() => _ChildIndianSPLChartState();
 }
 
-class _ChildIndianSPLChartState extends State<ChildIndianSPLChart>{
+class _ChildIndianSPLChartState extends State<ChildIndianSPLChart> {
   @override
   Widget build(BuildContext context) {
     // --- Data Transformation ---
@@ -82,7 +81,6 @@ class _ChildIndianSPLChartState extends State<ChildIndianSPLChart>{
     p95Data.sort((a, b) => a.age.compareTo(b.age));
     // if (p5Data.isNotEmpty) p5Data.sort((a, b) => a.age.compareTo(b.age));
 
-
     // --- Chart Building ---
     return Column(
       children: [
@@ -91,7 +89,8 @@ class _ChildIndianSPLChartState extends State<ChildIndianSPLChart>{
             title: AxisTitle(text: 'Age (Years)'),
             interval: 1,
           ),
-          primaryYAxis: NumericAxis(title: AxisTitle(text: 'Stretched Penile Length (cm)')),
+          primaryYAxis: NumericAxis(
+              title: AxisTitle(text: 'Stretched Penile Length (cm)')),
           legend: Legend(isVisible: true, position: LegendPosition.bottom),
           series: <CartesianSeries>[
             // 3rd Percentile Line
@@ -101,7 +100,7 @@ class _ChildIndianSPLChartState extends State<ChildIndianSPLChart>{
               yValueMapper: (ChildSPLDataPoint data, _) => data.value,
               name: '5th Percentile',
               color: Colors.blue,
-              dashArray: [5,5],
+              dashArray: [5, 5],
             ),
 
             // 50th Percentile Line (Median)
@@ -120,13 +119,16 @@ class _ChildIndianSPLChartState extends State<ChildIndianSPLChart>{
               yValueMapper: (ChildSPLDataPoint data, _) => data.value,
               name: '95th Percentile',
               color: Colors.blue,
-              dashArray: [5,5],
+              dashArray: [5, 5],
             ),
 
             // Patient's Data Scatter Plot
-            if (widget.showScatterPoint) // Assuming showScatterPoint comes from widget
+            if (widget
+                .showScatterPoint) // Assuming showScatterPoint comes from widget
               ScatterSeries<DecimalAgeScatterData, double>(
-                dataSource: [DecimalAgeScatterData(widget.decimal_age, widget.spl)], // Use patient input
+                dataSource: [
+                  DecimalAgeScatterData(widget.decimal_age, widget.spl)
+                ], // Use patient input
                 xValueMapper: (DecimalAgeScatterData data, _) => data.x,
                 yValueMapper: (DecimalAgeScatterData data, _) => data.y,
                 name: 'Patient Data',
@@ -141,7 +143,8 @@ class _ChildIndianSPLChartState extends State<ChildIndianSPLChart>{
                 ),
               ),
           ],
-          title: ChartTitle(text: 'Stretched Penile Length for Age (Indian Reference)'),
+          title: ChartTitle(
+              text: 'Stretched Penile Length for Age (Indian Reference)'),
           tooltipBehavior: TooltipBehavior(enable: true),
         ),
         // Optional: Reference text
@@ -156,5 +159,4 @@ class _ChildIndianSPLChartState extends State<ChildIndianSPLChart>{
       ],
     );
   }
-
 }

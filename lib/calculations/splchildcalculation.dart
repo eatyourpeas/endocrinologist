@@ -17,12 +17,13 @@ class PenileStatsCalculator {
     required Ethnicity ethnicity,
   }) {
     var referenceData = childBulgarianSPLData;
-    if (ethnicity == Ethnicity.Bulgarian){
+    if (ethnicity == Ethnicity.Bulgarian) {
       referenceData = childBulgarianSPLData;
     }
-    if (ethnicity == Ethnicity.Indian){
+    if (ethnicity == Ethnicity.Indian) {
       referenceData == IndianStretchedPenileLengthList;
-      return _sdsForIndianMeasurement(decimalAgeYears, measuredStretchedPenileLength);
+      return _sdsForIndianMeasurement(
+          decimalAgeYears, measuredStretchedPenileLength);
     }
 
     // --- 1. Interpolate P5, P50, and P95 values for the decimal age ---
@@ -33,27 +34,36 @@ class PenileStatsCalculator {
     final double fraction = decimalAgeYears - lowerAge;
 
     // Get reference values for the lower age
-    final p5Lower = _getStretchedPenileLengthForAgeAndCentile(ethnicity, referenceData, lowerAge, Centile.P5);
-    final p50Lower = _getStretchedPenileLengthForAgeAndCentile(ethnicity, referenceData, lowerAge, Centile.P50);
-    final p95Lower = _getStretchedPenileLengthForAgeAndCentile(ethnicity, referenceData, lowerAge, Centile.P95);
+    final p5Lower = _getStretchedPenileLengthForAgeAndCentile(
+        ethnicity, referenceData, lowerAge, Centile.P5);
+    final p50Lower = _getStretchedPenileLengthForAgeAndCentile(
+        ethnicity, referenceData, lowerAge, Centile.P50);
+    final p95Lower = _getStretchedPenileLengthForAgeAndCentile(
+        ethnicity, referenceData, lowerAge, Centile.P95);
 
     if (p5Lower == null || p50Lower == null || p95Lower == null) {
       // print("Warning: Insufficient data for lower age boundary ($lowerAge years).");
       // Attempt to use values from the closest available single age if only one boundary exists
-      if (upperAge == lowerAge) return double.nan; // Can't interpolate if only one age and it's missing data
+      if (upperAge == lowerAge)
+        return double
+            .nan; // Can't interpolate if only one age and it's missing data
     }
 
     double interpolatedP5, interpolatedP50, interpolatedP95;
 
-    if (lowerAge == upperAge) { // Age is an exact integer
+    if (lowerAge == upperAge) {
+      // Age is an exact integer
       interpolatedP5 = p5Lower ?? double.nan;
       interpolatedP50 = p50Lower ?? double.nan;
       interpolatedP95 = p95Lower ?? double.nan;
     } else {
       // Get reference values for the upper age
-      final p5Upper = _getStretchedPenileLengthForAgeAndCentile(ethnicity, referenceData, upperAge, Centile.P5);
-      final p50Upper = _getStretchedPenileLengthForAgeAndCentile(ethnicity, referenceData, upperAge, Centile.P50);
-      final p95Upper = _getStretchedPenileLengthForAgeAndCentile(ethnicity, referenceData, upperAge, Centile.P95);
+      final p5Upper = _getStretchedPenileLengthForAgeAndCentile(
+          ethnicity, referenceData, upperAge, Centile.P5);
+      final p50Upper = _getStretchedPenileLengthForAgeAndCentile(
+          ethnicity, referenceData, upperAge, Centile.P50);
+      final p95Upper = _getStretchedPenileLengthForAgeAndCentile(
+          ethnicity, referenceData, upperAge, Centile.P95);
 
       if (p5Upper == null || p50Upper == null || p95Upper == null) {
         // print("Warning: Insufficient data for upper age boundary ($upperAge years).");
@@ -62,7 +72,8 @@ class PenileStatsCalculator {
         // If critical, you might need more sophisticated extrapolation or error handling.
         return double.nan;
       }
-      if (p5Lower == null || p50Lower == null || p95Lower == null) return double.nan; // Re-check after fetching upper
+      if (p5Lower == null || p50Lower == null || p95Lower == null)
+        return double.nan; // Re-check after fetching upper
 
       // Linear interpolation
       interpolatedP5 = p5Lower + (p5Upper - p5Lower) * fraction;
@@ -70,13 +81,16 @@ class PenileStatsCalculator {
       interpolatedP95 = p95Lower + (p95Upper - p95Lower) * fraction;
     }
 
-    if (interpolatedP5.isNaN || interpolatedP50.isNaN || interpolatedP95.isNaN) {
+    if (interpolatedP5.isNaN ||
+        interpolatedP50.isNaN ||
+        interpolatedP95.isNaN) {
       // print("Error: Could not determine interpolated centiles for age $decimalAgeYears.");
       return double.nan;
     }
 
     // --- 2. Estimate Mean and Standard Deviation (SD) ---
-    final double meanStretchedPenileLength = interpolatedP50; // P50 is our estimate for the mean
+    final double meanStretchedPenileLength =
+        interpolatedP50; // P50 is our estimate for the mean
 
     // Estimate SD using the range between P95 and P5
     // P95 ≈ Mean + 1.645 * SD
@@ -88,7 +102,8 @@ class PenileStatsCalculator {
       // print("Warning: P95 is not greater than P5 for age $decimalAgeYears. Cannot reliably calculate SD.");
       return double.nan; // Or handle as appropriate
     }
-    final double standardDeviation = (interpolatedP95 - interpolatedP5) / (2 * 1.64485); // 1.64485 is Z for 95th/5th percentile
+    final double standardDeviation = (interpolatedP95 - interpolatedP5) /
+        (2 * 1.64485); // 1.64485 is Z for 95th/5th percentile
 
     if (standardDeviation <= 0) {
       // print("Warning: Calculated Standard Deviation is zero or negative for age $decimalAgeYears.");
@@ -96,7 +111,9 @@ class PenileStatsCalculator {
     }
 
     // --- 3. Calculate SDS ---
-    final double sds = (measuredStretchedPenileLength - meanStretchedPenileLength) / standardDeviation;
+    final double sds =
+        (measuredStretchedPenileLength - meanStretchedPenileLength) /
+            standardDeviation;
 
     return sds;
   }
@@ -106,17 +123,19 @@ class PenileStatsCalculator {
       Ethnicity ethnicity, List referenceData, int age, Centile centile) {
     try {
       final dataPoint = referenceData.firstWhere(
-            (dp) => dp.age == age && dp.centile == centile,
+        (dp) => dp.age == age && dp.centile == centile,
       );
       return dataPoint.penileLengthCm;
-    } catch (e) { // Catches StateError if no element is found
+    } catch (e) {
+      // Catches StateError if no element is found
       // print("Data point not found for age $age and centile $centile.");
       return null; // Return null if data point doesn't exist
     }
   }
 
   static double _sdsForIndianMeasurement(double age, double measurement) {
-    LmsResult? lmsResult = getLmsForAge(decimalAge: age, referenceData: IndianStretchedPenileLengthList);
+    LmsResult? lmsResult = getLmsForAge(
+        decimalAge: age, referenceData: IndianStretchedPenileLengthList);
 
     if (lmsResult == null) {
       // print("Error: Could not retrieve LMS parameters for age $age.");
@@ -157,7 +176,6 @@ class PenileStatsCalculator {
 
     return sds;
   }
-
 }
 
 class LmsResult {
@@ -166,7 +184,8 @@ class LmsResult {
   final double s;
   final double t;
 
-  LmsResult({required this.l, required this.m, required this.s, required this.t});
+  LmsResult(
+      {required this.l, required this.m, required this.s, required this.t});
 
   @override
   String toString() {
@@ -199,7 +218,8 @@ LmsResult? getLmsForAge({
     if (sortedData[i].ageYears == decimalAge) {
       // Exact match for age (if decimalAge happens to be an integer)
       final exactMatch = sortedData[i];
-      return LmsResult(l: exactMatch.l, m: exactMatch.m, s: exactMatch.s, t: exactMatch.t);
+      return LmsResult(
+          l: exactMatch.l, m: exactMatch.m, s: exactMatch.s, t: exactMatch.t);
     }
     if (sortedData[i].ageYears < decimalAge) {
       lowerBoundData = sortedData[i];
@@ -213,19 +233,31 @@ LmsResult? getLmsForAge({
   // 1. Age is below the lowest age in reference data
   if (lowerBoundData == null && upperBoundData != null) {
     // print("Warning: Age $decimalAge is below the minimum age (${upperBoundData.ageYears}) in reference data. Using values from the lowest age.");
-    return LmsResult(l: upperBoundData.l, m: upperBoundData.m, s: upperBoundData.s, t: upperBoundData.t);
+    return LmsResult(
+        l: upperBoundData.l,
+        m: upperBoundData.m,
+        s: upperBoundData.s,
+        t: upperBoundData.t);
   }
 
   // 2. Age is above the highest age in reference data
   if (upperBoundData == null && lowerBoundData != null) {
     // print("Warning: Age $decimalAge is above the maximum age (${lowerBoundData.ageYears}) in reference data. Using values from the highest age.");
-    return LmsResult(l: lowerBoundData.l, m: lowerBoundData.m, s: lowerBoundData.s, t: lowerBoundData.t);
+    return LmsResult(
+        l: lowerBoundData.l,
+        m: lowerBoundData.m,
+        s: lowerBoundData.s,
+        t: lowerBoundData.t);
   }
 
   // 3. Age is within the range and requires interpolation
   if (lowerBoundData != null && upperBoundData != null) {
     if (lowerBoundData.ageYears == upperBoundData.ageYears) {
-      return LmsResult(l: lowerBoundData.l, m: lowerBoundData.m, s: lowerBoundData.s, t: lowerBoundData.t);
+      return LmsResult(
+          l: lowerBoundData.l,
+          m: lowerBoundData.m,
+          s: lowerBoundData.s,
+          t: lowerBoundData.t);
     }
     // Perform linear interpolation
     final double lowerAge = lowerBoundData.ageYears.toDouble();
@@ -233,20 +265,33 @@ LmsResult? getLmsForAge({
     final double fraction = (decimalAge - lowerAge) / (upperAge - lowerAge);
 
     if (fraction < 0 || fraction > 1) {
-      if (decimalAge <= lowerAge) return LmsResult(l: lowerBoundData.l, m: lowerBoundData.m, s: lowerBoundData.s, t: lowerBoundData.t);
-      if (decimalAge >= upperAge) return LmsResult(l: upperBoundData.l, m: upperBoundData.m, s: upperBoundData.s, t: upperBoundData.t);
+      if (decimalAge <= lowerAge)
+        return LmsResult(
+            l: lowerBoundData.l,
+            m: lowerBoundData.m,
+            s: lowerBoundData.s,
+            t: lowerBoundData.t);
+      if (decimalAge >= upperAge)
+        return LmsResult(
+            l: upperBoundData.l,
+            m: upperBoundData.m,
+            s: upperBoundData.s,
+            t: upperBoundData.t);
       return null; // Or handle as an error
     }
 
+    final double interpolatedL =
+        lowerBoundData.l + (upperBoundData.l - lowerBoundData.l) * fraction;
+    final double interpolatedM =
+        lowerBoundData.m + (upperBoundData.m - lowerBoundData.m) * fraction;
+    final double interpolatedS =
+        lowerBoundData.s + (upperBoundData.s - lowerBoundData.s) * fraction;
+    final double interpolatedT =
+        lowerBoundData.t + (upperBoundData.t - lowerBoundData.t) * fraction;
 
-    final double interpolatedL = lowerBoundData.l + (upperBoundData.l - lowerBoundData.l) * fraction;
-    final double interpolatedM = lowerBoundData.m + (upperBoundData.m - lowerBoundData.m) * fraction;
-    final double interpolatedS = lowerBoundData.s + (upperBoundData.s - lowerBoundData.s) * fraction;
-    final double interpolatedT = lowerBoundData.t + (upperBoundData.t - lowerBoundData.t) * fraction;
-
-    return LmsResult(l: interpolatedL, m: interpolatedM, s: interpolatedS, t: interpolatedT);
+    return LmsResult(
+        l: interpolatedL, m: interpolatedM, s: interpolatedS, t: interpolatedT);
   }
 
   return null;
 }
-

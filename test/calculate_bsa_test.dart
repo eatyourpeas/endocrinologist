@@ -4,7 +4,6 @@ import 'package:endocrinologist/enums/enums.dart';
 
 void main() {
   group('BSA Calculation Tests', () {
-
     // Test Mostellar method
     test('Mosteller method for height 170cm and weight 70kg', () {
       double result = calculateBSA(170, 70, BsaCalculationMethod.mosteller);
@@ -59,7 +58,5 @@ void main() {
       double result = calculateBSA(250, 150, BsaCalculationMethod.dubois);
       expect(result.toStringAsFixed(2), '3.31'); // Expected BSA value
     });
-
   });
 }
-

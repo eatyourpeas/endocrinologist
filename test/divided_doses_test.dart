@@ -13,9 +13,10 @@ void main() {
     // Helper to check if all doses are multiples of a given number
     bool areAllMultiplesOf(List<double> doses, double multiple) {
       const double tolerance = 0.00001;
-      if (multiple == 0) return doses.every((dose) => dose == 0); // Handle multiple of 0 case
+      if (multiple == 0)
+        return doses.every((dose) => dose == 0); // Handle multiple of 0 case
       return doses.every((dose) =>
-      (dose % multiple).abs() < tolerance ||
+          (dose % multiple).abs() < tolerance ||
           (dose % multiple).abs() > (multiple - tolerance));
     }
 
@@ -37,8 +38,10 @@ void main() {
       expect(areAllMultiplesOf(result, expectedIncrement), isTrue,
           reason: "All doses should be multiples of $expectedIncrement");
       // Order might vary, sum and content are more important
-      expect(result.fold<double>(0, (prev, curr) => prev + curr), expectedTargetTotalDose);
-      expect(result, unorderedEquals([3.0, 2.0, 2.0])); // More robust if order can change
+      expect(result.fold<double>(0, (prev, curr) => prev + curr),
+          expectedTargetTotalDose);
+      expect(result,
+          unorderedEquals([3.0, 2.0, 2.0])); // More robust if order can change
     });
 
     test('Test Case 2: Original Dose = 6.0, Number of Doses = 3', () {
@@ -99,8 +102,11 @@ void main() {
       expect(result, orderedEquals([1.0]));
     });
 
-    test('Test Case 4b: Original Dose = 1.0, Number of Doses = 1 (to trigger 1.25)', () {
-      double originalDose = 1.0; // Let's check a case that should use 1.25 if possible
+    test(
+        'Test Case 4b: Original Dose = 1.0, Number of Doses = 1 (to trigger 1.25)',
+        () {
+      double originalDose =
+          1.0; // Let's check a case that should use 1.25 if possible
       int numberOfDoses = 1;
       List<double> result = dividedDoses(originalDose, numberOfDoses);
 
@@ -111,7 +117,6 @@ void main() {
       // But based on `originalDose.ceilToDouble()` check for increment:
       double expectedTargetTotalDose = 1.0;
       double expectedIncrement = 1.0;
-
 
       expect(result.length, numberOfDoses);
       expect(sumDoses(result), closeTo(expectedTargetTotalDose, 0.00001));
@@ -140,10 +145,10 @@ void main() {
       expect(result.length, numberOfDoses);
       expect(sumDoses(result), closeTo(expectedTargetTotalDose, 0.00001));
       expect(areAllMultiplesOf(result, expectedIncrement), isTrue,
-          reason: "All doses should be multiples of $expectedIncrement. Actual: $result");
+          reason:
+              "All doses should be multiples of $expectedIncrement. Actual: $result");
       expect(result, orderedEquals([2.0]));
     });
-
 
     test('Test Case 5: Original Dose = 2.4, Number of Doses = 2', () {
       double originalDose = 2.4;
@@ -183,10 +188,10 @@ void main() {
       expect(result.length, numberOfDoses);
       expect(sumDoses(result), closeTo(expectedTargetTotalDose, 0.00001));
       expect(areAllMultiplesOf(result, expectedIncrement), isTrue,
-          reason: "All doses should be multiples of $expectedIncrement. Actual: $result");
+          reason:
+              "All doses should be multiples of $expectedIncrement. Actual: $result");
       expect(result, unorderedEquals([2.0, 1.0]));
     });
-
 
     test('Test Case 6: Original Dose = 5.0, Number of Doses = 4', () {
       double originalDose = 5.0;
@@ -240,10 +245,10 @@ void main() {
       expect(result.length, numberOfDoses);
       expect(sumDoses(result), closeTo(expectedTargetTotalDose, 0.00001));
       expect(areAllMultiplesOf(result, expectedIncrement), isTrue,
-          reason: "All doses should be multiples of $expectedIncrement. Actual: $result");
+          reason:
+              "All doses should be multiples of $expectedIncrement. Actual: $result");
       expect(result, unorderedEquals([4.0, 3.0]));
     });
-
 
     test('Edge Case: Number of doses is zero', () {
       expect(() => dividedDoses(10.0, 0), throwsArgumentError);
@@ -267,8 +272,8 @@ void main() {
       expect(sumDoses(result), closeTo(expectedTargetTotalDose, 0.00001));
       expect(result, orderedEquals([0.0, 0.0]));
       // Check that they are multiples of a non-zero number (e.g. 1) to confirm they are 0
-      expect(areAllMultiplesOf(result, 1.0), isTrue, reason: "All doses should be 0.0");
-
+      expect(areAllMultiplesOf(result, 1.0), isTrue,
+          reason: "All doses should be 0.0");
     });
 
     test('Edge Case: Original dose is negative throws ArgumentError', () {
@@ -311,9 +316,9 @@ void main() {
       expect(result.length, numberOfDoses);
       expect(sumDoses(result), closeTo(expectedTargetTotalDose, 0.00001));
       expect(areAllMultiplesOf(result, expectedIncrement), isTrue,
-          reason: "All doses should be multiples of $expectedIncrement. Actual: $result");
+          reason:
+              "All doses should be multiples of $expectedIncrement. Actual: $result");
       expect(result, unorderedEquals([3.0, 3.0, 2.0]));
     });
-
   });
 }

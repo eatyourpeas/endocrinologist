@@ -8,121 +8,127 @@ const double inchesToCm = 2.54;
 
 /// Represents the skeletal ages and their corresponding data for a specific category.
 class GrowthCategoryData {
-final List<ChildGrowthDataRow> rows;
-final List<String> skeletalAgeHeaders; // All skeletal age headers for this category (e.g., "7-0", "7-3")
+  final List<ChildGrowthDataRow> rows;
+  final List<String>
+      skeletalAgeHeaders; // All skeletal age headers for this category (e.g., "7-0", "7-3")
 
-GrowthCategoryData(this.rows, this.skeletalAgeHeaders);
+  GrowthCategoryData(this.rows, this.skeletalAgeHeaders);
 
-@override
-String toString() {
-return 'GrowthCategoryData(\n'
-'  Rows: ${rows.length} entries,\n'
-'  Skeletal Age Headers: ${skeletalAgeHeaders.join(', ')}\n'
-')';
-}
+  @override
+  String toString() {
+    return 'GrowthCategoryData(\n'
+        '  Rows: ${rows.length} entries,\n'
+        '  Skeletal Age Headers: ${skeletalAgeHeaders.join(', ')}\n'
+        ')';
+  }
 }
 
 /// Represents a single row of data from the raw CSV table.
 /// This row maps a specific child's current height to estimated final heights
 /// across various skeletal ages.
 class ChildGrowthDataRow {
-/// The child's current height in inches that this row represents (from the first column).
-final int childCurrentHeightInches;
+  /// The child's current height in inches that this row represents (from the first column).
+  final int childCurrentHeightInches;
 
-/// A map where the key is the skeletal age string (e.g., "7-0")
-/// and the value is the estimated final height in inches for that skeletal age.
-final SplayTreeMap<String, double> estimatedFinalHeightsBySkeletalAge;
+  /// A map where the key is the skeletal age string (e.g., "7-0")
+  /// and the value is the estimated final height in inches for that skeletal age.
+  final SplayTreeMap<String, double> estimatedFinalHeightsBySkeletalAge;
 
-ChildGrowthDataRow({
-  required this.childCurrentHeightInches,
-  required Map<String, double> estimatedFinalHeightsBySkeletalAge,
-}) : estimatedFinalHeightsBySkeletalAge = SplayTreeMap<String, double>.from(estimatedFinalHeightsBySkeletalAge);
+  ChildGrowthDataRow({
+    required this.childCurrentHeightInches,
+    required Map<String, double> estimatedFinalHeightsBySkeletalAge,
+  }) : estimatedFinalHeightsBySkeletalAge = SplayTreeMap<String, double>.from(
+            estimatedFinalHeightsBySkeletalAge);
 
-/// Factory constructor for parsing a single CSV data row.
-/// It uses the `skeletalAgeHeaderToIndex` map to correctly extract values
-/// for each skeletal age from the `rowParts`.
-factory ChildGrowthDataRow.fromCsvRow(List<String> rowParts, Map<String, int> skeletalAgeHeaderToIndex) {
-  if (rowParts.isEmpty) {
-    throw ArgumentError('CSV row cannot be empty.');
-  }
-
-final int? currentHeight = int.tryParse(rowParts[0].trim());
-  if (currentHeight == null) {
-    throw FormatException('Invalid child current height format in CSV row: "${rowParts[0].trim()}"');
-  }
-
-final Map<String, double> finalHeights = {};
-// Iterate through the skeletal age headers and their known column indices
-skeletalAgeHeaderToIndex.forEach((skeletalAgeStr, colIndex) {
-// Check if the row has a value at this specific column index
-if (colIndex < rowParts.length) {
-final String finalHeightString = rowParts[colIndex].trim(); // Get the value from the correct column
-
-if (finalHeightString.isNotEmpty) {
-  final double? finalHeight = double.tryParse(finalHeightString);
-      if (finalHeight != null) {
-        finalHeights[skeletalAgeStr] = finalHeight;
-      }
+  /// Factory constructor for parsing a single CSV data row.
+  /// It uses the `skeletalAgeHeaderToIndex` map to correctly extract values
+  /// for each skeletal age from the `rowParts`.
+  factory ChildGrowthDataRow.fromCsvRow(
+      List<String> rowParts, Map<String, int> skeletalAgeHeaderToIndex) {
+    if (rowParts.isEmpty) {
+      throw ArgumentError('CSV row cannot be empty.');
     }
+
+    final int? currentHeight = int.tryParse(rowParts[0].trim());
+    if (currentHeight == null) {
+      throw FormatException(
+          'Invalid child current height format in CSV row: "${rowParts[0].trim()}"');
+    }
+
+    final Map<String, double> finalHeights = {};
+// Iterate through the skeletal age headers and their known column indices
+    skeletalAgeHeaderToIndex.forEach((skeletalAgeStr, colIndex) {
+// Check if the row has a value at this specific column index
+      if (colIndex < rowParts.length) {
+        final String finalHeightString =
+            rowParts[colIndex].trim(); // Get the value from the correct column
+
+        if (finalHeightString.isNotEmpty) {
+          final double? finalHeight = double.tryParse(finalHeightString);
+          if (finalHeight != null) {
+            finalHeights[skeletalAgeStr] = finalHeight;
+          }
+        }
+      }
+    });
+
+    return ChildGrowthDataRow(
+      childCurrentHeightInches: currentHeight,
+      estimatedFinalHeightsBySkeletalAge: finalHeights,
+    );
   }
-});
 
-return ChildGrowthDataRow(
-  childCurrentHeightInches: currentHeight,
-  estimatedFinalHeightsBySkeletalAge: finalHeights,
-  );
-}
-
-@override
-String toString() {
-  final formattedEntries = estimatedFinalHeightsBySkeletalAge.entries
-      .map((e) => '${e.key}: ${e.value.toStringAsFixed(1)} in')
-      .join(',\n    ');
-  return 'ChildGrowthDataRow(\n'
-    '  Child Current Height: $childCurrentHeightInches inches,\n'
-    '  Estimated Final Heights by Skeletal Age:\n    {$formattedEntries}\n'
-    ')';
+  @override
+  String toString() {
+    final formattedEntries = estimatedFinalHeightsBySkeletalAge.entries
+        .map((e) => '${e.key}: ${e.value.toStringAsFixed(1)} in')
+        .join(',\n    ');
+    return 'ChildGrowthDataRow(\n'
+        '  Child Current Height: $childCurrentHeightInches inches,\n'
+        '  Estimated Final Heights by Skeletal Age:\n    {$formattedEntries}\n'
+        ')';
   }
 }
 
 /// Represents the result of a single height prediction.
 class PredictedFinalHeightData {
-final double childCurrentHeightInches;
-final String childSkeletalAgeString;
-final double childActualAgeDecimalYears;
-final String sex; // e.g., 'boy', 'girl'
-final String skeletalAgeDifferenceCategory; // e.g., 'normal', 'delayed_gt_1yr', 'advanced_gt_1yr'
+  final double childCurrentHeightInches;
+  final String childSkeletalAgeString;
+  final double childActualAgeDecimalYears;
+  final String sex; // e.g., 'boy', 'girl'
+  final String
+      skeletalAgeDifferenceCategory; // e.g., 'normal', 'delayed_gt_1yr', 'advanced_gt_1yr'
 
-final double skeletalAgeDecimalYears;
-final double childCurrentHeightCm;
-final double predictedFinalHeightInches;
-final double predictedFinalHeightCm;
+  final double skeletalAgeDecimalYears;
+  final double childCurrentHeightCm;
+  final double predictedFinalHeightInches;
+  final double predictedFinalHeightCm;
 
-PredictedFinalHeightData({
-  required this.childCurrentHeightInches,
-  required this.childSkeletalAgeString,
-  required this.childActualAgeDecimalYears,
-  required this.sex,
-  required this.skeletalAgeDifferenceCategory,
-  required this.skeletalAgeDecimalYears,
-  required this.childCurrentHeightCm,
-  required this.predictedFinalHeightInches,
-  required this.predictedFinalHeightCm,
-});
+  PredictedFinalHeightData({
+    required this.childCurrentHeightInches,
+    required this.childSkeletalAgeString,
+    required this.childActualAgeDecimalYears,
+    required this.sex,
+    required this.skeletalAgeDifferenceCategory,
+    required this.skeletalAgeDecimalYears,
+    required this.childCurrentHeightCm,
+    required this.predictedFinalHeightInches,
+    required this.predictedFinalHeightCm,
+  });
 
-@override
-String toString() {
-  return 'PredictedFinalHeightData(\n'
-  '  Child Current Height: ${childCurrentHeightInches.toStringAsFixed(1)} in (${childCurrentHeightCm.toStringAsFixed(1)} cm)\n'
-  '  Skeletal Age: $childSkeletalAgeString (${skeletalAgeDecimalYears.toStringAsFixed(2)} yrs)\n'
-  '  Actual Age: ${childActualAgeDecimalYears.toStringAsFixed(2)} yrs\n'
-  '  Sex: $sex\n'
-  '  Skeletal Age Category: $skeletalAgeDifferenceCategory\n'
-  '  Predicted Final Height: ${predictedFinalHeightInches.toStringAsFixed(1)} in (${predictedFinalHeightCm.toStringAsFixed(1)} cm)\n'
-  ')';
+  @override
+  String toString() {
+    return 'PredictedFinalHeightData(\n'
+        '  Child Current Height: ${childCurrentHeightInches.toStringAsFixed(1)} in (${childCurrentHeightCm.toStringAsFixed(1)} cm)\n'
+        '  Skeletal Age: $childSkeletalAgeString (${skeletalAgeDecimalYears.toStringAsFixed(2)} yrs)\n'
+        '  Actual Age: ${childActualAgeDecimalYears.toStringAsFixed(2)} yrs\n'
+        '  Sex: $sex\n'
+        '  Skeletal Age Category: $skeletalAgeDifferenceCategory\n'
+        '  Predicted Final Height: ${predictedFinalHeightInches.toStringAsFixed(1)} in (${predictedFinalHeightCm.toStringAsFixed(1)} cm)\n'
+        ')';
   }
 
-String finalHeight(){
+  String finalHeight() {
     return '${predictedFinalHeightInches.toStringAsFixed(1)} in (${predictedFinalHeightCm.toStringAsFixed(1)} cm)';
   }
 }
@@ -131,12 +137,13 @@ String finalHeight(){
 
 /// Helper function to convert "Years-Months" string to decimal years.
 double _calculateDecimalSkeletalAge(String skeletalAgeStr) {
-    final parts = skeletalAgeStr.split('-');
-    if (parts.length == 2) {
+  final parts = skeletalAgeStr.split('-');
+  if (parts.length == 2) {
     final int years = int.tryParse(parts[0]) ?? 0;
     final int months = int.tryParse(parts[1]) ?? 0;
     return years + (months / 12.0);
-  } else if (parts.length == 1) { // Handle single number like "10" as 10-0
+  } else if (parts.length == 1) {
+    // Handle single number like "10" as 10-0
     final int years = int.tryParse(parts[0]) ?? 0;
     return years.toDouble();
   }
@@ -145,7 +152,8 @@ double _calculateDecimalSkeletalAge(String skeletalAgeStr) {
 }
 
 /// Performs linear interpolation between two points.
-double _linearInterpolation(double x, double x1, double y1, double x2, double y2) {
+double _linearInterpolation(
+    double x, double x1, double y1, double x2, double y2) {
   // Use a small epsilon for float comparison to avoid division by zero or precision issues
   if ((x2 - x1).abs() < 1e-9) {
     return y1; // Points are effectively the same, return one of the values
@@ -154,172 +162,192 @@ double _linearInterpolation(double x, double x1, double y1, double x2, double y2
 }
 
 /// Determines the skeletal age difference category.
-String _getSkeletalAgeCategory(double skeletalAgeDecimalYears, double childActualAgeDecimalYears) {
+String _getSkeletalAgeCategory(
+    double skeletalAgeDecimalYears, double childActualAgeDecimalYears) {
   final double diff = skeletalAgeDecimalYears - childActualAgeDecimalYears;
   if (diff > 1.0) return 'advanced_gt_1yr';
   if (diff < -1.0) return 'delayed_gt_1yr';
   return 'normal'; // Default or based on specific ranges
 }
 
-
 // --- Height Prediction Service ---
 
 class HeightPredictionService {
-/// Stores all the parsed growth data tables.
-/// The structure is: Sex -> Category -> GrowthCategoryData
-Map<String, Map<String, GrowthCategoryData>> _allGrowthData;
+  /// Stores all the parsed growth data tables.
+  /// The structure is: Sex -> Category -> GrowthCategoryData
+  Map<String, Map<String, GrowthCategoryData>> _allGrowthData;
 
-/// Constructor that ingests all provided CSV data upon instantiation.
-HeightPredictionService() : _allGrowthData = {} {
-final Map<String, Map<String, String>> allRawCsvs = {
-  'boy': {
-    'normal': _boyNormalGrowthCsv,
-    'delayed_gt_1yr': _boyDelayedGrowthCsv,
-    'advanced_gt_1yr': _boyAdvancedGrowthCsv,
-  },
-  'girl': {
-    'normal': _girlNormalGrowthCsv,
-    'delayed_gt_1yr': _girlDelayedGrowthCsv,
-    'advanced_gt_1yr': _girlAdvancedGrowthCsv,
-    },
-  };
-_setupAllGrowthData(allRawCsvs);
-}
+  /// Constructor that ingests all provided CSV data upon instantiation.
+  HeightPredictionService() : _allGrowthData = {} {
+    final Map<String, Map<String, String>> allRawCsvs = {
+      'boy': {
+        'normal': _boyNormalGrowthCsv,
+        'delayed_gt_1yr': _boyDelayedGrowthCsv,
+        'advanced_gt_1yr': _boyAdvancedGrowthCsv,
+      },
+      'girl': {
+        'normal': _girlNormalGrowthCsv,
+        'delayed_gt_1yr': _girlDelayedGrowthCsv,
+        'advanced_gt_1yr': _girlAdvancedGrowthCsv,
+      },
+    };
+    _setupAllGrowthData(allRawCsvs);
+  }
 
-/// Internal method to set up all growth data from raw CSV strings.
-void _setupAllGrowthData(Map<String, Map<String, String>> allRawCsvs) {
-  print('Starting CSV data ingestion...');
-  allRawCsvs.forEach((sex, categoriesMap) {
-    categoriesMap.forEach((category, csvString) {
+  /// Internal method to set up all growth data from raw CSV strings.
+  void _setupAllGrowthData(Map<String, Map<String, String>> allRawCsvs) {
+    print('Starting CSV data ingestion...');
+    allRawCsvs.forEach((sex, categoriesMap) {
+      categoriesMap.forEach((category, csvString) {
         if (csvString.trim().isNotEmpty) {
-        // _parseGrowthCsv now returns GrowthCategoryData
+          // _parseGrowthCsv now returns GrowthCategoryData
           final GrowthCategoryData parsedData = _parseGrowthCsv(csvString);
-          _ingestParsedData(sex, category, parsedData); // Updated to ingest GrowthCategoryData
+          _ingestParsedData(sex, category,
+              parsedData); // Updated to ingest GrowthCategoryData
         } else {
-          print('Warning: Empty CSV string provided for Sex: $sex, Category: $category. Skipping.');
+          print(
+              'Warning: Empty CSV string provided for Sex: $sex, Category: $category. Skipping.');
         }
       });
-  });
-  print('CSV data ingestion complete.');
-}
+    });
+    print('CSV data ingestion complete.');
+  }
 
-/// Internal method to ingest parsed GrowthCategoryData for a specific sex and skeletal age category.
-void _ingestParsedData(String sex, String category, GrowthCategoryData data) {
-_allGrowthData[sex] ??= {}; // Initialize inner map if null
-_allGrowthData[sex]![category] = data; // Store the GrowthCategoryData object directly
+  /// Internal method to ingest parsed GrowthCategoryData for a specific sex and skeletal age category.
+  void _ingestParsedData(String sex, String category, GrowthCategoryData data) {
+    _allGrowthData[sex] ??= {}; // Initialize inner map if null
+    _allGrowthData[sex]![category] =
+        data; // Store the GrowthCategoryData object directly
 
-print('  Ingested data for Sex: $sex, Category: $category. Total rows: ${data.rows.length}, Headers: ${data.skeletalAgeHeaders.length}');
-}
+    print(
+        '  Ingested data for Sex: $sex, Category: $category. Total rows: ${data.rows.length}, Headers: ${data.skeletalAgeHeaders.length}');
+  }
 
-/// Internal helper to parse a single CSV string into a GrowthCategoryData object.
-GrowthCategoryData _parseGrowthCsv(String csvString) {
-final Map<int, ChildGrowthDataRow> combinedDataMap = {};
-final List<String> lines = csvString.trim().split('\n');
+  /// Internal helper to parse a single CSV string into a GrowthCategoryData object.
+  GrowthCategoryData _parseGrowthCsv(String csvString) {
+    final Map<int, ChildGrowthDataRow> combinedDataMap = {};
+    final List<String> lines = csvString.trim().split('\n');
 
 // Headers + 3 blank lines + at least 1 data row = 5 lines minimum
-if (lines.length < 5) {
-  print('Warning: CSV has fewer than 5 lines, skipping parsing for this category. (Lines found: ${lines.length})');
-  return GrowthCategoryData([], []); // Return empty data
-}
+    if (lines.length < 5) {
+      print(
+          'Warning: CSV has fewer than 5 lines, skipping parsing for this category. (Lines found: ${lines.length})');
+      return GrowthCategoryData([], []); // Return empty data
+    }
 
 // Parse the first line to get Skeletal Age headers and their original column index
-final List<String> headerParts = lines[0].split(',');
-final Map<String, int> skeletalAgeHeaderToIndex = {}; // Stores header -> original column index
+    final List<String> headerParts = lines[0].split(',');
+    final Map<String, int> skeletalAgeHeaderToIndex =
+        {}; // Stores header -> original column index
 
 // Column 0 is 'Current Height', so start from index 1 for skeletal ages
-for (int i = 1; i < headerParts.length; i++) {
-  final String header = headerParts[i].trim();
-  if (header.isNotEmpty && header != 'Current Height') {
-    skeletalAgeHeaderToIndex[header] = i;
-  }
-}
+    for (int i = 1; i < headerParts.length; i++) {
+      final String header = headerParts[i].trim();
+      if (header.isNotEmpty && header != 'Current Height') {
+        skeletalAgeHeaderToIndex[header] = i;
+      }
+    }
 
 // Create a sorted list of all skeletal age headers based on their decimal values.
 // This list is used to guarantee order and completeness for interpolation.
-final List<String> allSortedSkeletalAgeHeaders = skeletalAgeHeaderToIndex.keys.toList()
-..sort((a, b) => _calculateDecimalSkeletalAge(a).compareTo(_calculateDecimalSkeletalAge(b)));
+    final List<String> allSortedSkeletalAgeHeaders =
+        skeletalAgeHeaderToIndex.keys.toList()
+          ..sort((a, b) => _calculateDecimalSkeletalAge(a)
+              .compareTo(_calculateDecimalSkeletalAge(b)));
 
-  // Loop over data rows, starting at line 5 (index 4 for 0-based) based on the typical CSV structure:
-  // Line 1: Main headers
-  // Line 2-4: Blank/metadata rows
-  // Line 5+: Data rows
-  for (int i = 4; i < lines.length; i++) {
-  final List<String> rowParts = lines[i].split(',').map((s) => s.trim()).toList();
+    // Loop over data rows, starting at line 5 (index 4 for 0-based) based on the typical CSV structure:
+    // Line 1: Main headers
+    // Line 2-4: Blank/metadata rows
+    // Line 5+: Data rows
+    for (int i = 4; i < lines.length; i++) {
+      final List<String> rowParts =
+          lines[i].split(',').map((s) => s.trim()).toList();
 
-  if (rowParts.isNotEmpty && rowParts[0].isNotEmpty) { // Ensure row has content and a value for Current Height
-    try {
-      final ChildGrowthDataRow newRowData = ChildGrowthDataRow.fromCsvRow(
-        rowParts, skeletalAgeHeaderToIndex);
-      combinedDataMap[newRowData.childCurrentHeightInches] = newRowData;
-    } catch (e, s) {
-      print('    Error parsing data row ${i + 1}: $e - Stack: $s - Row content: ${lines[i]}');
-    }
-  }
-}
-
-  // Convert the map values (ChildGrowthDataRow objects) to a list and sort by height for consistency.
-  final List<ChildGrowthDataRow> dataRows = combinedDataMap.values.toList()
-  ..sort((a, b) => a.childCurrentHeightInches.compareTo(b.childCurrentHeightInches));
-
-  return GrowthCategoryData(dataRows, allSortedSkeletalAgeHeaders);
-}
-
-/// Predicts the final height of a child using bilinear interpolation.
-///
-/// Parameters:
-/// - `childCurrentHeightInches`: Child's current height in inches.
-/// - `childSkeletalAgeStr`: Child's bone age as a string (e.g., "10-6" for 10 years, 6 months).
-/// - `childActualAgeDecimalYears`: Child's actual chronological age in decimal years.
-/// - `sex`: 'boy' or 'girl'.
-///
-/// Returns `PredictedFinalHeightData` if successful, `null` otherwise.
-PredictedFinalHeightData? predictFinalHeight({
-  required double childCurrentHeightInches,
-  required String childSkeletalAgeStr,
-  required double childActualAgeDecimalYears,
-  required String sex,
-}) {
-    try {
-        final double skeletalAgeDecimal = _calculateDecimalSkeletalAge(childSkeletalAgeStr);
-        final String category = _getSkeletalAgeCategory(skeletalAgeDecimal, childActualAgeDecimalYears);
-
-        // Retrieve the GrowthCategoryData object for the specific sex and category
-        final GrowthCategoryData? categoryData = _allGrowthData[sex]?[category];
-
-        if (categoryData == null || categoryData.rows.isEmpty) {
-          print('Error: No data table found or data is empty for Sex: $sex, Category: $category. Cannot predict height.');
-          return null;
+      if (rowParts.isNotEmpty && rowParts[0].isNotEmpty) {
+        // Ensure row has content and a value for Current Height
+        try {
+          final ChildGrowthDataRow newRowData =
+              ChildGrowthDataRow.fromCsvRow(rowParts, skeletalAgeHeaderToIndex);
+          combinedDataMap[newRowData.childCurrentHeightInches] = newRowData;
+        } catch (e, s) {
+          print(
+              '    Error parsing data row ${i + 1}: $e - Stack: $s - Row content: ${lines[i]}');
         }
+      }
+    }
 
-        final List<ChildGrowthDataRow> tableData = categoryData.rows;
-        final List<String> allSkeletalAgeHeaderStrings = categoryData.skeletalAgeHeaders; // Use ALL headers
+    // Convert the map values (ChildGrowthDataRow objects) to a list and sort by height for consistency.
+    final List<ChildGrowthDataRow> dataRows = combinedDataMap.values.toList()
+      ..sort((a, b) =>
+          a.childCurrentHeightInches.compareTo(b.childCurrentHeightInches));
 
-        // --- 1. Attempt Exact Lookup First (if current height is an integer) ---
-        final bool isExactCurrentHeightInteger = childCurrentHeightInches == childCurrentHeightInches.toInt();
+    return GrowthCategoryData(dataRows, allSortedSkeletalAgeHeaders);
+  }
+
+  /// Predicts the final height of a child using bilinear interpolation.
+  ///
+  /// Parameters:
+  /// - `childCurrentHeightInches`: Child's current height in inches.
+  /// - `childSkeletalAgeStr`: Child's bone age as a string (e.g., "10-6" for 10 years, 6 months).
+  /// - `childActualAgeDecimalYears`: Child's actual chronological age in decimal years.
+  /// - `sex`: 'boy' or 'girl'.
+  ///
+  /// Returns `PredictedFinalHeightData` if successful, `null` otherwise.
+  PredictedFinalHeightData? predictFinalHeight({
+    required double childCurrentHeightInches,
+    required String childSkeletalAgeStr,
+    required double childActualAgeDecimalYears,
+    required String sex,
+  }) {
+    try {
+      final double skeletalAgeDecimal =
+          _calculateDecimalSkeletalAge(childSkeletalAgeStr);
+      final String category = _getSkeletalAgeCategory(
+          skeletalAgeDecimal, childActualAgeDecimalYears);
+
+      // Retrieve the GrowthCategoryData object for the specific sex and category
+      final GrowthCategoryData? categoryData = _allGrowthData[sex]?[category];
+
+      if (categoryData == null || categoryData.rows.isEmpty) {
+        print(
+            'Error: No data table found or data is empty for Sex: $sex, Category: $category. Cannot predict height.');
+        return null;
+      }
+
+      final List<ChildGrowthDataRow> tableData = categoryData.rows;
+      final List<String> allSkeletalAgeHeaderStrings =
+          categoryData.skeletalAgeHeaders; // Use ALL headers
+
+      // --- 1. Attempt Exact Lookup First (if current height is an integer) ---
+      final bool isExactCurrentHeightInteger =
+          childCurrentHeightInches == childCurrentHeightInches.toInt();
 
       if (isExactCurrentHeightInteger) {
         final int roundedCurrentHeight = childCurrentHeightInches.toInt();
         // Use firstWhereOrNull directly on the list
-        final ChildGrowthDataRow? exactCurrentHeightRow = tableData.firstWhereOrNull((row) => row.childCurrentHeightInches == roundedCurrentHeight);
+        final ChildGrowthDataRow? exactCurrentHeightRow =
+            tableData.firstWhereOrNull(
+                (row) => row.childCurrentHeightInches == roundedCurrentHeight);
 
         if (exactCurrentHeightRow != null) {
-          final double? directPredictedHeight = exactCurrentHeightRow.estimatedFinalHeightsBySkeletalAge[childSkeletalAgeStr];
+          final double? directPredictedHeight = exactCurrentHeightRow
+              .estimatedFinalHeightsBySkeletalAge[childSkeletalAgeStr];
 
-            if (directPredictedHeight != null) {
-                return PredictedFinalHeightData(
-                        childCurrentHeightInches: childCurrentHeightInches,
-                        childSkeletalAgeString: childSkeletalAgeStr,
-                        childActualAgeDecimalYears: childActualAgeDecimalYears,
-                        sex: sex,
-                        skeletalAgeDifferenceCategory: category,
-                        skeletalAgeDecimalYears: skeletalAgeDecimal,
-                        childCurrentHeightCm: childCurrentHeightInches * inchesToCm,
-                        predictedFinalHeightInches: directPredictedHeight,
-                        predictedFinalHeightCm: directPredictedHeight * inchesToCm,
-                );
-            } else {
-              // print('DEBUG: Exact row found for Current Height: $roundedCurrentHeight, but skeletal age "$childSkeletalAgeStr" not found as exact key in that row. Proceeding to interpolation.');
-            }
+          if (directPredictedHeight != null) {
+            return PredictedFinalHeightData(
+              childCurrentHeightInches: childCurrentHeightInches,
+              childSkeletalAgeString: childSkeletalAgeStr,
+              childActualAgeDecimalYears: childActualAgeDecimalYears,
+              sex: sex,
+              skeletalAgeDifferenceCategory: category,
+              skeletalAgeDecimalYears: skeletalAgeDecimal,
+              childCurrentHeightCm: childCurrentHeightInches * inchesToCm,
+              predictedFinalHeightInches: directPredictedHeight,
+              predictedFinalHeightCm: directPredictedHeight * inchesToCm,
+            );
+          } else {
+            // print('DEBUG: Exact row found for Current Height: $roundedCurrentHeight, but skeletal age "$childSkeletalAgeStr" not found as exact key in that row. Proceeding to interpolation.');
+          }
         } else {
           // print('DEBUG: Current height $roundedCurrentHeight is an integer, but no exact data row found. Proceeding to interpolation for current height.');
         }
@@ -327,155 +355,201 @@ PredictedFinalHeightData? predictFinalHeight({
         // print('DEBUG: Current height ${childCurrentHeightInches.toStringAsFixed(2)} is not an exact integer. Proceeding directly to interpolation for current height.');
       }
 
-    // --- 2. Prepare Data Points for Bilinear Interpolation ---
+      // --- 2. Prepare Data Points for Bilinear Interpolation ---
 
-    // 2.1. Extract and sort available skeletal age data points from ALL HEADERS (FIXED)
-    final SplayTreeSet<MapEntry<String, double>> availableSkeletalAgeEntries = SplayTreeSet(
-      (a, b) => a.value.compareTo(b.value), // Sort by decimal value
-    );
+      // 2.1. Extract and sort available skeletal age data points from ALL HEADERS (FIXED)
+      final SplayTreeSet<MapEntry<String, double>> availableSkeletalAgeEntries =
+          SplayTreeSet(
+        (a, b) => a.value.compareTo(b.value), // Sort by decimal value
+      );
 
-    for (final skeletalAgeKey in allSkeletalAgeHeaderStrings) { // Use the full list of headers here
-      availableSkeletalAgeEntries.add(MapEntry(skeletalAgeKey, _calculateDecimalSkeletalAge(skeletalAgeKey)));
-    }
+      for (final skeletalAgeKey in allSkeletalAgeHeaderStrings) {
+        // Use the full list of headers here
+        availableSkeletalAgeEntries.add(MapEntry(
+            skeletalAgeKey, _calculateDecimalSkeletalAge(skeletalAgeKey)));
+      }
 
+      if (availableSkeletalAgeEntries.length < 2) {
+        print(
+            'Error: Not enough skeletal age data points (need at least 2) from headers for interpolation. Found ${availableSkeletalAgeEntries.length}. Cannot predict height.');
+        return null;
+      }
 
-    if (availableSkeletalAgeEntries.length < 2) {
-      print('Error: Not enough skeletal age data points (need at least 2) from headers for interpolation. Found ${availableSkeletalAgeEntries.length}. Cannot predict height.');
-      return null;
-    }
+      double x1_sa_dec,
+          x2_sa_dec; // Skeletal age decimal values for interpolation bounds
+      String x1_sa_str, x2_sa_str; // Skeletal age string representations
 
-    double x1_sa_dec, x2_sa_dec; // Skeletal age decimal values for interpolation bounds
-    String x1_sa_str, x2_sa_str; // Skeletal age string representations
+      final double epsilon =
+          1e-9; // Small value for float comparisons to handle precision
 
-    final double epsilon = 1e-9; // Small value for float comparisons to handle precision
+      // Find the lower bound (x1_sa_dec): The largest skeletal age <= target skeletalAgeDecimal
+      final MapEntry<String, double>? lowerEntry =
+          availableSkeletalAgeEntries.lastWhereOrNull(
+        (entry) => entry.value <= skeletalAgeDecimal + epsilon,
+      );
 
-    // Find the lower bound (x1_sa_dec): The largest skeletal age <= target skeletalAgeDecimal
-    final MapEntry<String, double>? lowerEntry = availableSkeletalAgeEntries.lastWhereOrNull(
-      (entry) => entry.value <= skeletalAgeDecimal + epsilon,
-    );
+      // Find the upper bound (x2_sa_dec): The smallest skeletal age >= target skeletalAgeDecimal
+      final MapEntry<String, double>? upperEntry =
+          availableSkeletalAgeEntries.firstWhereOrNull(
+        (entry) => entry.value >= skeletalAgeDecimal - epsilon,
+      );
 
-    // Find the upper bound (x2_sa_dec): The smallest skeletal age >= target skeletalAgeDecimal
-    final MapEntry<String, double>? upperEntry = availableSkeletalAgeEntries.firstWhereOrNull(
-      (entry) => entry.value >= skeletalAgeDecimal - epsilon,
-    );
+      if (lowerEntry == null || upperEntry == null) {
+        print(
+            'Error: Could not find suitable skeletal age interpolation range for ${childSkeletalAgeStr} (decimal: ${skeletalAgeDecimal.toStringAsFixed(2)}). This implies skeletal age is outside the *overall header* range or there\'s a precision error, or the range is not covered by the headers.');
+        return null;
+      }
 
-    if (lowerEntry == null || upperEntry == null) {
-      print('Error: Could not find suitable skeletal age interpolation range for ${childSkeletalAgeStr} (decimal: ${skeletalAgeDecimal.toStringAsFixed(2)}). This implies skeletal age is outside the *overall header* range or there\'s a precision error, or the range is not covered by the headers.');
-      return null;
-    }
+      x1_sa_dec = lowerEntry.value;
+      x1_sa_str = lowerEntry.key;
+      x2_sa_dec = upperEntry.value;
+      x2_sa_str = upperEntry.key;
 
-    x1_sa_dec = lowerEntry.value;
-    x1_sa_str = lowerEntry.key;
-    x2_sa_dec = upperEntry.value;
-    x2_sa_str = upperEntry.key;
-
-    // Handle edge cases for interpolation range: ensure x1_sa_dec and x2_sa_dec are distinct for interpolation
-    if ((x2_sa_dec - x1_sa_dec).abs() < epsilon) { // If x1 and x2 are effectively the same
-      final int exactIndex = availableSkeletalAgeEntries.toList().indexWhere((e) => (e.value - skeletalAgeDecimal).abs() < epsilon);
-      if (exactIndex != -1) {
-        if (exactIndex < availableSkeletalAgeEntries.length - 1) {
-          // Target is an exact match and not the very last point, use it and the next point
-          x1_sa_dec = availableSkeletalAgeEntries.elementAt(exactIndex).value;
-          x1_sa_str = availableSkeletalAgeEntries.elementAt(exactIndex).key;
-          x2_sa_dec = availableSkeletalAgeEntries.elementAt(exactIndex + 1).value;
-          x2_sa_str = availableSkeletalAgeEntries.elementAt(exactIndex + 1).key;
-        } else if (exactIndex > 0) {
-          // Target is the very last point and an exact match, use it and the previous point
-          x1_sa_dec = availableSkeletalAgeEntries.elementAt(exactIndex - 1).value;
-          x1_sa_str = availableSkeletalAgeEntries.elementAt(exactIndex - 1).key;
-          x2_sa_dec = availableSkeletalAgeEntries.elementAt(exactIndex).value;
-          x2_sa_str = availableSkeletalAgeEntries.elementAt(exactIndex).key;
-        } else {
-          // Only one data point or exact match at first point with no subsequent.
-          // This case should ideally be caught by availableSkeletalAgeEntries.length < 2,
-          // or implies no interpolation is possible.
-          print('Error: Cannot establish distinct skeletal age interpolation range for exact match at an endpoint with insufficient surrounding data.');
-          return null;
+      // Handle edge cases for interpolation range: ensure x1_sa_dec and x2_sa_dec are distinct for interpolation
+      if ((x2_sa_dec - x1_sa_dec).abs() < epsilon) {
+        // If x1 and x2 are effectively the same
+        final int exactIndex = availableSkeletalAgeEntries
+            .toList()
+            .indexWhere((e) => (e.value - skeletalAgeDecimal).abs() < epsilon);
+        if (exactIndex != -1) {
+          if (exactIndex < availableSkeletalAgeEntries.length - 1) {
+            // Target is an exact match and not the very last point, use it and the next point
+            x1_sa_dec = availableSkeletalAgeEntries.elementAt(exactIndex).value;
+            x1_sa_str = availableSkeletalAgeEntries.elementAt(exactIndex).key;
+            x2_sa_dec =
+                availableSkeletalAgeEntries.elementAt(exactIndex + 1).value;
+            x2_sa_str =
+                availableSkeletalAgeEntries.elementAt(exactIndex + 1).key;
+          } else if (exactIndex > 0) {
+            // Target is the very last point and an exact match, use it and the previous point
+            x1_sa_dec =
+                availableSkeletalAgeEntries.elementAt(exactIndex - 1).value;
+            x1_sa_str =
+                availableSkeletalAgeEntries.elementAt(exactIndex - 1).key;
+            x2_sa_dec = availableSkeletalAgeEntries.elementAt(exactIndex).value;
+            x2_sa_str = availableSkeletalAgeEntries.elementAt(exactIndex).key;
+          } else {
+            // Only one data point or exact match at first point with no subsequent.
+            // This case should ideally be caught by availableSkeletalAgeEntries.length < 2,
+            // or implies no interpolation is possible.
+            print(
+                'Error: Cannot establish distinct skeletal age interpolation range for exact match at an endpoint with insufficient surrounding data.');
+            return null;
+          }
         }
       }
-    }
 
-    // Final check to ensure we have distinct bounds for interpolation
-    if ((x2_sa_dec - x1_sa_dec).abs() < epsilon) {
-      print('Error: Final skeletal age interpolation range is not distinct ($x1_sa_dec, $x2_sa_dec). Cannot interpolate.');
-      return null;
-    }
+      // Final check to ensure we have distinct bounds for interpolation
+      if ((x2_sa_dec - x1_sa_dec).abs() < epsilon) {
+        print(
+            'Error: Final skeletal age interpolation range is not distinct ($x1_sa_dec, $x2_sa_dec). Cannot interpolate.');
+        return null;
+      }
 
-    // 2.2. Extract and sort available current height data points from the actual data rows
-    final List<int> availableCurrentHeights = tableData.map((row) => row.childCurrentHeightInches).toList()..sort();
+      // 2.2. Extract and sort available current height data points from the actual data rows
+      final List<int> availableCurrentHeights =
+          tableData.map((row) => row.childCurrentHeightInches).toList()..sort();
 
-    if (availableCurrentHeights.length < 2) {
-      print('Error: Not enough current height data points (need at least 2) for interpolation in selected table. Found ${availableCurrentHeights.length}.');
-      return null;
-    }
+      if (availableCurrentHeights.length < 2) {
+        print(
+            'Error: Not enough current height data points (need at least 2) for interpolation in selected table. Found ${availableCurrentHeights.length}.');
+        return null;
+      }
 
-    int y1_ch, y2_ch; // Current height integer values for interpolation bounds
-    ChildGrowthDataRow? row1, row2; // The data rows corresponding to y1_ch and y2_ch
+      int y1_ch,
+          y2_ch; // Current height integer values for interpolation bounds
+      ChildGrowthDataRow? row1,
+          row2; // The data rows corresponding to y1_ch and y2_ch
 
-    // Find current height interpolation boundaries (y1_ch, y2_ch)
-    if (childCurrentHeightInches <= availableCurrentHeights.first) {
-      y1_ch = availableCurrentHeights.first;
-      y2_ch = availableCurrentHeights.elementAt(1);
-    } else if (childCurrentHeightInches >= availableCurrentHeights.last) {
-      y1_ch = availableCurrentHeights.elementAt(availableCurrentHeights.length - 2);
-      y2_ch = availableCurrentHeights.last;
-    } else {
-      // Find the two nearest bounding integer heights
-      final int? foundY1 = availableCurrentHeights.lastWhereOrNull((h) => h <= childCurrentHeightInches);
-      final int? foundY2 = availableCurrentHeights.firstWhereOrNull((h) => h >= childCurrentHeightInches && h != foundY1);
-
-      if (foundY1 == null || foundY2 == null) {
-      print('Error: Could not find suitable current height interpolation range. Data might be insufficient.');
-      return null;
-    }
-
-      if (foundY1 == foundY2) { // This case implies childCurrentHeightInches is exactly on a data point
-        final int exactIndex = availableCurrentHeights.indexOf(foundY1);
-        if (exactIndex < availableCurrentHeights.length - 1) { // If not the very last point
-          y1_ch = foundY1;
-          y2_ch = availableCurrentHeights.elementAt(exactIndex + 1);
-        } else if (exactIndex > 0) { // If it is the last point, use the previous one
-          y1_ch = availableCurrentHeights.elementAt(exactIndex - 1);
-          y2_ch = foundY1;
-        } else { // Only one data point exists or other unhandled edge case
-          print('Error: Only one or insufficient current height data points available for interpolation range.');
-          return null;
-        }
+      // Find current height interpolation boundaries (y1_ch, y2_ch)
+      if (childCurrentHeightInches <= availableCurrentHeights.first) {
+        y1_ch = availableCurrentHeights.first;
+        y2_ch = availableCurrentHeights.elementAt(1);
+      } else if (childCurrentHeightInches >= availableCurrentHeights.last) {
+        y1_ch = availableCurrentHeights
+            .elementAt(availableCurrentHeights.length - 2);
+        y2_ch = availableCurrentHeights.last;
       } else {
-        y1_ch = foundY1;
-        y2_ch = foundY2;
+        // Find the two nearest bounding integer heights
+        final int? foundY1 = availableCurrentHeights
+            .lastWhereOrNull((h) => h <= childCurrentHeightInches);
+        final int? foundY2 = availableCurrentHeights.firstWhereOrNull(
+            (h) => h >= childCurrentHeightInches && h != foundY1);
+
+        if (foundY1 == null || foundY2 == null) {
+          print(
+              'Error: Could not find suitable current height interpolation range. Data might be insufficient.');
+          return null;
+        }
+
+        if (foundY1 == foundY2) {
+          // This case implies childCurrentHeightInches is exactly on a data point
+          final int exactIndex = availableCurrentHeights.indexOf(foundY1);
+          if (exactIndex < availableCurrentHeights.length - 1) {
+            // If not the very last point
+            y1_ch = foundY1;
+            y2_ch = availableCurrentHeights.elementAt(exactIndex + 1);
+          } else if (exactIndex > 0) {
+            // If it is the last point, use the previous one
+            y1_ch = availableCurrentHeights.elementAt(exactIndex - 1);
+            y2_ch = foundY1;
+          } else {
+            // Only one data point exists or other unhandled edge case
+            print(
+                'Error: Only one or insufficient current height data points available for interpolation range.');
+            return null;
+          }
+        } else {
+          y1_ch = foundY1;
+          y2_ch = foundY2;
+        }
       }
 
-    }
+      // Retrieve the actual rows for interpolation
+      // These should always be found because y1_ch and y2_ch come from availableCurrentHeights
+      row1 =
+          tableData.firstWhere((row) => row.childCurrentHeightInches == y1_ch);
+      row2 =
+          tableData.firstWhere((row) => row.childCurrentHeightInches == y2_ch);
 
-    // Retrieve the actual rows for interpolation
-    // These should always be found because y1_ch and y2_ch come from availableCurrentHeights
-    row1 = tableData.firstWhere((row) => row.childCurrentHeightInches == y1_ch);
-    row2 = tableData.firstWhere((row) => row.childCurrentHeightInches == y2_ch);
+      // 3. Get the four corner values for bilinear interpolation
+      final double f_x1y1 =
+          row1.estimatedFinalHeightsBySkeletalAge[x1_sa_str] ?? double.nan;
+      final double f_x2y1 =
+          row1.estimatedFinalHeightsBySkeletalAge[x2_sa_str] ?? double.nan;
+      final double f_x1y2 =
+          row2.estimatedFinalHeightsBySkeletalAge[x1_sa_str] ?? double.nan;
+      final double f_x2y2 =
+          row2.estimatedFinalHeightsBySkeletalAge[x2_sa_str] ?? double.nan;
 
-    // 3. Get the four corner values for bilinear interpolation
-    final double f_x1y1 = row1.estimatedFinalHeightsBySkeletalAge[x1_sa_str] ?? double.nan;
-    final double f_x2y1 = row1.estimatedFinalHeightsBySkeletalAge[x2_sa_str] ?? double.nan;
-    final double f_x1y2 = row2.estimatedFinalHeightsBySkeletalAge[x1_sa_str] ?? double.nan;
-    final double f_x2y2 = row2.estimatedFinalHeightsBySkeletalAge[x2_sa_str] ?? double.nan;
+      // Check for missing data in any of the four corners
+      if (f_x1y1.isNaN || f_x2y1.isNaN || f_x1y2.isNaN || f_x2y2.isNaN) {
+        print(
+            'Error: Missing data points for one or more corners of interpolation grid (values are NaN). This indicates an empty cell in the CSV for the selected range, which might be expected for sparse data.');
+        print(
+            '  f_x1y1 (from ${x1_sa_str} at ${row1.childCurrentHeightInches} inches): ${f_x1y1.isNaN ? 'MISSING' : f_x1y1.toStringAsFixed(2)}');
+        print(
+            '  f_x2y1 (from ${x2_sa_str} at ${row1.childCurrentHeightInches} inches): ${f_x2y1.isNaN ? 'MISSING' : f_x2y1.toStringAsFixed(2)}');
+        print(
+            '  f_x1y2 (from ${x1_sa_str} at ${row2.childCurrentHeightInches} inches): ${f_x1y2.isNaN ? 'MISSING' : f_x1y2.toStringAsFixed(2)}');
+        print(
+            '  f_x2y2 (from ${x2_sa_str} at ${row2.childCurrentHeightInches} inches): ${f_x2y2.isNaN ? 'MISSING' : f_x2y2.toStringAsFixed(2)}');
+        return null;
+      }
 
-    // Check for missing data in any of the four corners
-    if (f_x1y1.isNaN || f_x2y1.isNaN || f_x1y2.isNaN || f_x2y2.isNaN) {
-      print('Error: Missing data points for one or more corners of interpolation grid (values are NaN). This indicates an empty cell in the CSV for the selected range, which might be expected for sparse data.');
-      print('  f_x1y1 (from ${x1_sa_str} at ${row1.childCurrentHeightInches} inches): ${f_x1y1.isNaN ? 'MISSING' : f_x1y1.toStringAsFixed(2)}');
-      print('  f_x2y1 (from ${x2_sa_str} at ${row1.childCurrentHeightInches} inches): ${f_x2y1.isNaN ? 'MISSING' : f_x2y1.toStringAsFixed(2)}');
-      print('  f_x1y2 (from ${x1_sa_str} at ${row2.childCurrentHeightInches} inches): ${f_x1y2.isNaN ? 'MISSING' : f_x1y2.toStringAsFixed(2)}');
-      print('  f_x2y2 (from ${x2_sa_str} at ${row2.childCurrentHeightInches} inches): ${f_x2y2.isNaN ? 'MISSING' : f_x2y2.toStringAsFixed(2)}');
-      return null;
-    }
+      // 4. Perform Bilinear Interpolation
+      final double interp1 = _linearInterpolation(
+          skeletalAgeDecimal, x1_sa_dec, f_x1y1, x2_sa_dec, f_x2y1);
+      final double interp2 = _linearInterpolation(
+          skeletalAgeDecimal, x1_sa_dec, f_x1y2, x2_sa_dec, f_x2y2);
 
-    // 4. Perform Bilinear Interpolation
-    final double interp1 = _linearInterpolation(skeletalAgeDecimal, x1_sa_dec, f_x1y1, x2_sa_dec, f_x2y1);
-    final double interp2 = _linearInterpolation(skeletalAgeDecimal, x1_sa_dec, f_x1y2, x2_sa_dec, f_x2y2);
-
-    final double predictedFinalHeightInches = _linearInterpolation(
-      childCurrentHeightInches.toDouble(), y1_ch.toDouble(), interp1, y2_ch.toDouble(), interp2,
-    );
+      final double predictedFinalHeightInches = _linearInterpolation(
+        childCurrentHeightInches.toDouble(),
+        y1_ch.toDouble(),
+        interp1,
+        y2_ch.toDouble(),
+        interp2,
+      );
 
       return PredictedFinalHeightData(
         childCurrentHeightInches: childCurrentHeightInches,
@@ -618,7 +692,6 @@ Ht. (inches),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 78,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,80.7,79.8,78.9,78.2,77.5,76.8,76.1
 79,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,79.9,79.8,79.3,79.2,78.9,78.8
 """;
-
 
 const String _girlNormalGrowthCsv = """
 Skeletal Age,6-0,6-3,6-6,6-9,7-0,7-3,7-6,7-9,8-0,8-3,8-6,8-10,9-0,9-3,9-6,9-9,10-0,10-3,10-6,10-9,11-0,11-3,11-6,11-9,12-0,12-3,12-6,12-9,13-0,13-3,13-6,13-9,14-0,14-3,14-6,14-9,15-0,15-3,15-6,15-9,16-0,16-3,16-6,16-9,17-0,17-6,18-0

@@ -1,7 +1,7 @@
 import "../classes/milk.dart";
 
 List<Milk> sortedMilks(List<Milk> milks) {
-  List<Milk> sorted =  List.from(milks);
+  List<Milk> sorted = List.from(milks);
   sorted.sort((a, b) => a.name.compareTo(b.name));
   return sorted;
 }
@@ -36,7 +36,9 @@ final List<Milk> milks = [
   Milk(name: "Hipp Organic Combiotic Follow-on Milk", carbsPer100ml: 7.9),
   Milk(name: "Holle Organic Infant Follow-on Formula", carbsPer100ml: 8.2),
   Milk(name: "SMA Pro Follow-on Milk", carbsPer100ml: 7.9),
-  Milk(name: "Holle Organic Infant Goat Milk Follow-on Formula 2", carbsPer100ml: 8.0),
+  Milk(
+      name: "Holle Organic Infant Goat Milk Follow-on Formula 2",
+      carbsPer100ml: 8.0),
   Milk(name: "Kabrita Gold 2", carbsPer100ml: 8.0),
   Milk(name: "NANNYcare Follow-on Milk", carbsPer100ml: 7.4),
   Milk(name: "Hipp Organic Good Night Milk", carbsPer100ml: 8.0),

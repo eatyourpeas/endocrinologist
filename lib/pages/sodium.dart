@@ -142,7 +142,7 @@ class _SodiumPageState extends State<SodiumPage>{
         return;
       }
       // Assuming your totalBodyWaterUnderElevens is available and correctly imported
-      totalBodyWaterValue = totalBodyWaterUnderElevens(
+      totalBodyWaterValue = totalBodyWater(
         age: age,
         height: height,
         weight: weight,
@@ -425,10 +425,10 @@ class _SodiumPageState extends State<SodiumPage>{
                   inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                   validator: (value) {
                     if (_isTbwKnown) return null;
-                    return _validateDecimalField(value, 'age (decimal years)', min: 0.01, max: 11); // Max 11 for this func
+                    return _validateDecimalField(value, 'age (decimal years)', min: 0.01, max: 18); // Max 18y for this func
                   },
                   decoration: const InputDecoration(
-                    labelText: 'Age (decimal years, <11)',
+                    labelText: 'Age (decimal years)',
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (_) => _checkFormValidity(),
@@ -519,41 +519,74 @@ class _SodiumPageState extends State<SodiumPage>{
                   ),
                 ],
               ),
-          Padding( // You can keep the outer padding for spacing from other elements
-            padding: const EdgeInsets.symmetric(vertical: 8.0), // Adjust vertical padding as needed
-            child: Container(
-              padding: const EdgeInsets.all(12.0), // Padding inside the colored box
-              decoration: BoxDecoration(
-                  color: Colors.amber[100], // A light amber/yellow for warning
-                  borderRadius: BorderRadius.circular(8.0), // Optional: rounded corners
-                  border: Border.all( // Optional: a thin border
-                    color: Colors.amber[400]!,
-                    width: 1,
-                  )
-              ),
-              child: const Text(
-                'Plasma sodium should rise by no more than 0.5 to 1.0 mmol/L per hour and by less than 10 to 12 mmol/L over the first 24 hours',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.black87, // Ensure text is readable on the background
+              Padding( // You can keep the outer padding for spacing from other elements
+                padding: const EdgeInsets.symmetric(vertical: 8.0), // Adjust vertical padding as needed
+                child: Container(
+                  padding: const EdgeInsets.all(12.0), // Padding inside the colored box
+                  decoration: BoxDecoration(
+                      color: Colors.amber[100], // A light amber/yellow for warning
+                      borderRadius: BorderRadius.circular(8.0), // Optional: rounded corners
+                      border: Border.all( // Optional: a thin border
+                        color: Colors.amber[400]!,
+                        width: 1,
+                      )
+                  ),
+                  child: const Text(
+                    'Plasma sodium should rise by no more than 0.5 to 1.0 mmol/L per hour and by less than 10 to 12 mmol/L over the first 24 hours',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black87, // Ensure text is readable on the background
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-            const SizedBox(height: 16),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Reference: Baran D, Hutchinson TA. The outcome of hyponatremia in a general hospital population. Clin Nephrol. 1984;22:72–76.',
-                textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 12),
-              )),
-          ]
-        )
-    )
-    )
-    ));
+              SizedBox(height: 16),
+              Padding(
+                padding: EdgeInsets.all(2),
+                child: Text(
+                          'References',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black45,
+                          ),
+                        )),
+              Padding(
+                padding: EdgeInsets.all(2),
+                child: Text(
+                    'Baran D, Hutchinson TA. The outcome of hyponatremia in a general hospital population. Clin Nephrol. 1984;22:72–76.',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black45,
+                    ),
+                )),
+              Padding(
+                padding: EdgeInsets.all(2),
+                child: Text(
+                  'Wells JC, Fewtrell MS, Davies PS, Williams JE, Coward WA, Cole TJ. Prediction of total body water in infants and children. Arch Dis Child. 2005 Sep;90(9):965-71.',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black45,
+                ))),
+              Padding(
+                padding: EdgeInsets.all(2),
+                child: Text(
+                    'Chumlea WC, Schubert CM, Reo NV, Sun SS, Siervogel RM. Total body water volume for white children and adolescents and anthropometric prediction equations: the Fels Longitudinal Study. Kidney Int. 2005 Nov;68(5):2317-22.',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black45,
+                    ),
+                  )),
+            ],
+        ),
+      ),
+    ))
+    );
   }
 }
 

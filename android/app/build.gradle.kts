@@ -1,9 +1,8 @@
-import java.util.Properties
+import org.gradle.api.GradleException
+import org.gradle.api.JavaVersion
 import java.io.File
 import java.io.FileInputStream
-import org.gradle.api.JavaVersion
-import org.gradle.api.GradleException
-import org.gradle.api.tasks.Delete
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -23,13 +22,14 @@ fun loadProperties(filePath: String): Properties {
 }
 
 // Load key properties if the file exists
-val keyPropertiesFile = rootProject.file("key.properties") // Assumes key.properties is in the android directory
+val keyPropertiesFile =
+    rootProject.file("key.properties") // Assumes key.properties is in the android directory
 val keyProperties = loadProperties(keyPropertiesFile.absolutePath)
 
 android {
     namespace = "uk.co.eatyourpeas.endocrinologist"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "29.0.14033849"
 
     signingConfigs {
         create("release") {
@@ -69,7 +69,10 @@ android {
         release {
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         debug {
             signingConfig = signingConfigs.getByName("debug")

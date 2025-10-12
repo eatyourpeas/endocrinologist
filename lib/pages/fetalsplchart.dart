@@ -41,6 +41,7 @@ class _FetalSPLChartState extends State<FetalSPLChart> {
             yValueMapper: (FetalSPLData data, _) => data.minimumSize,
             color: Colors.blue,
             name: 'Minimum Size',
+            dashArray: [5, 5],
           ),
           LineSeries<FetalSPLData, int>(
             dataSource: FetalSPLData.dataList,
@@ -48,6 +49,7 @@ class _FetalSPLChartState extends State<FetalSPLChart> {
             yValueMapper: (FetalSPLData data, _) => data.maximumSize,
             color: Colors.blue,
             name: 'Maximum Size',
+            dashArray: [5, 5],
           ),
           if (widget.showScatterPoint)
             ScatterSeries<ScatterData, int>(

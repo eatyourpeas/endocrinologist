@@ -29,7 +29,7 @@ val keyProperties = loadProperties(keyPropertiesFile.absolutePath)
 android {
     namespace = "uk.co.eatyourpeas.endocrinologist"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "29.0.14033849"
+    ndkVersion = "29.0.14206865"
 
     signingConfigs {
         create("release") {

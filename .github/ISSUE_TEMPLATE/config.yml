@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+
+# Provide links to other resources for questions or general discussion.
+contact_links:
+  - name: 🩺 Clinical Review Discussion
+    url: https://github.com/eatyourpeas/endocrinologist/wiki
+    about: Please review the project Wiki for clinical formulas and suggest changes via a Bug Report if you find an error.
+  - name: 💬 General Question or Code Discussion
+    url: https://github.com/eatyourpeas/endocrinologist/discussions
+    about: Ask a question about using the app, the project direction, or code implementation that isn't a bug or a feature request.

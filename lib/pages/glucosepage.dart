@@ -34,6 +34,7 @@ class GlucosePageState extends State<GlucosePage> {
   bool _showEnteralFields = false;
   bool _showCustomMilkCarbsField = false;
   bool _showInfoBox = true;
+  bool _isParenteralRateHourly = true; // true = ml/hr, false = ml/kg/day
 
   bool validateMilkSelection(Milk? milk) {
     if (milk == null && !_showCustomMilkCarbsField) {
@@ -60,7 +61,19 @@ class GlucosePageState extends State<GlucosePage> {
       }
       if (_showParenteralFields) {
         glucosePercentage = double.tryParse(_glucosePercentageController.text);
-        glucoseInfusionRate = double.tryParse(_infusionRateController.text);
+        double? rawRate = double.tryParse(_infusionRateController.text);
+
+        if (rawRate != null) {
+          if (_isParenteralRateHourly) {
+            // Already in ml/hr
+            glucoseInfusionRate = rawRate;
+          } else {
+            // Convert ml/kg/day to ml/hr
+            // Formula: (ml/kg/day * weight) / 24 hours
+            glucoseInfusionRate = (rawRate * weight) / 24;
+          }
+        }
+
         if (glucoseInfusionRate != null && glucosePercentage != null) {
           parenteralGIR = calculateGlucoseInfusionRate(
               glucosePercentage, glucoseInfusionRate, weight);
@@ -357,6 +370,7 @@ class GlucosePageState extends State<GlucosePage> {
                     Visibility(
                         visible: _showParenteralFields,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 20),
                             const Text(
@@ -366,13 +380,16 @@ class GlucosePageState extends State<GlucosePage> {
                               textAlign: TextAlign.left,
                             ),
                             const SizedBox(height: 8),
+                            // 1. Dextrose Concentration Input
                             TextFormField(
                               controller: _glucosePercentageController,
-                              keyboardType: TextInputType.number,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                               validator: (value) {
                                 if (value == null ||
                                     value.isEmpty && _showParenteralFields) {
-                                  return "Please enter the dextrose percentage or g/100ml.";
+                                  return "Please enter the dextrose concentration %";
                                 }
                                 if (double.tryParse(value) == null) {
                                   return 'Please enter a valid number';
@@ -380,27 +397,59 @@ class GlucosePageState extends State<GlucosePage> {
                                 return null;
                               },
                               decoration: const InputDecoration(
-                                labelText: 'Glucose (g/100ml)',
+                                labelText: 'Dextrose Concentration (%)',
                                 border: OutlineInputBorder(),
+                                suffixText: '%',
                               ),
                             ),
                             const SizedBox(height: 20),
+                            // 2. Infusion Rate Input (with Toggle)
                             TextFormField(
                               controller: _infusionRateController,
-                              keyboardType: TextInputType.number,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                               validator: (value) {
-                                if (value == null ||
-                                    value.isEmpty && _showParenteralFields) {
-                                  return "Please enter the dextrose infusion rate in ml/hr.";
+                                if ((value == null || value.isEmpty) &&
+                                    _showParenteralFields) {
+                                  return _isParenteralRateHourly
+                                      ? "Please enter the rate in ml/hr."
+                                      : "Please enter the rate in ml/kg/day.";
                                 }
-                                if (double.tryParse(value) == null) {
+                                if (double.tryParse(value!) == null) {
                                   return 'Please enter a valid number';
                                 }
                                 return null;
                               },
-                              decoration: const InputDecoration(
-                                labelText: 'Rate (ml/hr)',
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                // Dynamic Label
+                                labelText: _isParenteralRateHourly
+                                    ? 'Rate (ml/hr)'
+                                    : 'Rate (ml/kg/day)',
+                                border: const OutlineInputBorder(),
+                                // The Toggle Button inside the input
+                                suffixIcon: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _isParenteralRateHourly =
+                                            !_isParenteralRateHourly;
+                                      });
+                                    },
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.blue,
+                                    ),
+                                    // Button text shows current unit
+                                    child: Text(
+                                      _isParenteralRateHourly
+                                          ? 'ml/hr'
+                                          : 'ml/kg/d',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ],

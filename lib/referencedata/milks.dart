@@ -2,7 +2,11 @@ import "../classes/milk.dart";
 
 List<Milk> sortedMilks(List<Milk> milks) {
   List<Milk> sorted = List.from(milks);
-  sorted.sort((a, b) => a.name.compareTo(b.name));
+  sorted.sort((a, b) {
+    if (a.name == "Breast Milk (mature)") return -1;
+    if (b.name == "Breast Milk (mature)") return 1;
+    return a.name.compareTo(b.name);
+  });
   return sorted;
 }
 

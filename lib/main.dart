@@ -8,8 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:logging/logging.dart';
 
 import 'pages/glucosepage.dart';
-import 'pages/sodium.dart';
-import 'pages/steroidpage.dart';
 
 void main() {
   _setupLogging();
@@ -17,25 +15,18 @@ void main() {
 }
 
 void _setupLogging() {
-  Logger.root.level =
-      kDebugMode ? Level.ALL : Level.WARNING; // More verbose in debug
+  Logger.root.level = kDebugMode ? Level.ALL : Level.WARNING;
   Logger.root.onRecord.listen((record) {
-    // Simple console output, you can customize this
-    // ignore: avoid_print
     print(
         '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
     if (record.error != null) {
-      // ignore: avoid_print
       print('  ERROR: ${record.error}');
     }
     if (record.stackTrace != null && record.level.value >= Level.SEVERE.value) {
-      // Only print stack for severe issues
-      // ignore: avoid_print
       print('  STACKTRACE: ${record.stackTrace}');
     }
   });
 
-  // Example: Log an info message when logging is set up
   final mainLogger = Logger('AppMain');
   mainLogger.info('Logging initialized. Debug mode: $kDebugMode');
 }
@@ -54,8 +45,6 @@ class Endocrinologist extends StatelessWidget {
         useMaterial3: true,
       ),
       builder: (context, child) {
-        // The 'child' here is the widget representing the current screen/route.
-        // It's usually a Navigator.
         Widget appContent = child ?? const SizedBox.shrink();
 
         if (showDisclaimer) {
@@ -101,7 +90,7 @@ class EndocrinologyTabBars extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -111,18 +100,18 @@ class EndocrinologyTabBars extends StatelessWidget {
           bottom: const TabBar(
             tabs: [
               Tab(icon: Icon(Icons.science), text: "Glucose"),
-              Tab(icon: Icon(Icons.medication), text: "Steroids"),
+              // Tab(icon: Icon(Icons.medication), text: "Steroids"),
               Tab(icon: Icon(Icons.straighten), text: "Auxology"),
-              Tab(icon: Icon(Icons.grain), text: "Sodium"),
+              // Tab(icon: Icon(Icons.grain), text: "Sodium"),
             ],
           ),
         ),
         body: const TabBarView(
           children: [
             GlucosePage(),
-            SteroidPage(),
+            // SteroidPage(),
             AuxologyPage(),
-            SodiumPage(),
+            // SodiumPage(),
           ],
         ),
       ),
